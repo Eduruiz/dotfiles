@@ -187,10 +187,11 @@ endif
 
 "-------------Setting gui only configs--------------"
 if has("gui_running")
-      "set guifont=Source\ Code\ Pro\ for\ Powerline:h16                 "setting a nice fonts on gui vim
-      set guifont=Fira\ Code\ 13                 "setting a nice fonts on gui vim
       if has("gui_macvim")
         set fu                                                            "enter fulscreen
+        set guifont=Fira\ Code:h14                                        "setting a nice fonts on gui vim on mac
+      else
+        set guifont=Fira\ Code\ 13                                        "setting a nice fonts on gui vim on linux
       endif
 endif
 
