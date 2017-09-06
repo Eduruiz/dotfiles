@@ -207,11 +207,14 @@ inoremap jk <esc>
 inoremap kj <esc>
 
 
-nnoremap ; :                                                                 "easy use of ; as : no need to use shift :)
+"easy use of ; as : no need to use shift :)
+nnoremap ; :"
 
-map <F2> :NERDTreeToggle<CR>                                                 "quick open e close NerdTREE
+"quick open e close NerdTREE
+map <F2> :NERDTreeToggle<CR>                                                 
 
-vmap  <expr>  <LEFT>   DVB_Drag('left')                                      "drag and dupliscate selected text with arrow keys
+"drag and dupliscate selected text with arrow keys
+vmap  <expr>  <LEFT>   DVB_Drag('left')                                     
 vmap  <expr>  <RIGHT>  DVB_Drag('right')
 vmap  <expr>  <DOWN>   DVB_Drag('down')
 vmap  <expr>  <UP>     DVB_Drag('up')
