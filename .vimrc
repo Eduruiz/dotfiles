@@ -218,6 +218,25 @@ inoremap kj <esc>
 
 
 
+
+
+"-------------Laravel-Specific--------------"
+nmap <Leader>lr :e app/Http/routes.php<cr>
+nmap <Leader>lm :!php artisan make:
+nmap <Leader><Leader>c :e app/Http/Controllers/<cr>
+nmap <Leader><Leader>m :CtrlP<cr>app/
+nmap <Leader><Leader>v :e resources/views/<cr>
+
+
+
+
+
+"-------------Codeigniter-Specific--------------"
+nmap <Leader>cc :e application/config/config.php<cr>
+
+
+
+
 "-------------Auto-Commands--------------"
 "Automatically source the Vimrc file on save.
 
