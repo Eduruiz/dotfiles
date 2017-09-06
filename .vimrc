@@ -128,7 +128,7 @@ set undodir=$HOME/.vim/undo                                             "Directo
 "/ GitGutter
 "/
 
-"let g:gitgutter_override_sign_column_highlight = 1
+let g:gitgutter_override_sign_column_highlight = 1
 highlight clear SignColumn                                               "Use same color from editor bg on git gutter column
 
 if exists('&signcolumn')                                                 "Vim 7.4.2201 always show the gitgutter padding on the left
@@ -208,7 +208,7 @@ inoremap kj <esc>
 
 
 "easy use of ; as : no need to use shift :)
-nnoremap ; :"
+nnoremap ; :
 
 "quick open e close NerdTREE
 map <F2> :NERDTreeToggle<CR>                                                 
