@@ -23,7 +23,6 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'jordwalke/flatlandia'
 Plugin 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
 Plugin 'http://github.com/sjl/gundo.vim.git'
-Plugin 'dracula/vim'
 Plugin 'tpope/vim-surround'
 Plugin 'kristijanhusak/vim-hybrid-matrial'
 Plugin 'wting/gitsessions.vim'
@@ -32,6 +31,8 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'sirver/ultisnips'
+Plugin 'scrooloose/syntastic'
 
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'L9'

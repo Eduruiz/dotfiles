@@ -1,30 +1,8 @@
-set nocompatible              " be iMproved, required
+set nocompatible                                    "Always use latest version of vim (I think)
 
 so ~/.vim/plugins.vim
 
 let mapleader = ',' 						    	"The default is \, but a comma is much better.
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Powerline config
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" set utf-8
-set enc=utf-8
-syntax enable on
-
-let g:Powerline_symbols = 'fancy'
-set laststatus=2 "always sho powerline
-set encoding=utf-8
-set t_Co=256
-let g:airline_powerline_fonts = 1
-set fillchars+=stl:\ ,stlnc:\
-set termencoding=utf-8
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-" Just show the filename (no path) in the tab
-let g:airline#extensions#tabline#fnamemod = ':t'
-
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -75,28 +53,9 @@ let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|sv
 "NerdTREE show hidden files
 let NERDTreeShowHidden=1
 
-" tell it to use an undo file
-set undofile
-" set a directory to store the undo history
-set undodir=~/.vim/undo
-
 "remap Gundo key
 nnoremap <F5> :GundoToggle<CR>
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent related
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use spaces instead of tabs
-set expandtab
 
-" Be smart when using tabs ;)
-set smarttab
-
-" 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
-set ai "Auto indent
-set si "Smart indent
-set nowrap "no wrap text
 " making clipboard unnamed to work with os clipboard
 set clipboard=unnamed
 
@@ -113,22 +72,16 @@ set clipboard=unnamed
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Remaps
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap ; :
-map <F2> :NERDTreeToggle<CR>
-
-vmap  <expr>  <LEFT>   DVB_Drag('left')
-vmap  <expr>  <RIGHT>  DVB_Drag('right')
-vmap  <expr>  <DOWN>   DVB_Drag('down')
-vmap  <expr>  <UP>     DVB_Drag('up')
-vmap  <expr>  D        DVB_Duplicate()
-
 
 
 "-------------Jeff stuff I'm learning--------------"
 
 set autowriteall                                                        "Automatically write the file when switching buffers.
 set belloff=all                                                         "Disable annoing noise on gvim
-
+set tabstop=8
+set expandtab
+set softtabstop=4
+set shiftwidth=4
 
 
 
@@ -186,6 +139,43 @@ endif
 
 
 
+"/
+"/ syntastic
+"/
+                                                                      "Those are the recommended settings from syntastic
+                                                                      "I don't really know what's going on here, but will
+                                                                      "update as soon as things make more sense to me
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+
+
+"/
+"/ Powerline
+"/
+
+set enc=utf-8
+syntax enable on
+
+let g:Powerline_symbols = 'fancy'
+set laststatus=2 "always sho powerline
+set encoding=utf-8
+set t_Co=256
+let g:airline_powerline_fonts = 1
+set fillchars+=stl:\ ,stlnc:\
+set termencoding=utf-8
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+" Just show the filename (no path) in the tab
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+
+
+
 "-------------Setting gui only configs--------------"
 if has("gui_running")
       if has("gui_macvim")
@@ -216,6 +206,16 @@ nmap <Leader>f :tag<space>
 inoremap jk <esc>
 inoremap kj <esc>
 
+
+nnoremap ; :                                                                 "easy use of ; as : no need to use shift :)
+
+map <F2> :NERDTreeToggle<CR>                                                 "quick open e close NerdTREE
+
+vmap  <expr>  <LEFT>   DVB_Drag('left')                                      "drag and dupliscate selected text with arrow keys
+vmap  <expr>  <RIGHT>  DVB_Drag('right')
+vmap  <expr>  <DOWN>   DVB_Drag('down')
+vmap  <expr>  <UP>     DVB_Drag('up')
+vmap  <expr>  D        DVB_Duplicate()
 
 
 
