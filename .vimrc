@@ -163,7 +163,8 @@ nmap <C-L> <C-W><C-L>
 
 "-------------History and undo stuff--------------"
 set history=1000                                                         " Store a ton of history
-
+set undofile                                                            "Turn on the feature, this make persistend undo after writing file
+set undodir=$HOME/.vim/undo                                             "Directory where the undo files will be stored, this NEED to exist beforehand
 
 
 
@@ -209,6 +210,10 @@ nmap <Leader><space> :nohlsearch<cr>
 "Quickly browse to any tag/symbol in the project.
 "Tip: run ctags -R to regenerated the index.
 nmap <Leader>f :tag<space>
+
+"Easy scape from insert mode
+inoremap jk <esc>
+inoremap kj <esc>
 
 
 
