@@ -34,8 +34,8 @@ Plugin 'sirver/ultisnips' "testing ultisnips
 Plugin 'honza/vim-snippets' "utilsnips snnipets are separated
 Plugin 'scrooloose/syntastic' "syntastic is syntax checker
 Plugin 'Yggdroot/indentLine' "here we create a little line to show matching indentations
-Plugin 'scrooloose/nerdcommenter' "easy comment stuff
-
+Plugin 'tomtom/tcomment_vim'    "easy comment stuff
+Plugin 'brooth/far.vim' "find and replace nicier than default
 
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'L9'
