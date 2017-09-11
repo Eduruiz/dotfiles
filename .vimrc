@@ -50,9 +50,6 @@ set whichwrap+=<,>,h,l
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$'
 
 
-"NerdTREE show hidden files
-let NERDTreeShowHidden=1
-
 "remap Gundo key
 nnoremap <F5> :GundoToggle<CR>
 
@@ -142,19 +139,19 @@ endif
 "/
 "/ syntastic
 "/
-                                                                      "Those are the recommended settings from syntastic
-                                                                      "I don't really know what's going on here, but will
-                                                                      "update as soon as things make more sense to me
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
+
+
+
+let g:syntastic_always_populate_loc_list = 1     "Those are the recommended settings from syntastic
+let g:syntastic_auto_loc_list = 1                "I don't really know what's going on here, but will
+let g:syntastic_check_on_open = 1                "update as soon as things make more sense to me
 let g:syntastic_check_on_wq = 0
 
 
 
 "/
-"/ Powerline
+"/ Airline
 "/
 
 set enc=utf-8
@@ -205,7 +202,8 @@ nmap <Leader>f :tag<space>
 "Easy scape from insert mode
 inoremap jk <esc>
 inoremap kj <esc>
-
+inoremap jj <esc>
+inoremap kk <esc>
 
 "easy use of ; as : no need to use shift :)
 nnoremap ; :
@@ -235,8 +233,9 @@ nmap <Leader><Leader>v :e resources/views/<cr>
 
 
 "-------------Codeigniter-Specific--------------"
-nmap <Leader>cc :e application/config/config.php<cr>
+"nmap <Leader>cc :e application/config/config.php<cr>
 
+nnoremap <expr> <Leader>cc !empty(glob("application/config/config.php")) ? ':e application/config/config.php<cr>' : ':e app/application/config/config.php<cr>'
 
 
 

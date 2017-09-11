@@ -7,32 +7,35 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tpope/vim-fugitive'
-Plugin 'kien/ctrlp.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'altercation/vim-colors-solarized'
+Plugin 'tpope/vim-fugitive' "this is a git wrapper that add some git commands to vim, I kind of don't use it
+Plugin 'kien/ctrlp.vim' "if you know sublime ctrp, this is the closest I can get in vim
+Plugin 'scrooloose/nerdtree' "nerdtree is a good 'gui' for file navigation, really nice
 Plugin 'flazz/vim-colorschemes'
-Plugin 'Kazark/vim-SimpleSmoothScroll'
+Plugin 'Kazark/vim-SimpleSmoothScroll' "smooooth scrolling in vim
+Plugin 'tpope/vim-vinegar.git' "lighter then nerdtree, uses default vim stuff to show files
 Plugin 'mattn/emmet-vim'
-Plugin 'ap/vim-css-color'
+Plugin 'gko/vim-coloresque' "show css colors as colors
+Plugin 'shmargum/vim-sass-colors.git' "extend css color painting to scss variables
 Plugin 'ervandew/supertab'
-Plugin 'atweiden/vim-dragvisuals'
-Plugin 'cakebaker/scss-syntax.vim'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'jordwalke/flatlandia'
-Plugin 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
-Plugin 'http://github.com/sjl/gundo.vim.git'
-Plugin 'tpope/vim-surround'
-Plugin 'kristijanhusak/vim-hybrid-matrial'
+Plugin 'atweiden/vim-dragvisuals' "plugin to select text (visual mode) and easy drag it using arrow keys (remaps needed)
+Plugin 'cakebaker/scss-syntax.vim' "scss syntax for vim
+Plugin 'vim-airline/vim-airline' "airline, show nice infos on the bottom bar (I think you know what airline/powerline is)
+Plugin 'vim-airline/vim-airline-themes' "airline themes
+"Plugin 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'} "powerline for vim, lots of cool infos in the bottom bar
+Plugin 'http://github.com/sjl/gundo.vim.git' "add undo functionalities
+Plugin 'tpope/vim-surround' "make surround things and changin surroundings easyer
+Plugin 'kristijanhusak/vim-hybrid-material' "really good looking theme
 Plugin 'wting/gitsessions.vim'
-Plugin 'terryma/vim-multiple-cursors'
+Plugin 'terryma/vim-multiple-cursors' "multiple cursors, sublime like but more powerful
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
-Plugin 'honza/vim-snippets'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'sirver/ultisnips'
-Plugin 'scrooloose/syntastic'
+Plugin 'airblade/vim-gitgutter' "git tab showing git status of file
+Plugin 'sirver/ultisnips' "testing ultisnips
+Plugin 'honza/vim-snippets' "utilsnips snnipets are separated
+Plugin 'scrooloose/syntastic' "syntastic is syntax checker
+Plugin 'Yggdroot/indentLine' "here we create a little line to show matching indentations
+Plugin 'scrooloose/nerdcommenter' "easy comment stuff
+
 
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'L9'
