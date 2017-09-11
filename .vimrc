@@ -208,6 +208,12 @@ inoremap kk <esc>
 "easy use of ; as : no need to use shift :)
 nnoremap ; :
 
+
+"remap ctrl+s to save, not really 'vim way', but I'm used to
+nmap <c-s> :w<cr>
+imap <c-s> <esc>:w<cr>a
+
+
 "quick open e close NerdTREE
 map <F2> :NERDTreeToggle<CR>                                                 
 
