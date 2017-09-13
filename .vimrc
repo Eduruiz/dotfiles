@@ -79,6 +79,7 @@ set tabstop=8
 set expandtab
 set softtabstop=4
 set shiftwidth=4
+set ff=unix                                                             "Auto-convert line breaking in unix like
 
 
 
