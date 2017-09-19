@@ -13,7 +13,7 @@
     Plugin 'flazz/vim-colorschemes'
     Plugin 'Kazark/vim-SimpleSmoothScroll' "smooooth scrolling in vim
     Plugin 'tpope/vim-vinegar.git' "lighter then nerdtree, uses default vim stuff to show files
-    Plugin 'mattn/emmet-vim'
+    Plugin 'mattn/emmet-vim' "emmet for vim, html/css expander/autocomplete
     Plugin 'gko/vim-coloresque' "show css colors as colors
     Plugin 'shmargum/vim-sass-colors.git' "extend css color painting to scss variables
     Plugin 'ervandew/supertab'
