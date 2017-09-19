@@ -49,7 +49,7 @@ ZSH_THEME="cobalt2"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git z fuck sublime archlinux composer cloudapp common-aliases history node npm sudo)
+plugins=(git z sublime archlinux composer cloudapp common-aliases history node npm sudo)
 
 # User configuration
 
@@ -76,9 +76,6 @@ source $ZSH/oh-my-zsh.sh
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-#thefuck plugins
-eval "$(thefuck --alias)"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
