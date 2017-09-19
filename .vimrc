@@ -80,6 +80,9 @@ set expandtab
 set softtabstop=4
 set shiftwidth=4
 set ff=unix                                                             "Auto-convert line breaking in unix like
+set autoread                                                            "Automatically reread changed files without asking me anything
+set showmatch                                                           "Do not show matching brackets by flickering
+
 
 
 
@@ -128,6 +131,9 @@ set undodir=$HOME/.vim/undo                                             "Directo
 
 let g:gitgutter_override_sign_column_highlight = 1
 highlight clear SignColumn                                               "Use same color from editor bg on git gutter column
+
+
+
 
 if exists('&signcolumn')                                                 "Vim 7.4.2201 always show the gitgutter padding on the left
   set signcolumn=yes
