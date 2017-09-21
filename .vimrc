@@ -144,19 +144,36 @@ endif
 
 
 
+
 "/
-"/ Ultisnips
+"/ vim sessions
 "/
-let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:session_autosave = 'yes'                                            "autosave session on quit
+let g:session_autoload = 'yes'                                            "get rid of dialog asking if you want to load the last session
+let g:session_default_to_last = 1                                         "autoload last saved session
 
 
 
+
+"/
+"/ ultisnips
+"/
+" make YCM compatible with UltiSnips (using supertab)
+let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+let g:SuperTabDefaultCompletionType = '<C-n>'
+
+" better key bindings for UltiSnipsExpandTrigger
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+filetype plugin indent on
 
 "/
 "/ Ctrl+P
 "/
 
-let g:ctrlp_cmd = 'CtrlPMixed'			" search anything (in files, buffers and MRU files at the same time.)
+"let g:ctrlp_cmd = 'CtrlPMixed'			" search anything (in files, buffers and MRU files at the same time.)
 let g:ctrlp_working_path_mode = 'ra'	        " search for nearest ancestor like .git, .hg, and the directory of the current file
 let g:ctrlp_by_filename = 1
 let g:ctrlp_max_height = 10			" maxiumum height of match window
@@ -173,7 +190,8 @@ let g:ctrlp_mruf_max = 250 			" number of recently opened files
 "/
 let g:user_emmet_expandabbr_key='<Tab>'     "expand stuff using tab from emmet (st like)
 autocmd FileType html,css,scss,sass EmmetInstall "configure emmet to run on those expecific filetypes
-
+"let g:user_emmet_next_key = '<Tab>'
+"let g:user_emmet_prev_key = '<S-Tab>'
 
 
 
@@ -289,8 +307,8 @@ nnoremap <expr> <Leader>cc !empty(glob("application/config/config.php")) ? ':e a
 "-------------Auto-Commands--------------"
 "Automatically source the Vimrc file on save.
 
-augroup autosourcing
-	autocmd!
-	autocmd BufWritePost .vimrc source %
-augroup END
+"augroup autosourcing
+"	autocmd!
+"	autocmd BufWritePost .vimrc source %
+"augroup END
 

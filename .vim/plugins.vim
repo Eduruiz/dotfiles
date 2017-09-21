@@ -25,7 +25,8 @@
     Plugin 'http://github.com/sjl/gundo.vim.git' "add undo functionalities
     Plugin 'tpope/vim-surround' "make surround things and changin surroundings easyer
     Plugin 'kristijanhusak/vim-hybrid-material' "really good looking theme
-    Plugin 'wting/gitsessions.vim'
+    Plugin 'xolox/vim-misc'  "this plugin is a requirement to vim-session work
+    Plugin 'xolox/vim-session' "manage vim sessions like sublime text
     Plugin 'terryma/vim-multiple-cursors' "multiple cursors, sublime like but more powerful
     Plugin 'tomtom/tlib_vim'
     Plugin 'garbas/vim-snipmate'
