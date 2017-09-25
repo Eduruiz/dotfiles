@@ -200,10 +200,10 @@ client.background       #ffffff
 # finds out, if available)
 bar {
         #status_command i3status
-        status_command python ~/.config/i3/i3status.py
+        status_command SCRIPT_DIR=~/i3blocks-contrib i3blocks -c ~/.config/i3/i3blocks.conf 
+        # status_command i3blocks -c ~/.config/i3/i3blocks.conf 
         position top
         strip_workspace_numbers yes
-        #status_command i3status --config ~/.config/i3/i3status.conf
         colors {
             background #000000
             statusline #ffffff
@@ -249,6 +249,19 @@ exec --no-startup-id clipster -d
 
 # shortcut to selection widget (primary)
 # bindsym $mod+v exec clipster -sp
+
+# change volume or toggle mute
+bindsym XF86AudioRaiseVolume exec amixer -q -D pulse sset Master 5%+ && pkill -RTMIN+1 i3blocks
+bindsym XF86AudioLowerVolume exec amixer -q -D pulse sset Master 5%- && pkill -RTMIN+1 i3blocks
+bindsym XF86AudioMute exec amixer -q -D pulse sset Master toggle && pkill -RTMIN+1 i3blocks
+
+# configure macbook keys to control brightness
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10
+
+# configure macbook keys to control keyboard backlight
+bindsym XF86KbdBrightnessUp   exec --no-startup-id kbdlight up 5                           && pkill -RTMIN+2 i3blocks
+bindsym XF86KbdBrightnessDown exec --no-startup-id kbdlight down 5                         && pkill -RTMIN+2 i3blocks
 
 # start ssh agent
 exec eval `ssh-agent -s`

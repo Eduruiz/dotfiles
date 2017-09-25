@@ -248,7 +248,7 @@ endif
 
 "-------------Mappings--------------"
 "Make it easy to edit the Vimrc file.
-nmap <Leader>ev :tabedit $MYVIMRC<cr>
+nmap <Leader>ev :e ~/.vimrc<cr>
 nmap <Leader>es :e ~/.vim/snippets/
 
 "Add simple highlight removal.
