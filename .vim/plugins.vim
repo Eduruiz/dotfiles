@@ -15,7 +15,6 @@
     Plugin 'tpope/vim-vinegar.git' "lighter then nerdtree, uses default vim stuff to show files
     Plugin 'mattn/emmet-vim' "emmet for vim, html/css expander/autocomplete
     Plugin 'gko/vim-coloresque' "show css colors as colors
-    Plugin 'shmargum/vim-sass-colors.git' "extend css color painting to scss variables
     Plugin 'ervandew/supertab'
     Plugin 'atweiden/vim-dragvisuals' "plugin to select text (visual mode) and easy drag it using arrow keys (remaps needed)
     Plugin 'cakebaker/scss-syntax.vim' "scss syntax for vim

@@ -47,7 +47,7 @@ set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
 "custom ctrl+p ignore pattern
-let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|ico|git|svn))$'
+let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|jpg|png|gif|ico|git|svn))$'
 
 
 "remap Gundo key
@@ -82,7 +82,7 @@ set shiftwidth=4
 set ff=unix                                                             "Auto-convert line breaking in unix like
 set autoread                                                            "Automatically reread changed files without asking me anything
 set showmatch                                                           "Do not show matching brackets by flickering
-
+let php_htmlInStrings = 1
 
 
 
@@ -190,6 +190,7 @@ let g:ctrlp_mruf_max = 250 			" number of recently opened files
 "/
 let g:user_emmet_expandabbr_key='<Tab>'     "expand stuff using tab from emmet (st like)
 autocmd FileType html,css,scss,sass EmmetInstall "configure emmet to run on those expecific filetypes
+let g:user_emmet_mode='i' "only use emmet on insert mode
 "let g:user_emmet_next_key = '<Tab>'
 "let g:user_emmet_prev_key = '<S-Tab>'
 
