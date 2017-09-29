@@ -118,7 +118,7 @@ nmap <C-L> <C-W><C-L>
 "-------------History and undo stuff--------------"
 set history=1000                                                         " Store a ton of history
 set undofile                                                            "Turn on the feature, this make persistend undo after writing file
-set undodir=$HOME/.vim/undo                                             "Directory where the undo files will be stored, this NEED to exist beforehand
+set undodir=$HOME/.vim/undo//                                            "Directory where the undo files will be stored, this NEED to exist beforehand
 
 
 

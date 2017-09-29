@@ -37,6 +37,9 @@
     Plugin 'tpope/vim-commentary' "easy comment stuff 
     Plugin 'brooth/far.vim' "find and replace nicier than default
     Plugin 'captbaritone/better-indent-support-for-php-with-html' "better html/php indent
+    Plugin 'jiangmiao/auto-pairs' "auto close quotes/brackets and stuff like that
+    
+
 
 " plugin from http://vim-scripts.org/vim/scripts.html
 Plugin 'L9'
