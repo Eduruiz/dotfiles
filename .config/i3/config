@@ -275,3 +275,6 @@ bindsym $mod+Shift+minus move scratchpad
 
 # Show the first scratchpad window
 bindsym $mod+minus scratchpad show
+
+#define some print screen basic function
+bindsym --release $mod+Shift+P exec import  ~/screenshots/$(date +%d-%m-%y--%H:%M:%S).jpg < /dev/null
