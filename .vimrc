@@ -210,7 +210,7 @@ let g:syntastic_check_on_wq = 0
 
 
 "/
-"/ Airline
+"/ airline
 "/
 
 set enc=utf-8
@@ -230,6 +230,14 @@ let g:airline#extensions#tabline#left_alt_sep = '|'
 let g:airline#extensions#tabline#fnamemod = ':t'
 
 
+
+
+
+
+"/
+"/ vim-multiple-cursos
+"/
+let g:multi_cursor_exit_from_insert_mode = 0
 
 
 "-------------Setting gui only configs--------------"
