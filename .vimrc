@@ -73,7 +73,7 @@ set clipboard=unnamed
 
 "-------------Jeff stuff I'm learning--------------"
 
-set autowriteall                                                        "Automatically write the file when switching buffers.
+set hidden                                                              "Automatically write the file when switching buffers.
 set belloff=all                                                         "Disable annoing noise on gvim
 set tabstop=8
 set expandtab
