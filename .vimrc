@@ -73,7 +73,7 @@ set clipboard=unnamed
 
 "-------------Jeff stuff I'm learning--------------"
 
-set autowriteall                                                        "Automatically write the file when switching buffers.
+set hidden                                                              "Automatically write the file when switching buffers.
 set belloff=all                                                         "Disable annoing noise on gvim
 set tabstop=8
 set expandtab
@@ -175,7 +175,7 @@ filetype plugin indent on
 
 "let g:ctrlp_cmd = 'CtrlPMixed'			" search anything (in files, buffers and MRU files at the same time.)
 let g:ctrlp_working_path_mode = 'ra'	        " search for nearest ancestor like .git, .hg, and the directory of the current file
-let g:ctrlp_by_filename = 1
+" let g:ctrlp_by_filename = 1
 let g:ctrlp_max_height = 10			" maxiumum height of match window
 let g:ctrlp_switch_buffer = 'et'		" jump to a file if it's open already
 let g:ctrlp_use_caching = 1			" enable caching
@@ -188,10 +188,10 @@ let g:ctrlp_mruf_max = 250 			" number of recently opened files
 "/
 "/ Emmet vim
 "/
-let g:user_emmet_expandabbr_key='<Tab>'     "expand stuff using tab from emmet (st like)
-autocmd FileType html,css,scss,sass EmmetInstall "configure emmet to run on those expecific filetypes
+" let g:user_emmet_expandabbr_key='<Tab>'     "expand stuff using tab from emmet (st like)
+"autocmd FileType html,css,scss,sass EmmetInstall "configure emmet to run on those expecific filetypes
 let g:user_emmet_mode='i' "only use emmet on insert mode
-"let g:user_emmet_next_key = '<Tab>'
+let g:user_emmet_next_key = '<C-e>'
 "let g:user_emmet_prev_key = '<S-Tab>'
 
 
@@ -298,7 +298,7 @@ vmap  <expr>  <UP>     DVB_Drag('up')
 vmap  <expr>  D        DVB_Duplicate()
 
 "adjust tab to indent on insert mode, needed because tab is remmaped to expand emmet sutff
-imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+" imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 
 "-------------Laravel-Specific--------------"
