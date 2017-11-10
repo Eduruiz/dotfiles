@@ -248,6 +248,12 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 let g:multi_cursor_exit_from_insert_mode = 0
 
 
+"/
+"/ 
+"/
+
+let g:used_javascript_libs = 'jquery,vue'
+
 "-------------Setting gui only configs--------------"
 if has("gui_running")
       if has("gui_macvim")
