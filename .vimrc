@@ -210,6 +210,14 @@ let g:syntastic_check_on_wq = 0
 
 
 "/
+"/ nerdtree
+"/
+let NERDTreeShowHidden=1
+
+
+
+
+"/
 "/ airline
 "/
 
