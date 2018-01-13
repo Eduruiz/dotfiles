@@ -181,6 +181,7 @@ let g:ctrlp_switch_buffer = 'et'		" jump to a file if it's open already
 let g:ctrlp_use_caching = 1			" enable caching
 let g:ctrlp_clear_cache_on_exit=0  		" speed up by not removing clearing cache evertime
 let g:ctrlp_mruf_max = 250 			" number of recently opened files
+let g:ctrlp_show_hidden = 1                     " let ctrlp see the hidden files
 
 
 
@@ -241,10 +242,11 @@ let g:multi_cursor_exit_from_insert_mode = 0
 
 
 "/
-"/ 
+"/ javascript libraries
 "/
 
 let g:used_javascript_libs = 'jquery,vue'
+
 
 "-------------Setting gui only configs--------------"
 if has("gui_running")
