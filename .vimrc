@@ -99,8 +99,10 @@ set guioptions-=r                                                       "remove 
 set guioptions-=L                                                       "remove left-hand scroll bar
 set number                                                              "show line numbers
 set smartindent                                                         "when new line on insert mode, keep indentation
+set cursorline                                                          "highlight current line under cursor
 
 
+set number relativenumber
 
 "-------------Split Management--------------"
 set splitbelow                           								"Make splits default to below...
