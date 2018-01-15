@@ -11,7 +11,7 @@
     Plugin 'kien/ctrlp.vim' "if you know sublime ctrp, this is the closest I can get in vim
     Plugin 'scrooloose/nerdtree' "nerdtree is a good 'gui' for file navigation, really nice
     Plugin 'flazz/vim-colorschemes'
-    Plugin 'Kazark/vim-SimpleSmoothScroll' "smooooth scrolling in vim
+    Plugin 'yuttie/comfortable-motion.vim' "smooooth scrolling in vim
     Plugin 'tpope/vim-vinegar.git' "lighter then nerdtree, uses default vim stuff to show files
     Plugin 'mattn/emmet-vim' "emmet for vim, html/css expander/autocomplete
     Plugin 'gko/vim-coloresque' "show css colors as colors

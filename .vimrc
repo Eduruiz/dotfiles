@@ -213,6 +213,14 @@ let g:syntastic_check_on_wq = 0
 
 
 "/
+"/ nerdtree
+"/
+let NERDTreeShowHidden=1
+
+
+
+
+"/
 "/ airline
 "/
 
@@ -339,3 +347,7 @@ nnoremap <expr> <Leader>cc !empty(glob("application/config/config.php")) ? ':e a
 "	autocmd BufWritePost .vimrc source %
 "augroup END
 
+"automatically jump to last know cursor position on file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+endif
