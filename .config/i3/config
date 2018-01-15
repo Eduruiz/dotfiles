@@ -277,5 +277,8 @@ bindsym $mod+Shift+minus move scratchpad
 # Show the first scratchpad window
 bindsym $mod+minus scratchpad show
 
+# use textpander
+bindsym $mod+t exec ~/bin/texpander.sh
+
 #define some print screen basic function
 bindsym --release $mod+Shift+P exec import  ~/Pictures/$(date +%d-%m-%y--%H:%M:%S).jpg < /dev/null
