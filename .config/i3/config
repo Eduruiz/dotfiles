@@ -13,7 +13,7 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango: Liberation Mono 11
+font pango: Liberation Mono 11, FontAwesome 10
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -100,16 +100,16 @@ bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
 #setting variables
-set $workspace1 "1 editor"
-set $workspace2 "2 terminal"
-set $workspace3 "3 chrome"
-set $workspace4 "4 firefox"
+set $workspace1 "1"
+set $workspace2 "2"
+set $workspace3 "3"
+set $workspace4 "4"
 set $workspace5 "5"
 set $workspace6 "6"
 set $workspace7 "7"
-set $workspace8 "8 chat"
-set $workspace9 "9 mail"
-set $workspace10 "10 mine"
+set $workspace8 "8"
+set $workspace9 "9"
+set $workspace10 "10"
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
@@ -189,13 +189,17 @@ set $urgent-bg-color #e53935
 #  client.urgent           $urgent-bg-color $urgent-bg-color    $text-color $base0F
 
 # class                 border  backgr. text    indicator child_border
-client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
-client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
-client.unfocused        #333333 #222222 #888888 #292d2e   #222222
-client.urgent           #2f343a #900000 #ffffff #900000   #900000
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+# client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
+# client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+# client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+# client.urgent           #2f343a #900000 #ffffff #900000   #900000
+# client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 
-client.background       #ffffff
+# client.background       #ffffff
+
+
+client.background #3f4551
+client.focused #333333 #222222 #ffffff
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
