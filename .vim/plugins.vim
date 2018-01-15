@@ -42,6 +42,7 @@
     Plugin 'pangloss/vim-javascript' "better javascript with vim
     Plugin 'jelera/vim-javascript-syntax' "much better javascript with vim :)
     Plugin 'xsbeats/vim-blade' "laravel blade syntax from vim
+    Plugin 'mxw/vim-jsx' "better react syntax for vim
 
 
 
