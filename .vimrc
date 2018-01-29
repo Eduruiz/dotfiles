@@ -244,6 +244,14 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 
 
 
+"/
+"/ vim-jsx (react syntax for vim)
+"/
+let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+
+
+
+
 
 "/
 "/ vim-multiple-cursos
@@ -255,7 +263,7 @@ let g:multi_cursor_exit_from_insert_mode = 0
 "/ javascript libraries
 "/
 
-let g:used_javascript_libs = 'jquery,vue'
+let g:used_javascript_libs = 'jquery,vue,react'
 
 
 "-------------Setting gui only configs--------------"
