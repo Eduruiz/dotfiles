@@ -314,7 +314,7 @@ vmap  <expr>  D        DVB_Duplicate()
 
 
 "-------------Laravel-Specific--------------"
-nmap <Leader>lr :e app/Http/routes.php<cr>
+nmap <Leader>lr :e routes/web.php<cr>
 nmap <Leader>lm :!php artisan make:
 nmap <Leader><Leader>c :e app/Http/Controllers/<cr>
 nmap <Leader><Leader>m :CtrlP<cr>app/
