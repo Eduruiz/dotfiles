@@ -100,6 +100,7 @@ set guioptions-=L                                                       "remove 
 set number                                                              "show line numbers
 set smartindent                                                         "when new line on insert mode, keep indentation
 set cursorline                                                          "highlight current line under cursor
+" set termguicolors
 
 
 set number relativenumber
