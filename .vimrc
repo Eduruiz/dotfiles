@@ -299,6 +299,9 @@ inoremap kj <esc>
 inoremap jj <esc>
 inoremap kk <esc>
 
+"Easy scape from terminal mode
+tnoremap <esc> <C-\><C-N>
+
 "easy use of ; as : no need to use shift :)
 nnoremap ; :
 
