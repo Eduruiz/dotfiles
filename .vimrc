@@ -91,8 +91,8 @@ let php_htmlInStrings = 1
 let g:enable_italic_font = 1                                            "Enable italic fonts on comments
 "let g:enable_bold_font = 1                                             "Enable some fonts to be bold
 set background=dark
-colorscheme hybrid_material
-let g:airline_theme = "hybrid"                                          "Enable hibryd theme on airline 
+colorscheme OceanicNext
+let g:airline_theme = "oceanicnext"                                          "Enable hibryd theme on airline 
 set guioptions-=m                                                       "remove menu bar
 set guioptions-=T                                                       "remove toolbar
 set guioptions-=r                                                       "remove right-hand scroll bar
@@ -100,7 +100,10 @@ set guioptions-=L                                                       "remove 
 set number                                                              "show line numbers
 set smartindent                                                         "when new line on insert mode, keep indentation
 set cursorline                                                          "highlight current line under cursor
-" set termguicolors
+set termguicolors
+autocmd ColorScheme * highlight clear LineNr | highlight clear SignColumn "Use same color from editor bg on git gutter column
+
+
 
 
 set number relativenumber
@@ -132,8 +135,8 @@ set undodir=$HOME/.vim/undo//                                            "Direct
 "/ GitGutter
 "/
 
-let g:gitgutter_override_sign_column_highlight = 1
-highlight clear SignColumn                                               "Use same color from editor bg on git gutter column
+" let g:gitgutter_override_sign_column_highlight = 0
+" highlight clear SignColumn                                               "Use same color from editor bg on git gutter column
 
 
 
@@ -152,7 +155,7 @@ endif
 "/ vim sessions
 "/
 let g:session_autosave = 'yes'                                            "autosave session on quit
-let g:session_autoload = 'yes'                                            "get rid of dialog asking if you want to load the last session
+let g:session_autoload = 'no'                                            "get rid of dialog asking if you want to load the last session
 let g:session_default_to_last = 1                                         "autoload last saved session
 
 
@@ -345,8 +348,13 @@ nnoremap <expr> <Leader>cr !empty(glob("application/config/routes.php")) ? ':e a
 
 
 "-------------Auto-Commands--------------"
-"Automatically source the Vimrc file on save.
-autocmd! bufwritepost ~/.vimrc source ~/.vimrc
+"automatically source the vimrc file on save.
+"ok, let's break this in parts - first pip is sourcing vimrc,
+"seconde one is clearing line numbers, so it get the same color as the bg
+"third one is doing the same, but with SignColumn (used by gitgutter)
+"fourth one is refreshing airline, so the tabs don't loose it's colors
+autocmd! bufwritepost ~/.vimrc source ~/.vimrc | highlight clear LineNr | AirlineRefresh | highlight clear SignColumn
+
 
 "automatically jump to last know cursor position on file
 if v:version >= 700
