@@ -334,9 +334,10 @@ nmap <Leader><Leader>v :e resources/views/<cr>
 
 
 "-------------Codeigniter-Specific--------------"
-"nmap <Leader>cc :e application/config/config.php<cr>
-
+"open config.php file in application/config or in app/application/config
 nnoremap <expr> <Leader>cc !empty(glob("application/config/config.php")) ? ':e application/config/config.php<cr>' : ':e app/application/config/config.php<cr>'
+"open routes.php file in application/config or in app/application/config
+nnoremap <expr> <Leader>cr !empty(glob("application/config/routes.php")) ? ':e application/config/routes.php<cr>' : ':e app/application/config/routes.php<cr>'
 
 
 
