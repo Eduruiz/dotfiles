@@ -346,11 +346,7 @@ nnoremap <expr> <Leader>cr !empty(glob("application/config/routes.php")) ? ':e a
 
 "-------------Auto-Commands--------------"
 "Automatically source the Vimrc file on save.
-
-"augroup autosourcing
-"	autocmd!
-"	autocmd BufWritePost .vimrc source %
-"augroup END
+autocmd! bufwritepost ~/.vimrc source ~/.vimrc
 
 "automatically jump to last know cursor position on file
 if v:version >= 700
