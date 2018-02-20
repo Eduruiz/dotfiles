@@ -283,6 +283,15 @@ endif
 
 
 
+"-------------Setting nvim only configs--------------"
+if has('nvim')
+    " Make replace visual on nvim
+    set inccommand=nosplit
+endif
+
+
+
+
 
 "-------------Mappings--------------"
 "Make it easy to edit the Vimrc file.
@@ -323,6 +332,10 @@ vmap  <expr>  <RIGHT>  DVB_Drag('right')
 vmap  <expr>  <DOWN>   DVB_Drag('down')
 vmap  <expr>  <UP>     DVB_Drag('up')
 vmap  <expr>  D        DVB_Duplicate()
+
+
+" Toggle spellcheck on and of with key shortcut
+:map <F3> :setlocal spell! spelllang=en_us<CR>
 
 "adjust tab to indent on insert mode, needed because tab is remmaped to expand emmet sutff
 " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
