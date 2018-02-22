@@ -19,17 +19,17 @@
     Plugin 'vim-airline/vim-airline'                              " airline, show nice infos on the bottom bar (I think you know what airline/powerline is)
     Plugin 'vim-airline/vim-airline-themes'                       " airline themes
     Plugin 'http://github.com/sjl/gundo.vim.git'                  " add undo functionalities
-    Plugin 'tpope/vim-surround'                                   " make surround things and changin surroundings easyer
+    Plugin 'tpope/vim-surround'                                   " make surround things and changing surroundings easier
     Plugin 'kristijanhusak/vim-hybrid-material'                   " really good looking theme
     Plugin 'xolox/vim-misc'                                       " this plugin is a requirement to vim-session work
     Plugin 'xolox/vim-session'                                    " manage vim sessions like sublime text
     Plugin 'terryma/vim-multiple-cursors'                         " multiple cursors, sublime like but more powerful
-    Plugin 'MarcWeber/vim-addon-mw-utils'                         " vim snipmate deppends on this
-    Plugin 'tomtom/tlib_vim'                                      " vim snipmate deppends on this too
-    Plugin 'garbas/vim-snipmate'                                  " textual snippets and tab jumpings
+    Plugin 'MarcWeber/vim-addon-mw-utils'                         " vim snipmate depends on this
+    Plugin 'tomtom/tlib_vim'                                      " vim snipmate depends on this too
+    Plugin 'garbas/vim-snipmate'                                  " textual snippets and tab jumping
     Plugin 'airblade/vim-gitgutter'                               " git tab showing git status of file
     Plugin 'sirver/ultisnips'                                     " testing ultisnips
-    Plugin 'honza/vim-snippets'                                   " utilsnips snnipets are separated
+    Plugin 'honza/vim-snippets'                                   " utilsnips snippets are separated
     Plugin 'scrooloose/syntastic'                                 " syntastic is syntax checker
     Plugin 'Yggdroot/indentLine'                                  " here we create a little line to show matching indentations
     Plugin 'tpope/vim-commentary'                                 " easy comment stuff
@@ -44,6 +44,7 @@
     Plugin 'mxw/vim-jsx'                                          " better react syntax for vim
     Plugin 'craigemery/vim-autotag'                               " auto generate ctags based on project 'tags' file
     Plugin 'mhartington/oceanic-next'                             " another great theme
+    Plugin 'johngrib/vim-game-code-break'                         " code break game, just for the lols
 
 
 " plugin from http://vim-scripts.org/vim/scripts.html

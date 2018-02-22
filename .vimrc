@@ -135,8 +135,8 @@ set undodir=$HOME/.vim/undo//                                            "Direct
 "/ GitGutter
 "/
 
-" let g:gitgutter_override_sign_column_highlight = 0
-" highlight clear SignColumn                                               "Use same color from editor bg on git gutter column
+let g:gitgutter_override_sign_column_highlight = 0
+highlight clear SignColumn                                               "Use same color from editor bg on git gutter column
 
 
 
