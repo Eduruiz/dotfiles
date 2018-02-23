@@ -45,6 +45,9 @@
     Plugin 'craigemery/vim-autotag'                               " auto generate ctags based on project 'tags' file
     Plugin 'mhartington/oceanic-next'                             " another great theme
     Plugin 'johngrib/vim-game-code-break'                         " code break game, just for the lols
+    Plugin 'mileszs/ack.vim'                                      " ack vim, a grep better then grep
+    Plugin 'junegunn/fzf'                                         " the base fzf plugin
+    Plugin 'junegunn/fzf.vim'                                     " vim fzf integration, good fuzzyfinder tool
 
 
 " plugin from http://vim-scripts.org/vim/scripts.html

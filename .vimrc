@@ -189,6 +189,24 @@ let g:ctrlp_clear_cache_on_exit=0  		" speed up by not removing clearing cache e
 let g:ctrlp_mruf_max = 250 			" number of recently opened files
 let g:ctrlp_show_hidden = 1                     " let ctrlp see the hidden files
 
+"/
+"/ fzf
+"/
+" Tell ack.vim to use ag (the Silver Searcher) instead
+nmap <Leader>b :Buffers<CR>
+nmap <Leader>f :Files<CR>
+nmap <Leader>t :Tags<CR>
+
+
+
+
+"/
+"/ AckVim
+"/
+" Tell ack.vim to use ag (the Silver Searcher) instead
+let g:ackprg = 'ag --vimgrep'
+
+
 
 
 
@@ -294,8 +312,9 @@ endif
 
 
 "-------------Mappings--------------"
-"Make it easy to edit the Vimrc file.
+"Make it easy to edit the vim file.
 nmap <Leader>ev :e ~/.vimrc<cr>
+nmap <Leader>ep :e ~/.vim/plugins.vim<cr>
 nmap <Leader>es :e ~/.vim/snippets/
 
 "Add simple highlight removal.
@@ -303,7 +322,7 @@ nmap <Leader><space> :nohlsearch<cr>
 
 "Quickly browse to any tag/symbol in the project.
 "Tip: run ctags -R to regenerated the index.
-nmap <Leader>f :tag<space>
+" nmap <Leader>f :tag<space>
 
 "Easy scape from insert mode
 inoremap jk <esc>
