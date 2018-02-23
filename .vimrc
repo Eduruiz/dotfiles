@@ -56,15 +56,6 @@ nnoremap <F5> :GundoToggle<CR>
 " making clipboard unnamed to work with os clipboard
 set clipboard=unnamed
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Syntastic plugin base config
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"let g:syntastic_quiet_messages = { "type": "style" }
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Remaps
@@ -229,6 +220,19 @@ let g:syntastic_always_populate_loc_list = 1     "Those are the recommended sett
 let g:syntastic_auto_loc_list = 1                "I don't really know what's going on here, but will
 let g:syntastic_check_on_open = 1                "update as soon as things make more sense to me
 let g:syntastic_check_on_wq = 0
+
+
+
+
+
+
+"/
+"/ ALE - syntax linting assync
+"/
+let g:ale_sign_warning = '▲'
+let g:ale_sign_error   = '✗'
+highlight link ALEWarningSign String
+highlight link ALEErrorSign Title
 
 
 

@@ -30,7 +30,7 @@
     Plugin 'airblade/vim-gitgutter'                               " git tab showing git status of file
     Plugin 'sirver/ultisnips'                                     " testing ultisnips
     Plugin 'honza/vim-snippets'                                   " utilsnips snippets are separated
-    Plugin 'scrooloose/syntastic'                                 " syntastic is syntax checker
+    Plugin 'w0rp/ale'                                             " same as syntastic, a syntax checker but assync
     Plugin 'Yggdroot/indentLine'                                  " here we create a little line to show matching indentations
     Plugin 'tpope/vim-commentary'                                 " easy comment stuff
     Plugin 'brooth/far.vim'                                       " find and replace nicier than default
