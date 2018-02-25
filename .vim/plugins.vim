@@ -1,3 +1,10 @@
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source ~/.vimrc
+endif
+
+
 call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-fugitive'                                   " this is a git wrapper that add some git commands to vim, I kind of don't use it
     Plug 'kien/ctrlp.vim'                                       " if you know sublime ctrp, this is the closest I can get in vim
