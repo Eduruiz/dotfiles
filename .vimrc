@@ -2,14 +2,14 @@ set nocompatible                                    "Always use latest version o
 
 so ~/.vim/plugins.vim
 
-let mapleader = ',' 						    	"The default is \, but a comma is much better.
+let mapleader = ' ' 						    	"The default is \, but a comma is much better.
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Turn on the WiLd menu
+" Turn on the wild menu
 set wildmenu
 
 " Ignore compiled files
@@ -39,7 +39,7 @@ set magic
 " Show matching brackets when text indicator is over them
 set showmatch
 
-"no textwrap
+"no text wrap
 set nowrap
 
 " Configure backspace so it acts as it should act
@@ -53,7 +53,7 @@ let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|jpg|png|gi
 "remap Gundo key
 nnoremap <F5> :GundoToggle<CR>
 
-" making clipboard unnamed to work with os clipboard
+" making clipboard unnamed to work with OS clipboard
 set clipboard=unnamed
 
 
@@ -65,14 +65,14 @@ set clipboard=unnamed
 "-------------Jeff stuff I'm learning--------------"
 
 set hidden                                                              "Automatically write the file when switching buffers.
-set belloff=all                                                         "Disable annoing noise on gvim
+set belloff=all                                                         "Disable annoying noise on gvim
 set tabstop=8
 set expandtab
 set softtabstop=4
 set shiftwidth=4
 set ff=unix                                                             "Auto-convert line breaking in unix like
 set autoread                                                            "Automatically reread changed files without asking me anything
-set showmatch                                                           "Do not show matching brackets by flickering
+set noshowmatch                                                           "Do not show matching brackets by flickering
 let php_htmlInStrings = 1
 
 
@@ -83,7 +83,7 @@ let g:enable_italic_font = 1                                            "Enable 
 "let g:enable_bold_font = 1                                             "Enable some fonts to be bold
 set background=dark
 colorscheme OceanicNext
-let g:airline_theme = "oceanicnext"                                          "Enable hibryd theme on airline 
+let g:airline_theme = "oceanicnext"                                     "Enable hybrid theme on airline 
 set guioptions-=m                                                       "remove menu bar
 set guioptions-=T                                                       "remove toolbar
 set guioptions-=r                                                       "remove right-hand scroll bar
@@ -100,8 +100,8 @@ autocmd ColorScheme * highlight clear LineNr | highlight clear SignColumn "Use s
 set number relativenumber
 
 "-------------Split Management--------------"
-set splitbelow                           								"Make splits default to below...
-set splitright							                            	"And to the right. This feels more natural.
+set splitbelow                                                           " Make splits default to below...
+set splitright                                                           " And to the right. This feels more natural.
 
 "We'll set simpler mappings to switch between splits.
 nmap <C-J> <C-W><C-J>
@@ -114,7 +114,7 @@ nmap <C-L> <C-W><C-L>
 
 "-------------History and undo stuff--------------"
 set history=1000                                                         " Store a ton of history
-set undofile                                                            "Turn on the feature, this make persistend undo after writing file
+set undofile                                                            "Turn on the feature, this make persistent undo after writing file
 set undodir=$HOME/.vim/undo//                                            "Directory where the undo files will be stored, this NEED to exist beforehand
 
 
@@ -145,9 +145,9 @@ endif
 "/
 "/ vim sessions
 "/
-let g:session_autosave = 'yes'                                            "autosave session on quit
+let g:session_autosave = 'yes'                                           "autosave session on quit
 let g:session_autoload = 'no'                                            "get rid of dialog asking if you want to load the last session
-let g:session_default_to_last = 1                                         "autoload last saved session
+let g:session_default_to_last = 1                                        "autoload last saved session
 
 
 
@@ -173,10 +173,10 @@ filetype plugin indent on
 "let g:ctrlp_cmd = 'CtrlPMixed'			" search anything (in files, buffers and MRU files at the same time.)
 let g:ctrlp_working_path_mode = 'ra'	        " search for nearest ancestor like .git, .hg, and the directory of the current file
 " let g:ctrlp_by_filename = 1
-let g:ctrlp_max_height = 10			" maxiumum height of match window
+let g:ctrlp_max_height = 10			" maximum height of match window
 let g:ctrlp_switch_buffer = 'et'		" jump to a file if it's open already
 let g:ctrlp_use_caching = 1			" enable caching
-let g:ctrlp_clear_cache_on_exit=0  		" speed up by not removing clearing cache evertime
+let g:ctrlp_clear_cache_on_exit=0  		" speed up by not removing clearing cache every time
 let g:ctrlp_mruf_max = 250 			" number of recently opened files
 let g:ctrlp_show_hidden = 1                     " let ctrlp see the hidden files
 
@@ -205,7 +205,7 @@ let g:ackprg = 'ag --vimgrep'
 "/ Emmet vim
 "/
 " let g:user_emmet_expandabbr_key='<Tab>'     "expand stuff using tab from emmet (st like)
-"autocmd FileType html,css,scss,sass EmmetInstall "configure emmet to run on those expecific filetypes
+"autocmd FileType html,css,scss,sass EmmetInstall "configure emmet to run on those specific file types
 let g:user_emmet_mode='i' "only use emmet on insert mode
 let g:user_emmet_next_key = '<C-e>'
 "let g:user_emmet_prev_key = '<S-Tab>'
@@ -227,7 +227,7 @@ let g:syntastic_check_on_wq = 0
 
 
 "/
-"/ ALE - syntax linting assync
+"/ ALE - syntax linting async
 "/
 let g:ale_sign_warning = '▲'
 let g:ale_sign_error   = '✗'
@@ -254,7 +254,7 @@ set enc=utf-8
 syntax enable on
 
 let g:Powerline_symbols = 'fancy'
-set laststatus=2 "always sho powerline
+set laststatus=2 "always show powerline
 set encoding=utf-8
 set t_Co=256
 let g:airline_powerline_fonts = 1
@@ -280,7 +280,7 @@ let g:jsx_ext_required = 0 " Allow JSX in normal JS files
 
 
 "/
-"/ vim-multiple-cursos
+"/ vim-multiple-cursor
 "/
 let g:multi_cursor_exit_from_insert_mode = 0
 
@@ -295,7 +295,7 @@ let g:used_javascript_libs = 'jquery,vue,react'
 "-------------Setting gui only configs--------------"
 if has("gui_running")
       if has("gui_macvim")
-        set fu                                                            "enter fulscreen
+        set fu                                                            "enter full screen
         set guifont=Fira\ Code:h14                                        "setting a nice fonts on gui vim on mac
       else
         set guifont=Fira\ Code\ 13                                        "setting a nice fonts on gui vim on linux
@@ -322,7 +322,7 @@ nmap <Leader>ep :e ~/.vim/plugins.vim<cr>
 nmap <Leader>es :e ~/.vim/snippets/
 
 "Add simple highlight removal.
-nmap <Leader><space> :nohlsearch<cr>
+nmap <Leader><Leader> :nohlsearch<cr>
 
 "Quickly browse to any tag/symbol in the project.
 "Tip: run ctags -R to regenerated the index.
@@ -346,10 +346,13 @@ nmap <c-s> :w<cr>
 imap <c-s> <esc>:w<cr>a
 
 
-"quick open e close NerdTREE
+"copy to linux clipboard
+nnoremap YY "+Y
+
+"quick open and close NerdTREE
 map <F2> :NERDTreeToggle<CR>                                                 
 
-"drag and dupliscate selected text with arrow keys
+"drag and duplicate selected text with arrow keys
 vmap  <expr>  <LEFT>   DVB_Drag('left')                                     
 vmap  <expr>  <RIGHT>  DVB_Drag('right')
 vmap  <expr>  <DOWN>   DVB_Drag('down')
@@ -357,10 +360,12 @@ vmap  <expr>  <UP>     DVB_Drag('up')
 vmap  <expr>  D        DVB_Duplicate()
 
 
-" Toggle spellcheck on and of with key shortcut
-:map <F3> :setlocal spell! spelllang=en_us<CR>
+" Toggle spell check on and of with key shortcut
+map <F3> :setlocal spell! spelllang=en_us<CR>
+nmap <Leader>z 1z=
+autocmd FileType gitcommit setlocal spell
 
-"adjust tab to indent on insert mode, needed because tab is remmaped to expand emmet sutff
+"adjust tab to indent on insert mode, needed because tab is remapped to expand emmet stuff
 " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 
@@ -386,7 +391,7 @@ nnoremap <expr> <Leader>cr !empty(glob("application/config/routes.php")) ? ':e a
 "-------------Auto-Commands--------------"
 "automatically source the vimrc file on save.
 "ok, let's break this in parts - first pip is sourcing vimrc,
-"seconde one is clearing line numbers, so it get the same color as the bg
+"second one is clearing line numbers, so it get the same color as the bg
 "third one is doing the same, but with SignColumn (used by gitgutter)
 "fourth one is refreshing airline, so the tabs don't loose it's colors
 autocmd! bufwritepost ~/.vimrc source ~/.vimrc | highlight clear LineNr | AirlineRefresh | highlight clear SignColumn
