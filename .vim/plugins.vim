@@ -31,7 +31,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'honza/vim-snippets'                                   " utilsnips snippets are separated
     Plug 'w0rp/ale'                                             " same as syntastic, a syntax checker but assync
     Plug 'Yggdroot/indentLine'                                  " here we create a little line to show matching indentations
-    Plug 'tpope/vim-commentary'                                 " easy comment stuff
+    Plug 'tomtom/tcomment_vim'                                  " easy comment stuff
     Plug 'brooth/far.vim'                                       " find and replace nicier than default
     Plug 'godlygeek/tabular'                                    " quickly align text on tabular formats
     Plug 'captbaritone/better-indent-support-for-php-with-html' " better html/php indent
