@@ -10,12 +10,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'kien/ctrlp.vim'                                       " if you know sublime ctrp, this is the closest I can get in vim
     Plug 'scrooloose/nerdtree'                                  " nerdtree is a good 'gui' for file navigation, really nice
     Plug 'flazz/vim-colorschemes'
-    Plug 'tpope/vim-vinegar'                                " lighter then nerdtree, uses default vim stuff to show files
+    Plug 'tpope/vim-vinegar'                                    " lighter then nerdtree, uses default vim stuff to show files
     Plug 'mattn/emmet-vim'                                      " emmet for vim, html/css expander/autocomplete
     Plug 'gko/vim-coloresque'                                   " show css colors as colors
     Plug 'ervandew/supertab'
     Plug 'atweiden/vim-dragvisuals'                             " plugin to select text (visual mode) and easy drag it using arrow keys (remaps needed)
-    Plug 'cakebaker/scss-syntax.vim'                            " scss syntax for vim
     Plug 'vim-airline/vim-airline'                              " airline, show nice infos on the bottom bar (I think you know what airline/powerline is)
     Plug 'vim-airline/vim-airline-themes'                       " airline themes
     Plug 'http://github.com/sjl/gundo.vim.git'                  " add undo functionalities
@@ -37,17 +36,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'godlygeek/tabular'                                    " quickly align text on tabular formats
     Plug 'captbaritone/better-indent-support-for-php-with-html' " better html/php indent
     Plug 'jiangmiao/auto-pairs'                                 " auto close quotes/brackets and stuff like that
-    Plug 'posva/vim-vue'                                        " better vue with vim
-    Plug 'pangloss/vim-javascript'                              " better javascript with vim
-    Plug 'jelera/vim-javascript-syntax'                         " much better javascript with vim :)
-    Plug 'xsbeats/vim-blade'                                    " laravel blade syntax from vim
-    Plug 'mxw/vim-jsx'                                          " better react syntax for vim
     Plug 'craigemery/vim-autotag'                               " auto generate ctags based on project 'tags' file
     Plug 'mhartington/oceanic-next'                             " another great theme
     Plug 'johngrib/vim-game-code-break'                         " code break game, just for the lols
     Plug 'mileszs/ack.vim'                                      " ack vim, a grep better then grep
     Plug 'junegunn/fzf'                                         " the base fzf plugin
     Plug 'junegunn/fzf.vim'                                     " vim fzf integration, good fuzzyfinder tool
+    Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
 
 
     " The sparkup vim script is in a subdirectory of this repo called vim.
