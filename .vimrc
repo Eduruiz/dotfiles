@@ -143,6 +143,28 @@ endif
 
 
 "/
+"/ IndentLine
+"/
+let g:indentLine_concealcursor = 0
+
+
+
+
+
+"/
+"/ IndentLine
+"/
+
+" for e in emoji#list()
+"   call append(line('$'), printf('%s (%s)', emoji#for(e), e))
+" endfor
+set completefunc=emoji#complete
+
+
+
+
+
+"/
 "/ vim sessions
 "/
 let g:session_autosave = 'yes'                                           "autosave session on quit
@@ -153,18 +175,27 @@ let g:session_default_to_last = 1                                        "autolo
 
 
 "/
+"/ Deoplete
+"/
+let g:deoplete#enable_at_startup = 1
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+
+"/
 "/ ultisnips
 "/
 " make YCM compatible with UltiSnips (using supertab)
-let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-let g:SuperTabDefaultCompletionType = '<C-n>'
-
-" better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
-filetype plugin indent on
+" let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+" let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+" let g:SuperTabDefaultCompletionType = '<C-n>'
+"
+" " better key bindings for UltiSnipsExpandTrigger
+" let g:UltiSnipsExpandTrigger = "<tab>"
+" let g:UltiSnipsJumpForwardTrigger = "<tab>"
+" let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+" filetype plugin indent on
 
 "/
 "/ Ctrl+P
@@ -320,6 +351,7 @@ endif
 nmap <Leader>ev :e ~/.vimrc<cr>
 nmap <Leader>ep :e ~/.vim/plugins.vim<cr>
 nmap <Leader>es :e ~/.vim/snippets/
+nmap <Leader>er :so ~/.vimrc<cr>
 
 "Add simple highlight removal.
 nmap <Leader><Leader> :nohlsearch<cr>

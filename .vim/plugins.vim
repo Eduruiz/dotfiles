@@ -13,7 +13,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-vinegar'                                    " lighter then nerdtree, uses default vim stuff to show files
     Plug 'mattn/emmet-vim'                                      " emmet for vim, html/css expander/autocomplete
     Plug 'gko/vim-coloresque'                                   " show css colors as colors
-    Plug 'ervandew/supertab'
+    "Plug 'ervandew/supertab'
     Plug 'atweiden/vim-dragvisuals'                             " plugin to select text (visual mode) and easy drag it using arrow keys (remaps needed)
     Plug 'vim-airline/vim-airline'                              " airline, show nice infos on the bottom bar (I think you know what airline/powerline is)
     Plug 'vim-airline/vim-airline-themes'                       " airline themes
@@ -42,8 +42,20 @@ call plug#begin('~/.vim/plugged')
     Plug 'mileszs/ack.vim'                                      " ack vim, a grep better then grep
     Plug 'junegunn/fzf'                                         " the base fzf plugin
     Plug 'junegunn/fzf.vim'                                     " vim fzf integration, good fuzzyfinder tool
-    Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
-
+    "Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
+    Plug 'StanAngeloff/php.vim'
+    Plug '2072/php-indenting-for-vim'
+    Plug 'othree/html5.vim'                                    " better html5 syntax
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    else
+        Plug 'Shougo/deoplete.nvim'
+        Plug 'roxma/nvim-yarp'
+        Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+    Plug 'junegunn/vim-emoji'                                   "emoji for vim 
+    Plug 'padawan-php/deoplete-padawan', { 'do': 'composer install' }
+    Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 
     " The sparkup vim script is in a subdirectory of this repo called vim.
     " Pass the path to set the runtimepath properly.
