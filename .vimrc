@@ -82,7 +82,9 @@ let php_htmlInStrings = 1
 let g:enable_italic_font = 1                                            "Enable italic fonts on comments
 "let g:enable_bold_font = 1                                             "Enable some fonts to be bold
 set background=dark
+"vim cool colorschemes
 colorscheme OceanicNext
+" colorscheme nova
 let g:airline_theme = "oceanicnext"                                     "Enable hybrid theme on airline 
 set guioptions-=m                                                       "remove menu bar
 set guioptions-=T                                                       "remove toolbar
@@ -93,6 +95,8 @@ set smartindent                                                         "when ne
 set cursorline                                                          "highlight current line under cursor
 set termguicolors
 autocmd ColorScheme * highlight clear LineNr | highlight clear SignColumn "Use same color from editor bg on git gutter column
+set list listchars=tab:\ \ ,trail:·                                     " Display tabs and trailing spaces visually
+
 
 
 
@@ -117,6 +121,18 @@ set history=1000                                                         " Store
 set undofile                                                            "Turn on the feature, this make persistent undo after writing file
 set undodir=$HOME/.vim/undo//                                            "Directory where the undo files will be stored, this NEED to exist beforehand
 
+
+
+
+" Make it obvious where 120 characters is {{{
+" Lifted from StackOverflow user Jeremy W. Sherman
+" http://stackoverflow.com/a/3765575/2250435
+if exists('+colorcolumn')
+  set textwidth=120
+  set colorcolumn=+1
+else
+  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>120v.\+', -1)
+endif " }}}
 
 
 
@@ -168,7 +184,7 @@ set completefunc=emoji#complete
 "/ vim sessions
 "/
 let g:session_autosave = 'yes'                                           "autosave session on quit
-let g:session_autoload = 'no'                                            "get rid of dialog asking if you want to load the last session
+let g:session_autoload = 'yes'                                            "get rid of dialog asking if you want to load the last session
 let g:session_default_to_last = 1                                        "autoload last saved session
 
 
@@ -177,10 +193,38 @@ let g:session_default_to_last = 1                                        "autolo
 "/
 "/ Deoplete
 "/
-let g:deoplete#enable_at_startup = 1
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+" let g:deoplete#enable_at_startup = 1
+" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+" autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif:q
+
+
+
+
+"/
+"/  nvim completion manager
+"/
+" don't give |ins-completion-menu| messages.  For example,
+" 'xxx completion (yyy)', 'match 1 of 2', 'The only match'
+set shortmess+=c
+" When the <Enter> key is pressed while the popup menu is visible, it only hides the menu.
+" this mapping hide the menu and also start a new line.
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+" Use <TAB> to select the popup menu:
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+
+
+
+
+
+"/
+"/ Neosnippet
+"/
+let g:neosnippet#enable_completed_snippet = 1
+
+
 
 
 "/
@@ -236,10 +280,17 @@ let g:ackprg = 'ag --vimgrep'
 "/ Emmet vim
 "/
 " let g:user_emmet_expandabbr_key='<Tab>'     "expand stuff using tab from emmet (st like)
-"autocmd FileType html,css,scss,sass EmmetInstall "configure emmet to run on those specific file types
+let g:user_emmet_install_global = 0
+"configure emmet to run on those specific file types
+autocmd FileType html,php,css,scss,sass EmmetInstall
+let g:user_emmet_expandabbr_key='<C-e>'
+" imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 let g:user_emmet_mode='i' "only use emmet on insert mode
-let g:user_emmet_next_key = '<C-e>'
-"let g:user_emmet_prev_key = '<S-Tab>'
+
+
+
+let g:user_emmet_next_key = '<C-w>'
+" let g:user_emmet_prev_key = ''
 
 
 
@@ -264,7 +315,6 @@ let g:ale_sign_warning = '▲'
 let g:ale_sign_error   = '✗'
 highlight link ALEWarningSign String
 highlight link ALEErrorSign Title
-
 
 
 
