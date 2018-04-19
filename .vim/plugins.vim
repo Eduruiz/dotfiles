@@ -25,8 +25,8 @@ call plug#begin('~/.vim/plugged')
     " Plug 'tomtom/tlib_vim'                                      " vim snipmate depends on this too
     " Plug 'garbas/vim-snipmate'                                  " textual snippets and tab jumping
     Plug 'airblade/vim-gitgutter'                               " git tab showing git status of file
-    " Plug 'sirver/ultisnips'                                     " testing ultisnips
-    " Plug 'honza/vim-snippets'                                   " utilsnips snippets are separated
+    Plug 'sirver/ultisnips'                                     " testing ultisnips
+    Plug 'honza/vim-snippets'                                   " utilsnips snippets are separated
     Plug 'w0rp/ale'                                             " same as syntastic, a syntax checker but assync
     Plug 'Yggdroot/indentLine'                                  " here we create a little line to show matching indentations
     Plug 'tomtom/tcomment_vim'                                  " easy comment stuff

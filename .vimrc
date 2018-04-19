@@ -236,9 +236,9 @@ let g:neosnippet#enable_completed_snippet = 1
 " let g:SuperTabDefaultCompletionType = '<C-n>'
 "
 " " better key bindings for UltiSnipsExpandTrigger
-" let g:UltiSnipsExpandTrigger = "<tab>"
-" let g:UltiSnipsJumpForwardTrigger = "<tab>"
-" let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 " filetype plugin indent on
 
 "/

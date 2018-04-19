@@ -5,7 +5,10 @@
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="cobalt2"
+# ZSH_THEME="cobalt2"
+ZSH_THEME="powerlevel9k/powerlevel9k"
+POWERLEVEL9K_MODE="nerdfont-complete"
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -49,7 +52,20 @@ ZSH_THEME="cobalt2"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git z sublime archlinux composer cloudapp common-aliases history node npm sudo)
+plugins=(
+    git
+    z
+    archlinux
+    composer
+    cloudapp
+    common-aliases
+    history
+    node
+    npm
+    sudo
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+    )
 
 # User configuration
 
@@ -84,11 +100,11 @@ source $ZSH/oh-my-zsh.sh
 #
 # Example aliases
 alias subl="st"
-alias zshconfig="vim ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
+alias zshconfig="nvim ~/.zshrc"
+alias ohmyzsh="nvim ~/.oh-my-zsh"
 alias zshreload="source ~/.zshrc"
 alias pploy="phploy"
-alias v="gvim"
+alias v="nvim"
 #run homestead from everywhere... EVERYWHEREEEEEE
 function homestead() {
     ( cd ~/Homestead && vagrant $* )
