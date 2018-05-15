@@ -11,7 +11,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'flazz/vim-colorschemes'
     Plug 'tpope/vim-vinegar'                                    " lighter then nerdtree, uses default vim stuff to show files
     Plug 'mattn/emmet-vim'                                      " emmet for vim, html/css expander/autocomplete
-    Plug 'gko/vim-coloresque'                                   " show css colors as colors
+    "Plug 'gko/vim-coloresque'                                   " show css colors as colors
     "Plug 'ervandew/supertab'
     Plug 'atweiden/vim-dragvisuals'                             " plugin to select text (visual mode) and easy drag it using arrow keys (remaps needed)
     Plug 'vim-airline/vim-airline'                              " airline, show nice infos on the bottom bar (I think you know what airline/powerline is)
@@ -41,8 +41,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf'                                         " the base fzf plugin
     Plug 'junegunn/fzf.vim'                                     " vim fzf integration, good fuzzyfinder tool
     Plug 'junegunn/vim-emoji'                                   "emoji for vim
-    "Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
-    Plug 'StanAngeloff/php.vim'
+    " Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
+    " Plug 'StanAngeloff/php.vim'
+    Plug 'dsifford/php.vim'
     Plug '2072/php-indenting-for-vim'
     Plug 'othree/html5.vim'                                    " better html5 syntax
 

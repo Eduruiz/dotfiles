@@ -239,6 +239,10 @@ let g:neosnippet#enable_completed_snippet = 1
 let g:UltiSnipsExpandTrigger = "<tab>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
+
+
+
 " filetype plugin indent on
 
 "/
@@ -467,6 +471,7 @@ nmap <Leader><Leader>v :e resources/views/<cr>
 nnoremap <expr> <Leader>cc !empty(glob("application/config/config.php")) ? ':e application/config/config.php<cr>' : ':e app/application/config/config.php<cr>'
 "open routes.php file in application/config or in app/application/config
 nnoremap <expr> <Leader>cr !empty(glob("application/config/routes.php")) ? ':e application/config/routes.php<cr>' : ':e app/application/config/routes.php<cr>'
+nnoremap <expr> <Leader>cd !empty(glob("application/config/database.php")) ? ':e application/config/database.php<cr>' : ':e app/application/config/database.php<cr>'
 
 
 

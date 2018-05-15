@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh installation.
-  export ZSH=$HOME/.oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -109,6 +109,8 @@ alias v="nvim"
 function homestead() {
     ( cd ~/Homestead && vagrant $* )
 }
+bindkey '^ ' autosuggest-accept
+
 #adjusting pbcopy to xclip (for linux and cloudapp)
 #alias pbcopy="xclip -selection clipboard"
 #alias pbpaste="xclip -selection clipboard -o"
