@@ -4,7 +4,6 @@ so ~/.vim/plugins.vim
 
 let mapleader = ' ' 						    	"The default is \, but a comma is much better.
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => VIM user interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -93,9 +92,13 @@ set guioptions-=L                                                       "remove 
 set number                                                              "show line numbers
 set smartindent                                                         "when new line on insert mode, keep indentation
 set cursorline                                                          "highlight current line under cursor
-set termguicolors
+set termguicolors                                                       "use gui colors on terminal when supported
 autocmd ColorScheme * highlight clear LineNr | highlight clear SignColumn "Use same color from editor bg on git gutter column
 set list listchars=tab:\ \ ,trail:·                                     " Display tabs and trailing spaces visually
+"underline matching parents
+hi MatchParen term=underline cterm=underline gui=underline
+"disable bg and fg color of matching parents
+hi MatchParen gui=none guifg=none guibg=none
 
 
 
@@ -213,6 +216,23 @@ inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 " Use <TAB> to select the popup menu:
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+
+
+
+
+
+"/
+"/  nvim completion manager
+"/
+let g:mta_use_matchparen_group = 1
+let g:mta_filetypes = {
+    \ 'html' : 1,
+    \ 'xhtml' : 1,
+    \ 'xml' : 1,
+    \ 'php' : 1,
+    \}
+
 
 
 
@@ -453,6 +473,15 @@ autocmd FileType gitcommit setlocal spell
 
 "adjust tab to indent on insert mode, needed because tab is remapped to expand emmet stuff
 " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+
+
+
+
+" words I can't get right
+iab lenght length
+
+
+
 
 
 "-------------Laravel-Specific--------------"

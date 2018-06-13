@@ -40,12 +40,15 @@ call plug#begin('~/.vim/plugged')
     Plug 'mileszs/ack.vim'                                      " ack vim, a grep better then grep
     Plug 'junegunn/fzf'                                         " the base fzf plugin
     Plug 'junegunn/fzf.vim'                                     " vim fzf integration, good fuzzyfinder tool
-    Plug 'junegunn/vim-emoji'                                   "emoji for vim
-    " Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
+    Plug 'junegunn/vim-emoji'                                   " emoji for vim
+    " Plug 'sheerun/vim-polyglot'                               " vim syntax highlight for everything
     " Plug 'StanAngeloff/php.vim'
     Plug 'dsifford/php.vim'
     Plug '2072/php-indenting-for-vim'
-    Plug 'othree/html5.vim'                                    " better html5 syntax
+    Plug 'othree/html5.vim'                                     " better html5 syntax
+    Plug 'Valloric/MatchTagAlways'                              " always highlight html matching tags
+    Plug 'metakirby5/codi.vim'                                  " a live interactive scratchpad for programming languages
+
 
     Plug 'roxma/nvim-completion-manager'
     Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}

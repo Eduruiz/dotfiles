@@ -116,3 +116,5 @@ bindkey '^ ' autosuggest-accept
 #alias pbpaste="xclip -selection clipboard -o"
 #alias to sync config dotfiles https://developer.atlassian.com/blog/2016/02/best-way-to-store-dotfiles-git-bare-repo/
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
