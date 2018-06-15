@@ -105,6 +105,7 @@ alias ohmyzsh="nvim ~/.oh-my-zsh"
 alias zshreload="source ~/.zshrc"
 alias pploy="phploy"
 alias v="nvim"
+alias o="xdg-open"
 #run homestead from everywhere... EVERYWHEREEEEEE
 function homestead() {
     ( cd ~/Homestead && vagrant $* )
