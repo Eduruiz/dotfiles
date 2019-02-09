@@ -18,6 +18,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'vim-airline/vim-airline-themes'                       " airline themes
     Plug 'tpope/vim-surround'                                   " make surround things and changing surroundings easier
     Plug 'kristijanhusak/vim-hybrid-material'                   " really good looking theme
+    Plug 'morhetz/gruvbox'                                      " classic vim theme
     Plug 'xolox/vim-misc'                                       " this plugin is a requirement to vim-session work
     Plug 'xolox/vim-session'                                    " manage vim sessions like sublime text
     Plug 'terryma/vim-multiple-cursors'                         " multiple cursors, sublime like but more powerful
@@ -41,23 +42,41 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf'                                         " the base fzf plugin
     Plug 'junegunn/fzf.vim'                                     " vim fzf integration, good fuzzyfinder tool
     Plug 'junegunn/vim-emoji'                                   " emoji for vim
-    " Plug 'sheerun/vim-polyglot'                               " vim syntax highlight for everything
+    Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
     " Plug 'StanAngeloff/php.vim'
-    Plug 'dsifford/php.vim'
-    Plug '2072/php-indenting-for-vim'
-    Plug 'othree/html5.vim'                                     " better html5 syntax
-    Plug 'Valloric/MatchTagAlways'                              " always highlight html matching tags
+    " Plug 'dsifford/php.vim'
+    " Plug '2072/php-indenting-for-vim'
+    " Plug 'othree/html5.vim'                                     " better html5 syntax
+    " Plug 'JulesWang/css.vim'                                    " Better css colors
+    " Plug 'Valloric/MatchTagAlways'                              " always highlight html matching tags
     Plug 'metakirby5/codi.vim'                                  " a live interactive scratchpad for programming languages
+    Plug 'roxma/nvim-yarp'
+    Plug 'editorconfig/editorconfig-vim'                        " editorconfig plugin for vim
+    Plug 'wsdjeg/FlyGrep.vim'                                   " spacevim flygrep
+    Plug 'posva/vim-vue'                                        " vue syntax
+    Plug 'cakebaker/scss-syntax.vim'                            " scss syntax
+    Plug 'csscomb/vim-csscomb'                                  " scss linter
+    Plug 'chiedo/vim-px-to-em'                                  " convert pixels to ems
+    Plug 'vim-scripts/CSSMinister'                              " convert hex colort to rgb
 
 
-    Plug 'roxma/nvim-completion-manager'
+
+
+    Plug 'ncm2/ncm2'                                            "neo completion manager version 2
+    Plug 'roxma/nvim-yarp'                                      "required fom ncm2 
+    Plug 'ncm2/ncm2-cssomni'
+    Plug 'ncm2/ncm2-tern'
+
+
+
+
+
+
     Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
 
-    " requires nvim-completion-manager
-    Plug 'roxma/nvim-completion-manager'
 
     " requires phpactor
-    Plug 'phpactor/phpactor' ,  {'do': 'composer install'}
+    " Plug 'phpactor/phpactor' ,  {'do': 'composer install'}
 
     Plug 'roxma/ncm-phpactor'
 
@@ -69,13 +88,14 @@ call plug#begin('~/.vim/plugged')
 
 
     " <-- deoplate and flow autocomplete 
-    " if has('nvim')
-    "     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    " else
-    "     Plug 'Shougo/deoplete.nvim'
-    "     Plug 'roxma/nvim-yarp'
-    "     Plug 'roxma/vim-hug-neovim-rpc'
-    " endif
+    if has('nvim')
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    else
+        Plug 'Shougo/deoplete.nvim'
+        Plug 'roxma/nvim-yarp'
+        Plug 'roxma/vim-hug-neovim-rpc'
+    endif
+
     "
     " Plug 'wokalski/autocomplete-flow'
     " " For func argument completion

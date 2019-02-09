@@ -82,9 +82,12 @@ let g:enable_italic_font = 1                                            "Enable 
 "let g:enable_bold_font = 1                                             "Enable some fonts to be bold
 set background=dark
 "vim cool colorschemes
-colorscheme OceanicNext
+" colorscheme OceanicNext
+let g:gruvbox_italic=1                                                  " enbale gruvbox italic fonts on terminal
+colorscheme gruvbox
 " colorscheme nova
-let g:airline_theme = "oceanicnext"                                     "Enable hybrid theme on airline 
+let g:airline_theme = "gruvbox"                                         "Enable hybrid theme on airline 
+" let g:airline_theme = "oceanicnext"                                   "Enable hybrid theme on airline 
 set guioptions-=m                                                       "remove menu bar
 set guioptions-=T                                                       "remove toolbar
 set guioptions-=r                                                       "remove right-hand scroll bar
@@ -99,6 +102,8 @@ set list listchars=tab:\ \ ,trail:·                                     " Displ
 hi MatchParen term=underline cterm=underline gui=underline
 "disable bg and fg color of matching parents
 hi MatchParen gui=none guifg=none guibg=none
+"force syntax to aways be nice, danger zone 'cause it can be slow
+autocmd BufEnter * :syntax sync fromstart
 
 
 
@@ -140,6 +145,15 @@ endif " }}}
 
 
 "-------------Plugins--------------"
+"/
+"/ Ag vim
+"/
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('right:50%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+
 
 "/
 "/ GitGutter
@@ -196,9 +210,9 @@ let g:session_default_to_last = 1                                        "autolo
 "/
 "/ Deoplete
 "/
-" let g:deoplete#enable_at_startup = 1
-" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-" inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+let g:deoplete#enable_at_startup = 1
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif:q
 
 
@@ -247,6 +261,14 @@ let g:neosnippet#enable_completed_snippet = 1
 
 
 
+
+
+"/
+"/ Flygrep
+"/
+" nnoremap <Space>g :FlyGrep<cr> Commented becaus now I'm using Ag! instead
+
+
 "/
 "/ ultisnips
 "/
@@ -282,10 +304,10 @@ let g:ctrlp_show_hidden = 1                     " let ctrlp see the hidden files
 "/
 "/ fzf
 "/
-" Tell ack.vim to use ag (the Silver Searcher) instead
 nmap <Leader>b :Buffers<CR>
 nmap <Leader>f :Files<CR>
 nmap <Leader>t :Tags<CR>
+nmap <Leader>g :Ag!<CR>
 
 
 
@@ -306,7 +328,7 @@ let g:ackprg = 'ag --vimgrep'
 " let g:user_emmet_expandabbr_key='<Tab>'     "expand stuff using tab from emmet (st like)
 let g:user_emmet_install_global = 0
 "configure emmet to run on those specific file types
-autocmd FileType html,php,css,scss,sass EmmetInstall
+autocmd FileType html,vue,php,css,scss,sass EmmetInstall
 let g:user_emmet_expandabbr_key='<C-e>'
 " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 let g:user_emmet_mode='i' "only use emmet on insert mode
@@ -339,6 +361,8 @@ let g:ale_sign_warning = '▲'
 let g:ale_sign_error   = '✗'
 highlight link ALEWarningSign String
 highlight link ALEErrorSign Title
+" Highlight errors on airline
+let g:airline#extensions#ale#enabled = 1
 
 
 
@@ -347,7 +371,7 @@ highlight link ALEErrorSign Title
 "/ nerdtree
 "/
 let NERDTreeShowHidden=1
-
+let g:NERDTreeWinPos = "right"
 
 
 
@@ -479,6 +503,14 @@ autocmd FileType gitcommit setlocal spell
 
 " words I can't get right
 iab lenght length
+
+
+
+"-------------Neocomplete 2--------------"
+"enable in all buffers
+autocmd BufEnter * call ncm2#enable_for_buffer()
+":help Ncm2PopupOpen for more information
+set completeopt=noinsert,menuone,noselect
 
 
 
