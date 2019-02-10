@@ -1,0 +1,22 @@
+###################################################################################################################
+#########################################  lovelybacon.deviantart.com  ############################################
+###################################################################################################################
+
+background no
+out_to_x no
+out_to_console yes
+update_interval 1
+total_run_times 0
+use_spacer none
+
+
+TEXT
+
+${if_mpd_playing}♬  ${mpd_artist} - ${mpd_title}${endif}     \
+  ${downspeedf wlp2s0} | ${upspeedf wlp2s0}     \
+  ${wireless_essid wlp2s0}     \
+  ${hwmon 2 temp 1} | ${hwmon 2 temp 3}     \
+  ${uptime_short}     \
+  ${exec amixer get Master -c 0 -M | grep -oE "[[:digit:]]*%"}     \
+  ${time %a %b %d}     \
+${time %H:%M}
