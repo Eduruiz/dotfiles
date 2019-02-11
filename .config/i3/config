@@ -63,7 +63,7 @@ bindsym $mod+Right focus right
 bindsym $mod+Shift+j move left
 bindsym $mod+Shift+k move down
 bindsym $mod+Shift+l move up
-bindsym $mod+Shift+ccedilla move right
+bindsym $mod+Shift+semicolon move right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Shift+Left move left
@@ -161,7 +161,7 @@ mode "keyboard" {
 bindsym $mod+u mode "keyboard"
 
 # resize window (you can also use the mouse for that)
-mode "" {
+mode "" {
         # These bindings trigger as soon as you enter the resize mode
 
         # Pressing left will shrink the window’s width.
@@ -184,15 +184,15 @@ mode "" {
         bindsym Escape mode "default"
 }
 
-bindsym $mod+r mode ""
+bindsym $mod+r mode ""
 
 # set up background image
 set $feh exec --no-startup-id feh --bg-scale
 $feh ~/Wallpapers/spider.jpg
 
 # add some gaps for testing
-# gaps inner 7
-#gaps outer 0
+gaps inner 10
+gaps outer 0
 
 set $bg-color #2f343f
 set $inactive-bg-color #2f343f
@@ -245,7 +245,7 @@ bar {
         status_command conky -c $HOME/.config/i3/conky/conkyrc
 	mode dock
 	position top
-	font pango: open sans 9
+	font pango: open sans 11
 	strip_workspace_numbers yes
 	
 colors {
