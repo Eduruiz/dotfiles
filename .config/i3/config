@@ -192,7 +192,8 @@ $feh ~/Wallpapers/spider.jpg
 
 # add some gaps for testing
 gaps inner 10
-gaps outer 0
+gaps outer -10
+smart_gaps on
 
 set $bg-color #2f343f
 set $inactive-bg-color #2f343f
