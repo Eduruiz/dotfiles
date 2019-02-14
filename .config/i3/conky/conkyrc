@@ -19,4 +19,5 @@ ${if_mpd_playing}♬  ${mpd_artist} - ${mpd_title}${endif}     \
  ${uptime_short}     \
  ${exec amixer get Master -c 0 -M | grep -oE "[[:digit:]]*%"}     \
  ${time %a %b %d}     \
- ${time %H:%M}
+ ${time %H:%M}  \
+ ${battery_percent}%
