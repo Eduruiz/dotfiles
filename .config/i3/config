@@ -280,7 +280,8 @@ bindsym $mod+Shift+e mode "Exit (L)ogout, (R)eboot, (P)oweroff"
 
 #my config binding and tweks
 #setting up i3 lock with color
-bindsym $mod+shift+x exec i3lock -c 333333
+# bindsym $mod+shift+x exec i3lock -c 333333
+bindsym $mod+shift+x exec betterlockscreen -l dim
 
 #executing stuff when i3 logs
 exec_always allow_rgb10_configs=false compton -D 5 -I 0.05 -O 0.05
