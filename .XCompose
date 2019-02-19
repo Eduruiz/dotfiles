@@ -17,4 +17,5 @@ include "%L"
 <Multi_key> <n> <A> : "Ã"
 <Multi_key> <n> <o> : "õ"
 <Multi_key> <n> <O> : "Õ"
-
+<Multi_key> <i> <e> : "ê"
+<Multi_key> <i> <E> : "Ê"
