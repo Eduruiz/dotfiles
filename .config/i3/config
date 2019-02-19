@@ -285,8 +285,11 @@ bindsym $mod+Shift+e mode "Exit (L)ogout, (R)eboot, (P)oweroff"
 bindsym $mod+shift+x exec betterlockscreen -l dim
 
 #executing stuff when i3 logs
+#compton, to handle transparency
 exec_always allow_rgb10_configs=false compton -D 5 -I 0.05 -O 0.05
-exec_always albert
+
+#dunst, should start automatically but its not happening
+exec_always --no-startup-id dunst
 
 #disable focus following mouse
 focus_follows_mouse no
@@ -330,6 +333,9 @@ exec dropbox
 
 # swap caps and control keys
 exec_always /usr/bin/setxkbmap -option "ctrl:swapcaps"
+# add compose key to right alt key, so I can make the strange portuguese letters with hat :)
+exec_always /usr/bin/setxkbmap -option "compose:ralt"
+
 
 
 # Make the currently focused window a scratchpad
