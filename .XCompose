@@ -1,0 +1,18 @@
+#this include all the default compose keys on the file
+include "%L"
+
+<Multi_key> <c> : "ç"
+<Multi_key> <C> : "Ç"
+<Multi_key> <e> <a> : "á"
+<Multi_key> <e> <A> : "Á"
+<Multi_key> <e> <e> : "é"
+<Multi_key> <e> <E> : "é"
+<Multi_key> <e> <i> : "í"
+<Multi_key> <e> <I> : "Í"
+<Multi_key> <e> <o> : "ó"
+<Multi_key> <e> <o> : "Ó"
+<Multi_key> <e> <u> : "ú"
+<Multi_key> <e> <U> : "Ú"
+<Multi_key> <n> <a> : "ã"
+<Multi_key> <n> <A> : "Ã"
+
