@@ -97,6 +97,10 @@ source $ZSH/oh-my-zsh.sh
 
 export FZF_DEFAULT_COMMAND='ag -g ""'
 
+
+# Set vi mode by default (instead of emacs mode)
+set -o vi
+
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -115,6 +119,25 @@ alias t="trash-put"
 function homestead() {
     ( cd ~/Homestead && vagrant $* )
 }
+
+ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=(
+    end-of-line
+    vi-end-of-line
+    vi-add-eol
+)
+ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=(
+    forward-char
+    vi-forward-char
+    forward-word
+    emacs-forward-word
+    vi-forward-word
+    vi-forward-word-end
+    vi-forward-blank-word
+    vi-forward-blank-word-end
+    vi-find-next-char
+    vi-find-next-char-skip
+)
+
 bindkey '^ ' autosuggest-accept
 
 #adjusting pbcopy to xclip (for linux and cloudapp)
