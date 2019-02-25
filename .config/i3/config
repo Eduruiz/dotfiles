@@ -147,6 +147,30 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 # bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
+
+# move floating windows with keys
+bindsym $mod+m mode "" focus floating
+mode "" {
+    bindsym $mod+Tab focus right
+
+    bindsym Left  move left
+    bindsym Down  move down
+    bindsym Up    move up
+    bindsym Right move right
+
+    bindsym h     move left
+    bindsym j     move down
+    bindsym k     move up
+    bindsym l     move right
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+
+
+
 # change keyboard layout mode
 mode "keyboard" {
     bindsym $mod+p exec /usr/bin/setxkbmap setxkbmap -model abnt2 -layout br -variant abnt2 && /usr/bin/setxkbmap -option "ctrl:swapcaps"
