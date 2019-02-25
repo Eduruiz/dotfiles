@@ -58,6 +58,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'csscomb/vim-csscomb'                                  " scss linter
     Plug 'chiedo/vim-px-to-em'                                  " convert pixels to ems
     Plug 'vim-scripts/CSSMinister'                              " convert hex colort to rgb
+    Plug 'ludovicchabant/vim-gutentags'                         " auto generate ctags for projects
 
 
 
