@@ -445,6 +445,8 @@ endif
 
 
 "-------------Mappings--------------"
+"quicky search visual selection
+vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
 "Make it easy to edit the vim file.
 nmap <Leader>ev :e ~/.vimrc<cr>
 nmap <Leader>ep :e ~/.vim/plugins.vim<cr>
