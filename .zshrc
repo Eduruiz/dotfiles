@@ -73,8 +73,7 @@ plugins=(
 export PATH=~/.config/composer/vendor/bin:$PATH
 export PATH=~/.npm-global/bin:$PATH
 export PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
-
-# export PATH="$PATH":/home/user/bin
+export PATH="$PATH":/home/eduruiz/.bin
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -83,11 +82,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -100,6 +99,8 @@ export FZF_DEFAULT_COMMAND='ag -g ""'
 
 # Set vi mode by default (instead of emacs mode)
 set -o vi
+# Bind Ctrl+L to clear screen (as I'm used too)
+set bind -m vi-insert ""\C-l":clear-screen"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
