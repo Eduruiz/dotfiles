@@ -356,9 +356,9 @@ exec ssh-add
 exec dropbox
 
 # swap caps and control keys
-exec_always /usr/bin/setxkbmap -option "ctrl:swapcaps"
+exec_always /usr/bin/setxkbmap -option "ctrl:swapcaps, compose:ralt"
 # add compose key to right alt key, so I can make the strange portuguese letters with hat :)
-exec_always /usr/bin/setxkbmap -option "compose:ralt"
+# exec_always /usr/bin/setxkbmap -option "compose:ralt"
 
 
 
