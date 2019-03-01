@@ -59,6 +59,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'chiedo/vim-px-to-em'                                  " convert pixels to ems
     Plug 'vim-scripts/CSSMinister'                              " convert hex colort to rgb
     Plug 'ludovicchabant/vim-gutentags'                         " auto generate ctags for projects
+    Plug 'tpope/vim-eunuch'                                     " Vim sugar for the UNIX shell commands that need it the most.
+    Plug 'lambdalisue/suda.vim'                                 " Plugin to write as sudo on neovim (https://github.com/neovim/neovim/issues/1716)
 
 
 
