@@ -278,9 +278,9 @@ let g:neosnippet#enable_completed_snippet = 1
 " let g:SuperTabDefaultCompletionType = '<C-n>'
 "
 " " better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+" let g:UltiSnipsExpandTrigger = "<tab>"
+" let g:UltiSnipsJumpForwardTrigger = "<tab>"
+" let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
 
 
@@ -319,8 +319,40 @@ nmap <Leader>g :Ag!<CR>
 let g:ackprg = 'ag --vimgrep'
 
 
+"/
+"/ coc vim
+"/
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+" airline integration
+let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
+let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
+" Use <c-space> for trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+" Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
+" Use K for show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 "/
 "/ Emmet vim
@@ -510,9 +542,9 @@ iab lenght length
 
 "-------------Neocomplete 2--------------"
 "enable in all buffers
-autocmd BufEnter * call ncm2#enable_for_buffer()
+" autocmd BufEnter * call ncm2#enable_for_buffer()
 ":help Ncm2PopupOpen for more information
-set completeopt=noinsert,menuone,noselect
+" set completeopt=noinsert,menuone,noselect
 
 
 

@@ -61,67 +61,16 @@ call plug#begin('~/.vim/plugged')
     Plug 'ludovicchabant/vim-gutentags'                         " auto generate ctags for projects
     Plug 'tpope/vim-eunuch'                                     " Vim sugar for the UNIX shell commands that need it the most.
     Plug 'lambdalisue/suda.vim'                                 " Plugin to write as sudo on neovim (https://github.com/neovim/neovim/issues/1716)
+    Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}} "testing COC autocompletion (vscode like they say)
 
 
 
 
-    Plug 'ncm2/ncm2'                                            "neo completion manager version 2
-    Plug 'roxma/nvim-yarp'                                      "required fom ncm2 
-    Plug 'ncm2/ncm2-cssomni'
-    Plug 'ncm2/ncm2-tern'
-
-
-
-
-
-
-    Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
-
-
-    " requires phpactor
-    " Plug 'phpactor/phpactor' ,  {'do': 'composer install'}
-
-    Plug 'roxma/ncm-phpactor'
-
-    if !has('nvim')
-        Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-    " don't give |ins-completion-menu| messages.  For example,
-    " '-- 1000 completion (YYY)', 'match 1 of 2', 'The only match',
-
-
-    " <-- deoplate and flow autocomplete 
-    if has('nvim')
-        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-    else
-        Plug 'Shougo/deoplete.nvim'
-        Plug 'roxma/nvim-yarp'
-        Plug 'roxma/vim-hug-neovim-rpc'
-    endif
-
-    "
-    " Plug 'wokalski/autocomplete-flow'
-    " " For func argument completion
-    " Plug 'Shougo/neosnippet'
-    " Plug 'Shougo/neosnippet-snippets'
-    " "-->
-    "
-    " Plug 'padawan-php/deoplete-padawan', { 'do': 'composer install' }
-    " Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-    " Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer' }
-    " Start autocompletion after 4 chars
-    " let g:ycm_min_num_of_chars_for_completion = 4
-    " let g:ycm_min_num_identifier_candidate_chars = 4
-    " let g:ycm_enable_diagnostic_highlighting = 0
-    " Don't show YCM's preview window [ I find it really annoying ]
-    " set completeopt-=preview
-    " let g:ycm_add_preview_to_completeopt = 0
-
-
-
-    " The sparkup vim script is in a subdirectory of this repo called vim.
-    " Pass the path to set the runtimepath properly.
-    Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
+    " Plug 'ncm2/ncm2'                                            "neo completion manager version 2
+    " Plug 'roxma/nvim-yarp'                                      "required fom ncm2 
+    " Plug 'ncm2/ncm2-cssomni'
+    " Plug 'ncm2/ncm2-tern'
+    " Plug 'roxma/nvim-cm-tern',  {'do': 'npm install'}
 
 " Initialize plugin system
 call plug#end()
