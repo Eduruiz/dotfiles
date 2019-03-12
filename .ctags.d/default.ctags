@@ -5,6 +5,7 @@
 --exclude=db/*
 --exclude=log/*
 --exclude=dist/
+--exclude=assets/assets/*
 --langdef=css
 --langmap=css:.css
 --langmap=css:+.scss
