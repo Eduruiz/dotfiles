@@ -334,11 +334,13 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
 " airline integration
 let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
 let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
 " Use <c-space> for trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
+
 " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
@@ -353,6 +355,24 @@ function! s:show_documentation()
     call CocAction('doHover')
   endif
 endfunction
+
+"list extensions
+let s:coc_extensions = [
+\   'coc-css',
+\   'coc-html',
+\   'coc-json',
+\   'coc-emmet',
+\   'coc-emoji',
+\   'coc-eslint',
+\   'coc-prettier',
+\   'coc-tsserver',
+\   'coc-ultisnips'
+\ ]
+
+"loop and install the extensions
+for extension in s:coc_extensions
+    call coc#add_extension(extension)
+endfor
 
 "/
 "/ Emmet vim
@@ -395,6 +415,9 @@ highlight link ALEWarningSign String
 highlight link ALEErrorSign Title
 " Highlight errors on airline
 let g:airline#extensions#ale#enabled = 1
+nmap <Leader>af :ALEFix<cr>
+" Fix files with prettier, and then ESLint.
+let b:ale_fixers = ['eslint']
 
 
 
