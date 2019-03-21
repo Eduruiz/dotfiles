@@ -53,16 +53,17 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    git
-    z
     archlinux
     composer
     cloudapp
     common-aliases
+    fzf
+    git
     history
     node
     npm
     sudo
+    z
     zsh-syntax-highlighting
     zsh-autosuggestions
     )
@@ -94,11 +95,13 @@ fi
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
-export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_COMMAND='ag --hidden -g ""'
 
 
 # Set vi mode by default (instead of emacs mode)
 set -o vi
+# Change command to insert mode timeout
+export KEYTIMEOUT=1
 # Bind Ctrl+L to clear screen (as I'm used too)
 set bind -m vi-insert ""\C-l":clear-screen"
 
@@ -140,6 +143,8 @@ ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=(
 )
 
 bindkey '^ ' autosuggest-accept
+bindkey '^t' fzf-file-widget
+
 
 #adjusting pbcopy to xclip (for linux and cloudapp)
 #alias pbcopy="xclip -selection clipboard"
