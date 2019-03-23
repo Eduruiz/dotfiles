@@ -373,6 +373,14 @@ let s:coc_extensions = [
 for extension in s:coc_extensions
     call coc#add_extension(extension)
 endfor
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 "/
 "/ Emmet vim
