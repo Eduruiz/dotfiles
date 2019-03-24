@@ -1,6 +1,8 @@
 [global_config]
   borderless = True
+  broadcast_default = off
   homogeneous_tabbar = False
+  inactive_color_offset = 0.55303030303
   scroll_tabbar = True
   tab_position = hidden
   title_font = FuraMono Nerd Font Mono 9
