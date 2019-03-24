@@ -212,7 +212,7 @@ bindsym $mod+r mode ""
 
 # set up background image
 set $feh exec --no-startup-id feh --bg-scale
-$feh ~/Wallpapers/spider.jpg
+$feh ~/Wallpapers/journey.jpg
 
 # add some gaps for testing
 gaps inner 10
@@ -260,7 +260,7 @@ bar {
   status_command conky -c $HOME/.config/i3/conky/conkyrc
 	mode dock
 	position top
-	font pango: open sans 11
+	font pango: Liberation Mono 11, font-awesome5Free 10
 	strip_workspace_numbers yes
   colors {
     separator #928374
@@ -324,8 +324,8 @@ bindsym $mod+x move workspace to output right
 # Start clipster daemon
 exec --no-startup-id clipster -d
 
-
-exec xbacklight -set 10 
+#set good brightness on login
+exec light -S 10 
 
 # shortcut to selection widget (primary)
 # bindsym $mod+v exec clipster -sp
@@ -336,12 +336,15 @@ bindsym XF86AudioLowerVolume exec amixer -M set Master 5%- && pkill -RTMIN+1 i3b
 bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle && pkill -RTMIN+1 i3blocks
 
 # configure macbook keys to control brightness
-bindsym XF86MonBrightnessUp exec xbacklight -inc 10
-bindsym XF86MonBrightnessDown exec xbacklight -dec 10
+# bindsym XF86MonBrightnessUp exec xbacklight -inc 10
+# bindsym XF86MonBrightnessDown exec xbacklight -dec 10
+# Screen brightness controls with notification
+bindsym XF86MonBrightnessUp exec "light -A 5"
+bindsym XF86MonBrightnessDown exec "light -U 5"
 
 # configure macbook keys to control keyboard backlight
-bindsym XF86KbdBrightnessUp   exec --no-startup-id kbdlight up 5                           && pkill -RTMIN+2 i3blocks
-bindsym XF86KbdBrightnessDown exec --no-startup-id kbdlight down 5                         && pkill -RTMIN+2 i3blocks
+# bindsym XF86KbdBrightnessUp   exec --no-startup-id kbdlight up 5                           && pkill -RTMIN+2 i3blocks
+# bindsym XF86KbdBrightnessDown exec --no-startup-id kbdlight down 5                         && pkill -RTMIN+2 i3blocks
 
 # Media player controls
 bindsym XF86AudioPlay   exec playerctl play-pause
