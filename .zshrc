@@ -144,6 +144,7 @@ ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS=(
 
 bindkey '^ ' autosuggest-accept
 bindkey '^t' fzf-file-widget
+bindkey '^h' fzf-history-widget
 bindkey '^s' sudo-command-line
 
 
