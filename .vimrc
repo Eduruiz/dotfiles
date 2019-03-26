@@ -102,6 +102,12 @@ set list listchars=tab:\ \ ,trail:·                                     " Displ
 hi MatchParen term=underline cterm=underline gui=underline
 "disable bg and fg color of matching parents
 hi MatchParen gui=none guifg=none guibg=none
+
+hi Normal guibg=NONE ctermbg=NONE
+hi ColorScheme guibg=NONE ctermbg=NONE
+autocmd ColorScheme * highlight Normal guibg=None
+autocmd ColorScheme * highlight NonText ctermbg=None
+
 "force syntax to aways be nice, danger zone 'cause it can be slow
 autocmd BufEnter * :syntax sync fromstart
 
@@ -608,7 +614,6 @@ nnoremap <expr> <Leader>cd !empty(glob("application/config/database.php")) ? ':e
 "third one is doing the same, but with SignColumn (used by gitgutter)
 "fourth one is refreshing airline, so the tabs don't loose it's colors
 autocmd! bufwritepost ~/.vimrc source ~/.vimrc | highlight clear LineNr | AirlineRefresh | highlight clear SignColumn
-
 
 "automatically jump to last know cursor position on file
 if v:version >= 700
