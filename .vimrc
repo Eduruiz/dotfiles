@@ -106,7 +106,7 @@ hi MatchParen gui=none guifg=none guibg=none
 hi Normal guibg=NONE ctermbg=NONE
 hi ColorScheme guibg=NONE ctermbg=NONE
 autocmd ColorScheme * highlight Normal guibg=None
-autocmd ColorScheme * highlight NonText ctermbg=None
+" autocmd ColorScheme * highlight NonText ctermbg=None
 
 "force syntax to aways be nice, danger zone 'cause it can be slow
 autocmd BufEnter * :syntax sync fromstart
@@ -431,7 +431,10 @@ highlight link ALEErrorSign Title
 let g:airline#extensions#ale#enabled = 1
 nmap <Leader>af :ALEFix<cr>
 " Fix files with prettier, and then ESLint.
-let b:ale_fixers = ['eslint']
+let g:ale_linter_aliases = {'vue': ['vue', 'javascript']}
+let g:ale_linters = {'vue': ['eslint', 'vls']}
+let g:ale_fixers = {'vue': ['eslint', 'vls']}
+
 
 
 
