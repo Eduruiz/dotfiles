@@ -1,6 +1,7 @@
 [global_config]
   borderless = True
   broadcast_default = off
+  enabled_plugins = LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
   homogeneous_tabbar = False
   inactive_color_offset = 0.55303030303
   scroll_tabbar = True
@@ -9,6 +10,7 @@
   title_transmit_bg_color = "#888a85"
   title_use_system_font = False
 [keybindings]
+  help = None
 [layouts]
   [[default]]
     [[[child1]]]
