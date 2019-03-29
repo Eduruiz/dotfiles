@@ -110,20 +110,21 @@ set bind -m vi-insert ""\C-l":clear-screen"
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
-# Example aliases
-alias subl="st"
-alias zshconfig="nvim ~/.zshrc"
+alias zshc="nvim ~/.zshrc"
+alias zshr="source ~/.zshrc"
 alias ohmyzsh="nvim ~/.oh-my-zsh"
-alias zshreload="source ~/.zshrc"
 alias pploy="phploy"
 alias v="nvim"
 alias o="xdg-open"
 alias t="trash-put"
+alias ssha='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_rsa'
+
 #run homestead from everywhere... EVERYWHEREEEEEE
 function homestead() {
     ( cd ~/Homestead && vagrant $* )
 }
 
+#config zsh widgets to run smootly with vi mode
 ZSH_AUTOSUGGEST_ACCEPT_WIDGETS=(
     end-of-line
     vi-end-of-line
