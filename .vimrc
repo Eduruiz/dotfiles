@@ -451,12 +451,11 @@ let g:NERDTreeWinPos = "right"
 "/ airline
 "/
 
-set enc=utf-8
+set enc=utf8
 syntax enable on
 
 let g:Powerline_symbols = 'fancy'
 set laststatus=2 "always show powerline
-set encoding=utf-8
 set t_Co=256
 let g:airline_powerline_fonts = 1
 set fillchars+=stl:\ ,stlnc:\

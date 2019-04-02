@@ -52,7 +52,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'metakirby5/codi.vim'                                  " a live interactive scratchpad for programming languages
     Plug 'roxma/nvim-yarp'
     Plug 'editorconfig/editorconfig-vim'                        " editorconfig plugin for vim
+    Plug 'ryanoasis/vim-devicons'                               " vim development icons
     Plug 'wsdjeg/FlyGrep.vim'                                   " spacevim flygrep
+    Plug 'tpope/vim-repeat'                                     " make vim reapeat command compatible with some plugins
     Plug 'posva/vim-vue'                                        " vue syntax
     Plug 'cakebaker/scss-syntax.vim'                            " scss syntax
     Plug 'csscomb/vim-csscomb'                                  " scss linter
