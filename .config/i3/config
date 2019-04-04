@@ -211,8 +211,11 @@ mode "" {
 
 bindsym $mod+r mode ""
 
+#add a little pip (picture in picture) mode for i3
+bindsym $mod+c exec "i3-msg 'floating toggle; sticky toggle; resize shrink width 10000px; resize grow width 200px; resize shrink height 10000px; resize grow height 100px;move position 10px 10px;'"
 
-bindsym $mod+c exec "i3-msg 'floating toggle; sticky toggle; resize shrink width 10000px; resize grow width 200px; resize shrink height 10000px; resize grow height 150px;move position 10px 10px;'"
+#add a little pip (picture in picture) mode for i3 with different approach
+bindsym $mod+y fullscreen disable; floating enable; resize set 400 300; sticky enable; move window to position 956 25
 
 # set up background image
 set $feh exec --no-startup-id feh --bg-scale
@@ -355,9 +358,9 @@ bindsym XF86AudioPlay   exec playerctl play-pause
 bindsym XF86AudioNext   exec playerctl next
 bindsym XF86AudioPrev   exec playerctl previous
 
-# start ssh agent
-exec eval `ssh-agent -s`
-exec ssh-add 
+# start ssh agent this doesn’t work lol
+# exec eval `ssh-agent -s`
+# exec ssh-add 
 
 # start dropbox
 exec dropbox

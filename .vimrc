@@ -552,6 +552,9 @@ imap <c-s> <esc>:w<cr>a
 "copy to linux clipboard
 nnoremap YY "+Y
 
+" Quick work with buffers
+nnoremap <Leader><Leader>bd :bd<cr>
+
 "quick open and close NerdTREE
 map <F2> :NERDTreeToggle<CR>                                                 
 
