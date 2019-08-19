@@ -620,6 +620,11 @@ nnoremap <expr> <Leader>cd !empty(glob("application/config/database.php")) ? ':e
 "fourth one is refreshing airline, so the tabs don't loose it's colors
 autocmd! bufwritepost ~/.vimrc source ~/.vimrc | highlight clear LineNr | AirlineRefresh | highlight clear SignColumn
 
+
+
+"automatically rum csscomb on csslike files
+autocmd BufWritePost silent *.scss !csscomb %
+
 "automatically jump to last know cursor position on file
 if v:version >= 700
   au BufLeave * let b:winview = winsaveview()
