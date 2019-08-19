@@ -3,7 +3,7 @@
   broadcast_default = off
   enabled_plugins = LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
   homogeneous_tabbar = False
-  inactive_color_offset = 0.55303030303
+  inactive_color_offset = 0.659090909091
   scroll_tabbar = True
   tab_position = hidden
   title_font = FuraMono Nerd Font Mono 9
