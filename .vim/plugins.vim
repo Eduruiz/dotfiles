@@ -57,7 +57,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-repeat'                                     " make vim reapeat command compatible with some plugins
     Plug 'posva/vim-vue'                                        " vue syntax
     Plug 'cakebaker/scss-syntax.vim'                            " scss syntax
-    Plug 'csscomb/vim-csscomb'                                  " scss linter
+    Plug 'danhodos/vim-comb'                                    " reorder css properties automatically
     Plug 'chiedo/vim-px-to-em'                                  " convert pixels to ems
     Plug 'vim-scripts/CSSMinister'                              " convert hex colort to rgb
     Plug 'ludovicchabant/vim-gutentags'                         " auto generate ctags for projects
