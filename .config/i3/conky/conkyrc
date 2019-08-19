@@ -25,6 +25,6 @@ TEXT
  ${uptime_short}     \
  ${execpi 3600 checkupdates | awk 'END { print (NR == 0 ? "0" : NR " package" (NR > 1 ? "s" : "")); }'}     \
  ${exec amixer get Master -c 0 -M | grep -oE "[[:digit:]]*%"}     \
- ${time %a %b %d}     \
+ ${time %d.%m.%Y}     \
  ${battery_percent}%.${battery_percent BAT1}%   \
  ${time %H:%M}  \
