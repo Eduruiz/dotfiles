@@ -527,6 +527,10 @@ nmap <Leader>er :so ~/.vimrc<cr>
 "Add simple highlight removal.
 nmap <Leader><Leader> :nohlsearch<cr>
 
+
+"Yank to + register in visual mode
+vnoremap Y "+y
+
 "Quickly browse to any tag/symbol in the project.
 "Tip: run ctags -R to regenerated the index.
 " nmap <Leader>f :tag<space>
