@@ -65,10 +65,10 @@ set clipboard=unnamed
 
 set hidden                                                              "Automatically write the file when switching buffers.
 set belloff=all                                                         "Disable annoying noise on gvim
-set tabstop=8
+set tabstop=2
 set expandtab
-set softtabstop=4
-set shiftwidth=4
+set softtabstop=2
+set shiftwidth=2
 set ff=unix                                                             "Auto-convert line breaking in unix like
 set autoread                                                            "Automatically reread changed files without asking me anything
 set noshowmatch                                                           "Do not show matching brackets by flickering
