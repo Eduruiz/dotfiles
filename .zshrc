@@ -55,6 +55,7 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 plugins=(
     archlinux
     composer
+    artisan
     cloudapp
     common-aliases
     fzf
@@ -78,6 +79,7 @@ export PATH="$PATH":/home/eduruiz/.bin
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
+source /usr/share/nvm/init-nvm.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -110,8 +112,9 @@ set bind -m vi-insert ""\C-l":clear-screen"
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
-alias zshc="nvim ~/.zshrc"
-alias zshr="source ~/.zshrc"
+alias ezsh="nvim ~/.zshrc"
+alias reloadzsh="source ~/.zshrc"
+alias rzsh="source ~/.zshrc"
 alias ohmyzsh="nvim ~/.oh-my-zsh"
 alias pploy="phploy"
 alias v="nvim"
@@ -121,7 +124,7 @@ alias ssha='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_rsa'
 
 #run homestead from everywhere... EVERYWHEREEEEEE
 function homestead() {
-    ( cd ~/Homestead && vagrant $* )
+    ( cd ~/homestead && vagrant $* )
 }
 
 #config zsh widgets to run smootly with vi mode

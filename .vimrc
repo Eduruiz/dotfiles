@@ -45,6 +45,9 @@ set nowrap
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
 
+" Understand hyphened words as words
+set iskeyword+=-
+
 "custom ctrl+p ignore pattern
 let g:ctrlp_custom_ignore = '\v[\/](node_modules|target|dist)|(\.(swp|jpg|png|gif|ico|git|svn))$'
 
@@ -92,6 +95,7 @@ set guioptions-=m                                                       "remove 
 set guioptions-=T                                                       "remove toolbar
 set guioptions-=r                                                       "remove right-hand scroll bar
 set guioptions-=L                                                       "remove left-hand scroll bar
+
 set number                                                              "show line numbers
 set smartindent                                                         "when new line on insert mode, keep indentation
 set cursorline                                                          "highlight current line under cursor
@@ -161,6 +165,108 @@ command! -bang -nargs=* Ag
   \                 <bang>0)
 
 
+
+
+"/
+"/ fzf
+"/
+nmap <Leader>b :Buffers<CR>
+nmap <Leader>f :Files<CR>
+nmap <Leader>t :Tags<CR>
+nmap <Leader>g :Ag<CR>
+
+" general
+" let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
+" let $FZF_DEFAULT_OPTS="--reverse "                                         " top to bottom
+
+" use rg by default
+" if executable('ag')
+"   let $FZF_DEFAULT_COMMAND = 'ag --files --hidden --follow --glob "!.git/*"'
+"   set grepprg=ag\ --vimgrep
+" endif
+
+"}}}
+
+"{{{ ======================== Filetype-Specific Configurations ============================= "
+
+" enable spell only if file type is normal text
+" let spellable = ['markdown', 'gitcommit', 'txt', 'text']
+" autocmd BufEnter * if index(spellable, &ft) < 0 | set nospell | else | set spell | endif
+
+" open help in vertical split
+" autocmd FileType help wincmd L
+
+" startify when there is no open buffer left
+" autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | Startify | endif
+
+" open startify on start
+" autocmd VimEnter * if argc() == 0 | Startify | endif
+
+" open files preview on enter and provided arg is a folder
+" autocmd VimEnter * if argc() != 0 && isdirectory(argv()[0]) | Startify | endif
+" autocmd VimEnter * if argc() != 0 && isdirectory(argv()[0]) | execute 'cd' fnameescape(argv()[0])  | endif
+" autocmd VimEnter * if argc() != 0 && isdirectory(argv()[0]) | Files | endif
+
+" auto html tags closing, enable for markdown files as well
+" let g:closetag_filenames = '*.html,*.xhtml,*.phtml, *.md'
+
+" disable autosave on kernel directory and also formatting on save (we dont wanna fuck this up)
+" autocmd BufRead,BufNewFile */Dark-Ages/* let b:auto_save = 0
+" autocmd BufRead,BufNewFile */Dark-Ages/* let b:ale_fix_on_save = 0
+
+"}}}
+"{{{ ================== Custom Functions ===================== "
+
+" files window with preview
+" command! -bang -nargs=? -complete=dir Files
+"         \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+
+" advanced grep(faster with preview)
+" function! RipgrepFzf(query, fullscreen)
+"     let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
+"     let initial_command = printf(command_fmt, shellescape(a:query))
+"     let reload_command = printf(command_fmt, '{q}')
+"     let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+"     call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+" endfunction
+" command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
+"
+" " floating fzf window with borders
+" function! CreateCenteredFloatingWindow()
+"     let width = min([&columns - 4, max([80, &columns - 20])])
+"     let height = min([&lines - 4, max([20, &lines - 10])])
+"     let top = ((&lines - height) / 2) - 1
+"     let left = (&columns - width) / 2
+"     let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
+"
+"     let top = "╭" . repeat("─", width - 2) . "╮"
+"     let mid = "│" . repeat(" ", width - 2) . "│"
+"     let bot = "╰" . repeat("─", width - 2) . "╯"
+"     let lines = [top] + repeat([mid], height - 2) + [bot]
+"     let s:buf = nvim_create_buf(v:false, v:true)
+"     call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
+"     call nvim_open_win(s:buf, v:true, opts)
+"     set winhl=Normal:Floating
+"     let opts.row += 1
+"     let opts.height -= 2
+"     let opts.col += 2
+"     let opts.width -= 4
+"     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
+"     au BufWipeout <buffer> exe 'bw '.s:buf
+" endfunction
+
+" show docs on things with K
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   else
+"     call CocAction('doHover')
+"   endif
+" endfunction
+
+
+
 "/
 "/ GitGutter
 "/
@@ -178,6 +284,12 @@ else
 endif
 
 
+
+"/
+"/ polyglot
+"/
+"
+let g:polyglot_disabled = ['blade']
 
 
 
@@ -216,9 +328,9 @@ let g:session_default_to_last = 1                                        "autolo
 "/
 "/ Deoplete
 "/
-let g:deoplete#enable_at_startup = 1
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+" let g:deoplete#enable_at_startup = 1
+" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif:q
 
 
@@ -232,10 +344,10 @@ inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 set shortmess+=c
 " When the <Enter> key is pressed while the popup menu is visible, it only hides the menu.
 " this mapping hide the menu and also start a new line.
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 " Use <TAB> to select the popup menu:
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 
 
@@ -284,9 +396,9 @@ let g:neosnippet#enable_completed_snippet = 1
 " let g:SuperTabDefaultCompletionType = '<C-n>'
 "
 " " better key bindings for UltiSnipsExpandTrigger
-" let g:UltiSnipsExpandTrigger = "<tab>"
-" let g:UltiSnipsJumpForwardTrigger = "<tab>"
-" let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+let g:UltiSnipsExpandTrigger = "noop"
+let g:UltiSnipsJumpForwardTrigger = "noop"
+let g:UltiSnipsJumpBackwardTrigger = "noop"
 let g:UltiSnipsSnippetDirectories = ['~/.vim/UltiSnips', 'UltiSnips']
 
 
@@ -307,13 +419,6 @@ let g:ctrlp_clear_cache_on_exit=0  		" speed up by not removing clearing cache e
 let g:ctrlp_mruf_max = 250 			" number of recently opened files
 let g:ctrlp_show_hidden = 1                     " let ctrlp see the hidden files
 
-"/
-"/ fzf
-"/
-nmap <Leader>b :Buffers<CR>
-nmap <Leader>f :Files<CR>
-nmap <Leader>t :Tags<CR>
-nmap <Leader>g :Ag!<CR>
 
 
 
@@ -330,11 +435,19 @@ let g:ackprg = 'ag --vimgrep'
 "/
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
+" use <tab> for trigger completion and navigate to the next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
       \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -417,6 +530,23 @@ let g:syntastic_check_on_wq = 0
 
 
 
+"/
+"/ tagalong 
+"/
+
+let g:tagalong_additional_filetypes = ['vue']
+
+
+
+"/
+"/ sneak
+"/
+let g:sneak#label = 1
+let g:sneak#s_next = 1 "activate 'smart s' to go to next matchs with s
+nmap <expr> <Tab> sneak#is_sneaking() ? '<Plug>Sneak_;' : '<Tab>'
+nmap <expr> <S-Tab> sneak#is_sneaking() ? '<Plug>Sneak_,' : '<S-Tab>'
+
+
 
 
 
@@ -436,6 +566,19 @@ let g:ale_linters = {'vue': ['eslint', 'vls']}
 let g:ale_fixers = {'vue': ['eslint', 'vls']}
 
 
+let g:ale_fixers = {
+\ 'javascript': ['prettier'],
+\ 'vue': ['eslint', 'vls'],
+\ 'javascript.jsx': ['prettier'],
+\ 'javascriptreact': ['prettier'],
+\ 'css': ['prettier'],
+\ 'scss': ['prettier'],
+\ }
+
+" let g:ale_fix_on_save=1
+
+
+
 
 
 
@@ -443,7 +586,7 @@ let g:ale_fixers = {'vue': ['eslint', 'vls']}
 "/ nerdtree
 "/
 let NERDTreeShowHidden=1
-let g:NERDTreeWinPos = "right"
+let g:NERDTreeWinPos = "left"
 
 
 
@@ -518,11 +661,13 @@ endif
 "-------------Mappings--------------"
 "quicky search visual selection
 vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
-"Make it easy to edit the vim file.
+"Make it easy to edit frequent general files
 nmap <Leader>ev :e ~/.vimrc<cr>
 nmap <Leader>ep :e ~/.vim/plugins.vim<cr>
 nmap <Leader>es :e ~/.vim/snippets/
 nmap <Leader>er :so ~/.vimrc<cr>
+nmap <Leader>eh :e ~/Dropbox/docs/appcivico/hours.md<cr>
+nmap <Leader>et :e ~/Dropbox/docs/appcivico/vagas.md<cr>
 
 "Add simple highlight removal.
 nmap <Leader><Leader> :nohlsearch<cr>
@@ -536,10 +681,10 @@ vnoremap Y "+y
 " nmap <Leader>f :tag<space>
 
 "Easy scape from insert mode
-inoremap jk <esc>
+inoremap jk <esc> 
 inoremap kj <esc>
 inoremap jj <esc>
-inoremap kk <esc>
+" inoremap kk <esc>
 
 "Easy scape from terminal mode
 tnoremap <esc> <C-\><C-N>
@@ -575,7 +720,7 @@ map <F3> :setlocal spell! spelllang=en_us<CR>
 nmap <Leader>z 1z=
 autocmd FileType gitcommit setlocal spell
 
-"adjust tab to indent on insert mode, needed because tab is remapped to expand emmet stuff
+" adjust tab to indent on insert mode, needed because tab is remapped to expand emmet stuff
 " imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 
@@ -595,13 +740,16 @@ iab lenght length
 
 
 
+"-------------whatever?--------------"
+nmap <Leader>ee :e .env<cr>
+
 
 "-------------Laravel-Specific--------------"
 nmap <Leader>lr :e routes/web.php<cr>
+nmap <Leader>lc :e config/app.php<cr>
 nmap <Leader>lm :!php artisan make:
-nmap <Leader><Leader>c :e app/Http/Controllers/<cr>
-nmap <Leader><Leader>m :CtrlP<cr>app/
-nmap <Leader><Leader>v :e resources/views/<cr>
+nmap <Leader>lm :CtrlP<cr>app/
+nmap <Leader>lv :e resources/views/<cr>
 
 
 
@@ -627,10 +775,11 @@ autocmd! bufwritepost ~/.vimrc source ~/.vimrc | highlight clear LineNr | Airlin
 
 
 "automatically rum csscomb on csslike files
-autocmd BufWritePost silent *.scss !csscomb %
+" autocmd BufWritePost silent *.scss !csscomb %
 
 "automatically jump to last know cursor position on file
 if v:version >= 700
   au BufLeave * let b:winview = winsaveview()
   au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
 endif
+
