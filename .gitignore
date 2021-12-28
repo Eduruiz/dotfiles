@@ -1,0 +1,4 @@
+vim/.vim/undo/*
+vim/.vim/sessions/*
+vim/.vim/undo.old/*
+vim/.vim/plugged/*
