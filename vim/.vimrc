@@ -20,7 +20,7 @@ set ruler
 " Ignore case when searching
 set ignorecase
 
-" When searching try to be smart about cases 
+" When searching try to be smart about cases
 set smartcase
 
 " Highlight search results
@@ -74,7 +74,7 @@ set softtabstop=2
 set shiftwidth=2
 set ff=unix                                                             "Auto-convert line breaking in unix like
 set autoread                                                            "Automatically reread changed files without asking me anything
-set noshowmatch                                                           "Do not show matching brackets by flickering
+set noshowmatch                                                         "Do not show matching brackets by flickering
 let php_htmlInStrings = 1
 
 
@@ -89,8 +89,7 @@ set background=dark
 let g:gruvbox_italic=1                                                  " enbale gruvbox italic fonts on terminal
 colorscheme omni
 " colorscheme nova
-let g:airline_theme = "oceanicnext"                                         "Enable hybrid theme on airline 
-" let g:airline_theme = "oceanicnext"                                   "Enable hybrid theme on airline 
+let g:airline_theme = "oceanicnext"                                     "Enable hybrid theme on airline
 set guioptions-=m                                                       "remove menu bar
 set guioptions-=T                                                       "remove toolbar
 set guioptions-=r                                                       "remove right-hand scroll bar
@@ -136,8 +135,8 @@ nmap <C-L> <C-W><C-L>
 
 "-------------History and undo stuff--------------"
 set history=10000                                                         " Store a ton of history
-set undofile                                                            "Turn on the feature, this make persistent undo after writing file
-set undodir=$HOME/.vim/undo//                                            "Directory where the undo files will be stored, this NEED to exist beforehand
+set undofile                                                              " Turn on the feature, this make persistent undo after writing file
+set undodir=$HOME/.vim/undo//                                             " Directory where the undo files will be stored, this NEED to exist beforehand
 
 
 
@@ -146,7 +145,7 @@ set undodir=$HOME/.vim/undo//                                            "Direct
 " Lifted from StackOverflow user Jeremy W. Sherman
 " http://stackoverflow.com/a/3765575/2250435
 if exists('+colorcolumn')
-  set textwidth=120
+  set textwidth=100
   set colorcolumn=+1
 else
   au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>120v.\+', -1)
@@ -175,97 +174,6 @@ nmap <Leader>f :Files<CR>
 nmap <Leader>t :Tags<CR>
 nmap <Leader>g :Ag<CR>
 
-" general
-" let g:fzf_layout = { 'window': 'call CreateCenteredFloatingWindow()' }
-" let $FZF_DEFAULT_OPTS="--reverse "                                         " top to bottom
-
-" use rg by default
-" if executable('ag')
-"   let $FZF_DEFAULT_COMMAND = 'ag --files --hidden --follow --glob "!.git/*"'
-"   set grepprg=ag\ --vimgrep
-" endif
-
-"}}}
-
-"{{{ ======================== Filetype-Specific Configurations ============================= "
-
-" enable spell only if file type is normal text
-" let spellable = ['markdown', 'gitcommit', 'txt', 'text']
-" autocmd BufEnter * if index(spellable, &ft) < 0 | set nospell | else | set spell | endif
-
-" open help in vertical split
-" autocmd FileType help wincmd L
-
-" startify when there is no open buffer left
-" autocmd BufDelete * if empty(filter(tabpagebuflist(), '!buflisted(v:val)')) | Startify | endif
-
-" open startify on start
-" autocmd VimEnter * if argc() == 0 | Startify | endif
-
-" open files preview on enter and provided arg is a folder
-" autocmd VimEnter * if argc() != 0 && isdirectory(argv()[0]) | Startify | endif
-" autocmd VimEnter * if argc() != 0 && isdirectory(argv()[0]) | execute 'cd' fnameescape(argv()[0])  | endif
-" autocmd VimEnter * if argc() != 0 && isdirectory(argv()[0]) | Files | endif
-
-" auto html tags closing, enable for markdown files as well
-" let g:closetag_filenames = '*.html,*.xhtml,*.phtml, *.md'
-
-" disable autosave on kernel directory and also formatting on save (we dont wanna fuck this up)
-" autocmd BufRead,BufNewFile */Dark-Ages/* let b:auto_save = 0
-" autocmd BufRead,BufNewFile */Dark-Ages/* let b:ale_fix_on_save = 0
-
-"}}}
-"{{{ ================== Custom Functions ===================== "
-
-" files window with preview
-" command! -bang -nargs=? -complete=dir Files
-"         \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-
-" advanced grep(faster with preview)
-" function! RipgrepFzf(query, fullscreen)
-"     let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
-"     let initial_command = printf(command_fmt, shellescape(a:query))
-"     let reload_command = printf(command_fmt, '{q}')
-"     let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-"     call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
-" endfunction
-" command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
-"
-" " floating fzf window with borders
-" function! CreateCenteredFloatingWindow()
-"     let width = min([&columns - 4, max([80, &columns - 20])])
-"     let height = min([&lines - 4, max([20, &lines - 10])])
-"     let top = ((&lines - height) / 2) - 1
-"     let left = (&columns - width) / 2
-"     let opts = {'relative': 'editor', 'row': top, 'col': left, 'width': width, 'height': height, 'style': 'minimal'}
-"
-"     let top = "╭" . repeat("─", width - 2) . "╮"
-"     let mid = "│" . repeat(" ", width - 2) . "│"
-"     let bot = "╰" . repeat("─", width - 2) . "╯"
-"     let lines = [top] + repeat([mid], height - 2) + [bot]
-"     let s:buf = nvim_create_buf(v:false, v:true)
-"     call nvim_buf_set_lines(s:buf, 0, -1, v:true, lines)
-"     call nvim_open_win(s:buf, v:true, opts)
-"     set winhl=Normal:Floating
-"     let opts.row += 1
-"     let opts.height -= 2
-"     let opts.col += 2
-"     let opts.width -= 4
-"     call nvim_open_win(nvim_create_buf(v:false, v:true), v:true, opts)
-"     au BufWipeout <buffer> exe 'bw '.s:buf
-" endfunction
-
-" show docs on things with K
-" function! s:show_documentation()
-"   if (index(['vim','help'], &filetype) >= 0)
-"     execute 'h '.expand('<cword>')
-"   else
-"     call CocAction('doHover')
-"   endif
-" endfunction
-
-
 
 "/
 "/ GitGutter
@@ -283,13 +191,6 @@ else
   let g:gitgutter_sign_column_always = 1
 endif
 
-
-
-"/
-"/ polyglot
-"/
-"
-let g:polyglot_disabled = ['blade']
 
 
 
@@ -321,34 +222,6 @@ set completefunc=emoji#complete
 let g:session_autosave = 'yes'                                           "autosave session on quit
 let g:session_autoload = 'yes'                                            "get rid of dialog asking if you want to load the last session
 let g:session_default_to_last = 1                                        "autoload last saved session
-
-
-
-
-"/
-"/ Deoplete
-"/
-" let g:deoplete#enable_at_startup = 1
-" inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-" inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-" autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif:q
-
-
-
-
-"/
-"/  nvim completion manager
-"/
-" don't give |ins-completion-menu| messages.  For example,
-" 'xxx completion (yyy)', 'match 1 of 2', 'The only match'
-set shortmess+=c
-" When the <Enter> key is pressed while the popup menu is visible, it only hides the menu.
-" this mapping hide the menu and also start a new line.
-" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-" Use <TAB> to select the popup menu:
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
 
 
 
@@ -464,7 +337,7 @@ lua << EOF
     buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
     buf_set_keymap('n', '<space>lf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-    
+
     -- my new commands
     buf_set_keymap('n', '<space>af', '<cmd>EslintFixAll<CR>', opts)
   end
@@ -540,84 +413,13 @@ lua << EOF
     }
   }
 
+  local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+  for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+  end
 EOF
 
-
-
-"/
-"/ coc vim
-"/
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-" use <tab> for trigger completion and navigate to the next complete item
-
-" function! s:check_back_space() abort
-"   let col = col('.') - 1
-"   return !col || getline('.')[col - 1]  =~ '\s'
-" endfunction
-"
-" inoremap <silent><expr> <Tab>
-"       \ pumvisible() ? "\<C-n>" :
-"       \ <SID>check_back_space() ? "\<Tab>" :
-"       \ coc#refresh()
-"
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-"
-" function! s:check_back_space() abort
-"   let col = col('.') - 1
-"   return !col || getline('.')[col - 1]  =~# '\s'
-" endfunction
-
-" airline integration
-" let g:airline_section_error = '%{airline#util#wrap(airline#extensions#coc#get_error(),0)}'
-" let g:airline_section_warning = '%{airline#util#wrap(airline#extensions#coc#get_warning(),0)}'
-" Use <c-space> for trigger completion.
-" inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use K for show documentation in preview window
-" nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-" function! s:show_documentation()
-"   if &filetype == 'vim'
-"     execute 'h '.expand('<cword>')
-"   else
-"     call CocAction('doHover')
-"   endif
-" endfunction
-
-"list extensions
-" let s:coc_extensions = [
-" \   'coc-css',
-" \   'coc-html',
-" \   'coc-json',
-" \   'coc-emmet',
-" \   'coc-emoji',
-" \   'coc-eslint',
-" \   'coc-stylelintplus',
-" \   'coc-prettier',
-" \   'coc-tsserver',
-" \   'coc-vetur',
-" \   'coc-ultisnips'
-" \ ]
-
-"loop and install the extensions
-" for extension in s:coc_extensions
-"     call coc#add_extension(extension)
-" endfor
-
-" Remap keys for gotos
-" nmap <silent> gd <Plug>(coc-definition)
-" nmap <silent> gy <Plug>(coc-type-definition)
-" nmap <silent> gi <Plug>(coc-implementation)
-" nmap <silent> gr <Plug>(coc-references)
-
-" Highlight symbol under cursor on CursorHold
-" autocmd CursorHold * silent call CocActionAsync('highlight')
 
 "/
 "/ Emmet vim
@@ -636,18 +438,6 @@ let g:user_emmet_next_key = '<C-w>'
 " let g:user_emmet_prev_key = ''
 
 
-
-"/
-"/ syntastic
-"/
-
-let g:syntastic_always_populate_loc_list = 1     "Those are the recommended settings from syntastic
-let g:syntastic_auto_loc_list = 1                "I don't really know what's going on here, but will
-let g:syntastic_check_on_open = 1                "update as soon as things make more sense to me
-let g:syntastic_check_on_wq = 0
-
-
-
 "/
 "/ tagalong 
 "/
@@ -663,37 +453,6 @@ let g:sneak#label = 1
 let g:sneak#s_next = 1 "activate 'smart s' to go to next matchs with s
 nmap <expr> <Tab> sneak#is_sneaking() ? '<Plug>Sneak_;' : '<Tab>'
 nmap <expr> <S-Tab> sneak#is_sneaking() ? '<Plug>Sneak_,' : '<S-Tab>'
-
-
-
-
-
-"/
-"/ ALE - syntax linting async
-"/
-" let g:ale_sign_warning = '▲'
-" let g:ale_sign_error   = '✗'
-" highlight link ALEWarningSign String
-" highlight link ALEErrorSign Title
-" " Highlight errors on airline
-" let g:airline#extensions#ale#enabled = 1
-" nmap <Leader>af :ALEFix<cr>
-" " Fix files with prettier, and then ESLint.
-" let g:ale_linter_aliases = {'vue': ['vue', 'javascript', 'css']}
-" let g:ale_linters = {'vue': ['eslint', 'vls', 'stylelint']}
-"
-" let g:ale_fixers = {
-" \ 'javascript': ['eslint'],
-" \ 'vue': ['eslint'],
-" \ 'typescript': ['eslint'],
-" \ 'javascript.jsx': ['prettier'],
-" \ 'javascriptreact': ['prettier'],
-" \ 'css': ['stylelint'],
-" \ 'scss': ['stylelint'],
-" \ }
-
-" let g:ale_fix_on_save=1
-
 
 
 
@@ -756,7 +515,7 @@ let g:used_javascript_libs = 'jquery,vue,react'
 " Automatically calculate import cost on js files
 " this may be a little slow, but let test it out
 " this depends on import-cost plugin supporting vue
-" by now it makes no sense to use it
+" by now it makes no sense to use it (https://github.com/wix/import-cost/issues/23)
 " augroup import_cost_auto_run
 "   autocmd!
 "   autocmd InsertLeave *.js,*.jsx,*.ts,*.tsx ImportCost
@@ -813,10 +572,10 @@ nnoremap YY "+Y
 nnoremap <Leader><Leader>bd :bd<cr>
 
 "quick open and close NerdTREE
-map <F2> :NERDTreeToggle<CR>                                                 
+map <F2> :NERDTreeToggle<CR>
 
 "drag and duplicate selected text with arrow keys
-vmap  <expr>  <LEFT>   DVB_Drag('left')                                     
+vmap  <expr>  <LEFT>   DVB_Drag('left')
 vmap  <expr>  <RIGHT>  DVB_Drag('right')
 vmap  <expr>  <DOWN>   DVB_Drag('down')
 vmap  <expr>  <UP>     DVB_Drag('up')

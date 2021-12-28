@@ -51,7 +51,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'ludovicchabant/vim-gutentags'                         " auto generate ctags for projects
     Plug 'tpope/vim-eunuch'                                     " Vim sugar for the UNIX shell commands that need it the most.
     Plug 'lambdalisue/suda.vim'                                 " Plugin to write as sudo on neovim (https://github.com/neovim/neovim/issues/1716)
-    Plug 'w0rp/ale'                                             " same as syntastic, a syntax checker but assync
     Plug 'EpicVoyage/Expression-Engine-Vim-syntax'              " expression engine vim syntax
     Plug 'junegunn/vim-peekaboo'                                " show you the contents of the registers
     Plug 'AndrewRadev/tagalong.vim'                             " Change an HTML(ish) opening tag and take the closing one along as well
@@ -66,10 +65,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'nvim-telescope/telescope.nvim'
 
 
-    " Let's try LSP 
+    " Let's try LSP
     " First we disable coc
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}             " Testing COC autocompletion (vscode like they say)
     " Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
+    " Plug 'ncm2/ncm2'                                            "neo completion manager version 2
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}    "nvim better highlight using treesitter
 
