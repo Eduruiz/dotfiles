@@ -305,7 +305,7 @@ let g:ackprg = 'ag --vimgrep'
 
 lua << EOF
   local nvim_lsp = require('lspconfig')
-  local servers = { 'tsserver', 'vuels', 'eslint' }
+  local servers = { 'tsserver', 'vuels', 'eslint', 'cssls', 'stylelint_lsp' }
 
   -- Use an on_attach function to only map the following keys
   -- after the language server attaches to the current buffer
