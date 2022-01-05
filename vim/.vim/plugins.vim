@@ -10,8 +10,11 @@ call plug#begin('~/.vim/plugged')
     Plug 'flazz/vim-colorschemes'
     Plug 'mattn/emmet-vim'                                      " emmet for vim, html/css expander/autocomplete
     Plug 'atweiden/vim-dragvisuals'                             " plugin to select text (visual mode) and easy drag it using arrow keys (remaps needed)
-    Plug 'vim-airline/vim-airline'                              " airline, show nice infos on the bottom bar (I think you know what airline/powerline is)
-    Plug 'vim-airline/vim-airline-themes'                       " airline themes
+    " Plug 'vim-airline/vim-airline'                              " airline, show nice infos on the bottom bar (I think you know what airline/powerline is)
+    " Plug 'vim-airline/vim-airline-themes'                       " airline themes
+    Plug 'kyazdani42/nvim-web-devicons'                         " Recommended for coloured icons (lualine and bufferline)
+    Plug 'nvim-lualine/lualine.nvim'                            " a line written in lua (dã)
+    Plug 'akinsho/bufferline.nvim'                              " nice buffers visualizer
     Plug 'tpope/vim-surround'                                   " make surround things and changing surroundings easier
     Plug 'kristijanhusak/vim-hybrid-material'                   " really good looking theme
     Plug 'dracula/vim'                                          " dracula theme for vim :)
@@ -56,7 +59,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'AndrewRadev/tagalong.vim'                             " Change an HTML(ish) opening tag and take the closing one along as well
     Plug 'justinmk/vim-sneak'                                   " Jump to any location specified by two characters.
     Plug 'sk1418/HowMuch'                                       " Easily do quick math with visual selections
-    " Plug 'shmargum/vim-sass-colors'                             " Show sass colors
+    Plug 'shmargum/vim-sass-colors'                             " Show sass colors
     " Plug 'codota/tabnine-vim'                                   " Tabnine, AI completion (I'm not even sure it's working)
     " Plug 'yardnsm/vim-import-cost', { 'do': 'npm install' }   " Nice way to show import sizes but not usefull on vim yet (https://github.com/wix/import-cost/issues/23)
     "

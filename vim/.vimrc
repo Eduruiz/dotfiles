@@ -78,18 +78,27 @@ set noshowmatch                                                         "Do not 
 let php_htmlInStrings = 1
 
 
+"------------- Theme --------------"
+"vim cool colorschemes
+" colorscheme OceanicNext
+" let g:gruvbox_italic=1                                                  " enbale gruvbox italic fonts on terminal
+" colorscheme nova
+" colorscheme omni
+" colorscheme nova
+" let g:airline_theme = "oceanicnext"                                     "Enable hybrid theme on airline
+let g:vscode_style = "dark"
+let g:vscode_transparency = 1
+colorscheme vscode
+colorscheme PaperColor
+
+
+
 
 "-------------Visual stuff--------------"
 :set formatoptions-=t                                                   "Disable vim auto indentation on some width
 let g:enable_italic_font = 1                                            "Enable italic fonts on comments
 "let g:enable_bold_font = 1                                             "Enable some fonts to be bold
 set background=dark
-"vim cool colorschemes
-" colorscheme OceanicNext
-let g:gruvbox_italic=1                                                  " enbale gruvbox italic fonts on terminal
-colorscheme omni
-" colorscheme nova
-let g:airline_theme = "oceanicnext"                                     "Enable hybrid theme on airline
 set guioptions-=m                                                       "remove menu bar
 set guioptions-=T                                                       "remove toolbar
 set guioptions-=r                                                       "remove right-hand scroll bar
@@ -302,10 +311,42 @@ let g:ctrlp_show_hidden = 1                     " let ctrlp see the hidden files
 " Tell ack.vim to use ag (the Silver Searcher) instead
 let g:ackprg = 'ag --vimgrep'
 
-
 lua << EOF
+
+  require("bufferline").setup{}
+
+  require('lualine').setup{
+    sections = {
+      lualine_c = {
+        {
+          'filename',
+          file_status = true,      -- Displays file status (readonly status, modified status)
+          path = 1,                -- 0: Just the filename
+                                   -- 1: Relative path
+                                   -- 2: Absolute path
+
+          shorting_target = 40,    -- Shortens path to leave 40 spaces in the window
+                                   -- for other components. (terrible name, any suggestions?)
+          symbols = {
+            modified = '[+]',      -- Text to show when the file is modified.
+            readonly = '[-]',      -- Text to show when the file is non-modifiable or readonly.
+            unnamed = '[No Name]', -- Text to show for unnamed buffers.
+          }
+        }
+      }
+    }
+  }
+
   local nvim_lsp = require('lspconfig')
-  local servers = { 'tsserver', 'vuels', 'eslint', 'cssls', 'stylelint_lsp' }
+  local servers = {
+    'tsserver',
+    'vuels',
+    'eslint',
+    'cssls',
+    'stylelint_lsp',
+    'intelephense',
+    'vimls'
+  }
 
   -- Use an on_attach function to only map the following keys
   -- after the language server attaches to the current buffer
@@ -470,20 +511,20 @@ let g:NERDTreeWinPos = "left"
 "/ airline
 "/
 
-set enc=utf8
-syntax enable on
-
-let g:Powerline_symbols = 'fancy'
-set laststatus=2 "always show powerline
-set t_Co=256
-let g:airline_powerline_fonts = 1
-set fillchars+=stl:\ ,stlnc:\
-set termencoding=utf-8
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-" Just show the filename (no path) in the tab
-let g:airline#extensions#tabline#fnamemod = ':t'
+" set enc=utf8
+" syntax enable on
+"
+" let g:Powerline_symbols = 'fancy'
+" set laststatus=2 "always show powerline
+" set t_Co=256
+" let g:airline_powerline_fonts = 1
+" set fillchars+=stl:\ ,stlnc:\
+" set termencoding=utf-8
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#left_sep = ' '
+" let g:airline#extensions#tabline#left_alt_sep = '|'
+" " Just show the filename (no path) in the tab
+" let g:airline#extensions#tabline#fnamemod = ':t'
 
 
 
@@ -642,11 +683,11 @@ nnoremap <expr> <Leader>cd !empty(glob("application/config/database.php")) ? ':e
 "second one is clearing line numbers, so it get the same color as the bg
 "third one is doing the same, but with SignColumn (used by gitgutter)
 "fourth one is refreshing airline, so the tabs don't loose it's colors
-autocmd! bufwritepost ~/.vimrc source ~/.vimrc | highlight clear LineNr | AirlineRefresh | highlight clear SignColumn
+autocmd! bufwritepost ~/.vimrc source ~/.vimrc | highlight clear LineNr | highlight clear SignColumn
 
 
 
-"automatically rum csscomb on csslike files
+" automatically rum csscomb on csslike files
 " autocmd BufWritePost silent *.scss !csscomb %
 
 "automatically jump to last know cursor position on file
