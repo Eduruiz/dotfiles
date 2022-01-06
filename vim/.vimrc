@@ -82,13 +82,12 @@ let php_htmlInStrings = 1
 "vim cool colorschemes
 " colorscheme OceanicNext
 " let g:gruvbox_italic=1                                                  " enbale gruvbox italic fonts on terminal
-" colorscheme nova
 " colorscheme omni
 " colorscheme nova
 " let g:airline_theme = "oceanicnext"                                     "Enable hybrid theme on airline
-let g:vscode_style = "dark"
-let g:vscode_transparency = 1
-colorscheme vscode
+" let g:vscode_style = "dark"
+" let g:vscode_transparency = 1
+" colorscheme vscode
 colorscheme PaperColor
 
 
