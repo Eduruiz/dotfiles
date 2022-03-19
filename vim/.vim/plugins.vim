@@ -16,12 +16,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'nvim-lualine/lualine.nvim'                            " a line written in lua (dã)
     Plug 'akinsho/bufferline.nvim'                              " nice buffers visualizer
     Plug 'tpope/vim-surround'                                   " make surround things and changing surroundings easier
-    Plug 'kristijanhusak/vim-hybrid-material'                   " really good looking theme
-    Plug 'dracula/vim'                                          " dracula theme for vim :)
-    Plug 'shaunsingh/nord.nvim'                                 " just another theme
-    Plug 'yonlu/omni.vim'                                       " just another theme
-    Plug 'Mofiqul/vscode.nvim'                                  " theme treesitter ready
-    Plug 'morhetz/gruvbox'                                      " classic vim theme
     Plug 'xolox/vim-misc'                                       " this plugin is a requirement to vim-session work
     Plug 'xolox/vim-session'                                    " manage vim sessions like sublime text
     Plug 'terryma/vim-multiple-cursors'                         " multiple cursors, sublime like but more powerful
@@ -59,13 +53,23 @@ call plug#begin('~/.vim/plugged')
     Plug 'AndrewRadev/tagalong.vim'                             " Change an HTML(ish) opening tag and take the closing one along as well
     Plug 'justinmk/vim-sneak'                                   " Jump to any location specified by two characters.
     Plug 'sk1418/HowMuch'                                       " Easily do quick math with visual selections
-    Plug 'shmargum/vim-sass-colors'                             " Show sass colors
+    " Plug 'shmargum/vim-sass-colors'                             " Show sass colors
     " Plug 'codota/tabnine-vim'                                   " Tabnine, AI completion (I'm not even sure it's working)
     " Plug 'yardnsm/vim-import-cost', { 'do': 'npm install' }   " Nice way to show import sizes but not usefull on vim yet (https://github.com/wix/import-cost/issues/23)
     "
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
+
+    "themes
+    Plug 'kristijanhusak/vim-hybrid-material'                   " really good looking theme
+    Plug 'dracula/vim'                                          " dracula theme for vim :)
+    Plug 'shaunsingh/nord.nvim'                                 " just another theme
+    Plug 'yonlu/omni.vim'                                       " just another theme
+    Plug 'Mofiqul/vscode.nvim'                                  " theme treesitter ready
+    Plug 'morhetz/gruvbox'                                      " classic vim theme
+    Plug 'pappasam/papercolor-theme-slim'                       " papercolor treesitter ready
+
 
 
     " Let's try LSP

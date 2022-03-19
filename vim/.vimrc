@@ -88,7 +88,7 @@ let php_htmlInStrings = 1
 " let g:vscode_style = "dark"
 " let g:vscode_transparency = 1
 " colorscheme vscode
-colorscheme PaperColor
+colorscheme PaperColorSlim
 
 
 
@@ -177,10 +177,10 @@ command! -bang -nargs=* Ag
 "/
 "/ fzf
 "/
-nmap <Leader>b :Buffers<CR>
-nmap <Leader>f :Files<CR>
-nmap <Leader>t :Tags<CR>
-nmap <Leader>g :Ag<CR>
+" nmap <Leader>b :Buffers<CR>
+" nmap <Leader>f :Files<CR>
+" nmap <Leader>t :Tags<CR>
+" nmap <Leader>g :Ag<CR>
 
 
 "/
@@ -310,7 +310,15 @@ let g:ctrlp_show_hidden = 1                     " let ctrlp see the hidden files
 " Tell ack.vim to use ag (the Silver Searcher) instead
 let g:ackprg = 'ag --vimgrep'
 
+
 lua << EOF
+  local actions = require('telescope.actions')require('telescope').setup{
+  pickers = {
+    buffers = {
+        sort_lastused = true
+      }
+    }
+  }
 
   require("bufferline").setup{}
 
@@ -340,8 +348,11 @@ lua << EOF
   local servers = {
     'tsserver',
     'vuels',
+    'html',
+    'emmet_ls',
     'eslint',
     'cssls',
+    'jsonls',
     'stylelint_lsp',
     'intelephense',
     'vimls'
@@ -372,11 +383,25 @@ lua << EOF
     buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+    buf_set_keymap('n', '<space>d', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
     buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
     buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
     buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
     buf_set_keymap('n', '<space>lf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+      -- learn to set this in lua like another eduardo does here
+      -- https://github.com/eduardoarandah/vimrc-public/blob/nvim/extra.vim
+      -- function Fix()
+      --   if(vim.bo.filetype == 'javascript') then
+      --     return '!npx eslint --fix %'
+      --   end
+      --   if(vim.bo.filetype == 'scss') then
+      --     return '!npx stylelint % --fix'
+      --   end
+      -- end
+      --
+      -- command! Fix :call Fix()
+      -- buf_set_keymap('n', '<space>af', '<cmd>Fix<CR>', opts)
 
     -- my new commands
     buf_set_keymap('n', '<space>af', '<cmd>EslintFixAll<CR>', opts)
@@ -459,6 +484,15 @@ lua << EOF
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
   end
 EOF
+
+"/
+"/ Telescope
+"/
+nnoremap <leader>f <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <leader>g <cmd>lua require('telescope.builtin').live_grep()<cr>
+nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <leader>h <cmd>lua require('telescope.builtin').help_tags()<cr>
+
 
 
 "/
