@@ -77,7 +77,8 @@ call plug#begin('~/.vim/plugged')
     " First we disable coc
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}             " Testing COC autocompletion (vscode like they say)
     " Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
-    " Plug 'ncm2/ncm2'                                            "neo completion manager version 2
+    " Plug 'ncm2/ncm2'                                            " neo completion manager version 2
+    Plug 'lumiliet/vim-twig'                                      " twig syntax highlighting
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}    "nvim better highlight using treesitter
 
