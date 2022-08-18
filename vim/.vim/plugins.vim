@@ -44,6 +44,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'cakebaker/scss-syntax.vim'                            " scss syntax
     Plug 'danhodos/vim-comb'                                    " reorder css properties automatically
     Plug 'chiedo/vim-px-to-em'                                  " convert pixels to ems
+    Plug 'Oldenborg/vim-px-to-rem'                              " convert pixels to rems
     Plug 'vim-scripts/CSSMinister'                              " convert hex colort to rgb
     Plug 'ludovicchabant/vim-gutentags'                         " auto generate ctags for projects
     Plug 'tpope/vim-eunuch'                                     " Vim sugar for the UNIX shell commands that need it the most.
