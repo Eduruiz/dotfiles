@@ -8,24 +8,24 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-fugitive'                                   " this is a git wrapper that add some git commands to vim, I kind of don't use it
     Plug 'scrooloose/nerdtree'                                  " nerdtree is a good 'gui' for file navigation, really nice
     Plug 'flazz/vim-colorschemes'
-    Plug 'mattn/emmet-vim'                                      " emmet for vim, html/css expander/autocomplete
+    " Plug 'mattn/emmet-vim'                                      " emmet for vim, html/css expander/autocomplete
     Plug 'atweiden/vim-dragvisuals'                             " plugin to select text (visual mode) and easy drag it using arrow keys (remaps needed)
     " Plug 'vim-airline/vim-airline'                              " airline, show nice infos on the bottom bar (I think you know what airline/powerline is)
     " Plug 'vim-airline/vim-airline-themes'                       " airline themes
-    Plug 'kyazdani42/nvim-web-devicons'                         " Recommended for coloured icons (lualine and bufferline)
+    Plug 'nvim-tree/nvim-web-devicons'                          " Recommended for coloured icons (lualine and bufferline) 
     Plug 'nvim-lualine/lualine.nvim'                            " a line written in lua (dã)
     Plug 'akinsho/bufferline.nvim'                              " nice buffers visualizer
     Plug 'tpope/vim-surround'                                   " make surround things and changing surroundings easier
     Plug 'xolox/vim-misc'                                       " this plugin is a requirement to vim-session work
     Plug 'xolox/vim-session'                                    " manage vim sessions like sublime text
-    Plug 'terryma/vim-multiple-cursors'                         " multiple cursors, sublime like but more powerful
+    Plug 'mg979/vim-visual-multi', {'branch': 'master'}         " multiple cursors, sublime like but more powerful
     Plug 'airblade/vim-gitgutter'                               " git tab showing git status of file
-    Plug 'sirver/ultisnips'                                     " testing ultisnips
-    Plug 'honza/vim-snippets'                                   " utilsnips snippets are separated
-    Plug 'Yggdroot/indentLine'                                  " here we create a little line to show matching indentations
+    " Plug 'sirver/ultisnips'                                     " testing ultisnips
+    " Plug 'honza/vim-snippets'                                   " utilsnips snippets are separated
+    " Plug 'Yggdroot/indentLine'                                  " here we create a little line to show matching indentations
     Plug 'tomtom/tcomment_vim'                                  " easy comment stuff
     Plug 'godlygeek/tabular'                                    " quickly align text on tabular formats
-    Plug 'jiangmiao/auto-pairs'                                 " auto close quotes/brackets and stuff like that
+    " Plug 'jiangmiao/auto-pairs'                                 " auto close quotes/brackets and stuff like that
     Plug 'trevordmiller/nova-vim'                               " another good looking colorscheme
     Plug 'mhartington/oceanic-next'                             " another great theme
     Plug 'johngrib/vim-game-code-break'                         " code break game, just for the lols
@@ -51,7 +51,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'lambdalisue/suda.vim'                                 " Plugin to write as sudo on neovim (https://github.com/neovim/neovim/issues/1716)
     Plug 'EpicVoyage/Expression-Engine-Vim-syntax'              " expression engine vim syntax
     Plug 'junegunn/vim-peekaboo'                                " show you the contents of the registers
-    Plug 'AndrewRadev/tagalong.vim'                             " Change an HTML(ish) opening tag and take the closing one along as well
+    " Plug 'AndrewRadev/tagalong.vim'                             " Change an HTML(ish) opening tag and take the closing one along as well
     Plug 'justinmk/vim-sneak'                                   " Jump to any location specified by two characters.
     Plug 'sk1418/HowMuch'                                       " Easily do quick math with visual selections
     " Plug 'shmargum/vim-sass-colors'                             " Show sass colors
@@ -61,6 +61,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
+    Plug 'nvim-pack/nvim-spectre'                               " cool find and replace
 
     "themes
     Plug 'kristijanhusak/vim-hybrid-material'                   " really good looking theme
@@ -70,15 +71,16 @@ call plug#begin('~/.vim/plugged')
     Plug 'Mofiqul/vscode.nvim'                                  " theme treesitter ready
     Plug 'morhetz/gruvbox'                                      " classic vim theme
     Plug 'pappasam/papercolor-theme-slim'                       " papercolor treesitter ready
+    Plug 'svermeulen/text-to-colorscheme.nvim'                  " ai text to theme plugin
 
 
 
     " Let's try LSP
     " First we disable coc
     " Plug 'neoclide/coc.nvim', {'branch': 'release'}             " Testing COC autocompletion (vscode like they say)
-    " Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
+    Plug 'sheerun/vim-polyglot'                                 " vim syntax highlight for everything
     " Plug 'ncm2/ncm2'                                            " neo completion manager version 2
-    Plug 'lumiliet/vim-twig'                                      " twig syntax highlighting
+    Plug 'nelsyeung/twig.vim'                                     " twig syntax highlighting
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}    "nvim better highlight using treesitter
 
@@ -96,6 +98,15 @@ call plug#begin('~/.vim/plugged')
     " Plug 'camspiers/animate.vim'                                " lens dependency to animatey window transitions
     " Plug 'camspiers/lens.vim'                                   " make focused buffer bigger
     Plug 'wellle/targets.vim'                                     " better text targets (I think)
+    Plug 'windwp/nvim-ts-autotag'                                 " Testing new autotag since the old one is messing up my files
+    Plug 'williamboman/mason.nvim'                                " easily manage external editor tooling such as LSP servers, DAP servers, linters, and formatters through a single interface
+    Plug 'williamboman/mason-lspconfig.nvim'
+    Plug 'nvim-telescope/telescope-ui-select.nvim'                " telescope cute ui plugin
+
+    Plug 'HerringtonDarkholme/yats.vim'                           " JSX pretty dependency
+    Plug 'yuezk/vim-js'                                           " JSX pretty dependency
+    Plug 'maxmellon/vim-jsx-pretty'                               " prettier jsx syntax
+
 
 
     " Plug 'captbaritone/better-indent-support-for-php-with-html' " better html/php indent

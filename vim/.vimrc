@@ -312,15 +312,58 @@ let g:ackprg = 'ag --vimgrep'
 
 
 lua << EOF
-  local actions = require('telescope.actions')require('telescope').setup{
-  pickers = {
-    buffers = {
-        sort_lastused = true
+  require("telescope").setup {
+    pickers = {
+      buffers = {
+        show_all_buffers = true,
+        ignore_current_buffer = true,
+        sort_lastused = true,
+      },
+    },
+    extensions = {
+      ["ui-select"] = {
+        require("telescope.themes").get_dropdown {
+          -- even more opts
+        }
+
+        -- pseudo code / specification for writing custom displays, like the one
+        -- for "codeactions"
+        -- specific_opts = {
+        --   [kind] = {
+        --     make_indexed = function(items) -> indexed_items, width,
+        --     make_displayer = function(widths) -> displayer
+        --     make_display = function(displayer) -> function(e)
+        --     make_ordinal = function(e) -> string
+        --   },
+        --   -- for example to disable the custom builtin "codeactions" display
+        --      do the following
+        --   codeactions = false,
+        -- }
       }
     }
   }
 
+  require("telescope").load_extension("ui-select")
+
+  require('nvim-ts-autotag').setup()
+
+  require("mason").setup()
+
+  require("mason-lspconfig").setup()
+
   require("bufferline").setup{}
+
+  --waiting my gpt4 access to use it
+  --require('text-to-colorscheme').setup {
+  --  ai = {
+  --    openai_api_key = "<OPENAI_API_KEY>",
+  --  },
+  --}
+  --vim.cmd([[colorscheme text-to-colorscheme]])
+
+  vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").open()<CR>', {
+    desc = "Open Spectre"
+  })
 
   require('lualine').setup{
     sections = {
@@ -347,15 +390,17 @@ lua << EOF
   local nvim_lsp = require('lspconfig')
   local servers = {
     'tsserver',
-    'vuels',
+    'volar',
     'html',
     'emmet_ls',
     'eslint',
     'cssls',
     'jsonls',
     'stylelint_lsp',
-    'intelephense',
-    'vimls'
+    -- 'intelephense', -- php
+    -- 'phpactor',
+    -- 'psalm-language-server',
+    'vimls',
   }
 
   -- Use an on_attach function to only map the following keys
@@ -407,8 +452,7 @@ lua << EOF
     buf_set_keymap('n', '<space>af', '<cmd>EslintFixAll<CR>', opts)
   end
 
-  local capabilities = vim.lsp.protocol.make_client_capabilities()
-  capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+  local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
   -- basically does:
   -- require'lspconfig'.[server].setup{<options>}
@@ -472,13 +516,16 @@ lua << EOF
   -- treesitter
   local treesitter = require('nvim-treesitter.configs')
   treesitter.setup {
+    indent = {
+      disable = true
+    },
     highlight = {
       enable = true,
-      -- additional_vim_regex_highlighting = false,
+      additional_vim_regex_highlighting = { 'js', 'jsx' },
     }
   }
 
-  local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+  local signs = { Error = "e ", Warn = "w ", Hint = "h ", Info = " " }
   for type, icon in pairs(signs) do
     local hl = "DiagnosticSign" .. type
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
@@ -673,6 +720,35 @@ iab lenght length
 
 "-------------new commands--------------"
 command PrettifyJson :%!python -m json.tool
+
+" quickfixopenall.vim
+"Author:
+"   Tim Dahlin
+"
+"Description:
+"   Opens all the files in the quickfix list for editing.
+"
+"Usage:
+"   1. Perform a vimgrep search
+"       :vimgrep /def/ *.rb
+"   2. Issue QuickFixOpenAll command
+"       :QuickFixOpenAll
+
+function!   QuickFixOpenAll()
+    if empty(getqflist())
+        return
+    endif
+    let s:prev_val = ""
+    for d in getqflist()
+        let s:curr_val = bufname(d.bufnr)
+        if (s:curr_val != s:prev_val)
+            exec "edit " . s:curr_val
+        endif
+        let s:prev_val = s:curr_val
+    endfor
+endfunction
+
+command! QuickFixOpenAll         call QuickFixOpenAll()
 
 
 
