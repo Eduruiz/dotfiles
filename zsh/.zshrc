@@ -163,3 +163,5 @@ bindkey '^s' sudo-command-line
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+eval $(thefuck --alias)
