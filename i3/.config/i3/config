@@ -411,7 +411,8 @@ bindsym $mod+minus scratchpad show
 bindsym $mod+t exec ~/bin/texpander.sh
 
 #define some print screen basic function
-bindsym --release $mod+Shift+P exec import  ~/Pictures/$(date +%d-%m-%y--%H:%M:%S).jpg < /dev/null
+# bindsym --release $mod+Shift+P exec import  ~/Pictures/$(date +%d-%m-%y--%H:%M:%S).jpg < /dev/null
+bindsym --release $mod+Shift+P exec flameshot gui
 
 client.focused #689d6a #689d6a #282828 #282828
 client.focused_inactive #1d2021 #1d2021 #928374 #282828
