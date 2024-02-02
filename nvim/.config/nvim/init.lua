@@ -41,11 +41,18 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
 
+  -- Add a bunch of useful linux commands to command mode
+  'tpope/vim-eunuch',
+
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
   -- vim blade syntax highlight
   'Eduruiz/vim-blade',
+
+  -- Auto session management
+  -- restore last opened buffers, windows and keep cursor position
+  { 'rmagatti/auto-session', opts= {} },
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
