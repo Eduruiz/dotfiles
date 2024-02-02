@@ -9,8 +9,8 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- This is required required to use nvimtree
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+-- vim.g.loaded_netrw = 1
+-- vim.g.loaded_netrwPlugin = 1
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    https://github.com/folke/lazy.nvim
