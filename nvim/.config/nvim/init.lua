@@ -688,6 +688,12 @@ vim.api.nvim_set_keymap('n', '<Leader>lr', ':e routes/web.php<CR>', {noremap = t
 vim.api.nvim_set_keymap('n', '<Leader>lc', ':e config/app.php<CR>', {noremap = true})
 vim.api.nvim_set_keymap('n', '<Leader>lv', ':e resources/views/<CR>', {noremap = true})
 
+-- Make it easy to edit frequent general files
+vim.api.nvim_set_keymap('n', '<Leader>ov', ':e ~/.config/nvim/init.lua<CR>', {noremap = true, desc = 'Open nvim config file' })
+vim.api.nvim_set_keymap('n', '<Leader>or', ':so ~/.config/nvim/init.lua<CR>', {noremap = true, desc = 'Reload nvim config' })
+vim.api.nvim_set_keymap('n', '<Leader>oh', ':e ~/Dropbox/docs/appcivico/hours.md<CR>', {noremap = true, desc = 'Open hours md file' })
+vim.api.nvim_set_keymap('n', '<Leader>ot', ':e ~/Dropbox/docs/appcivico/vagas.md<CR>', {noremap = true, desc = 'Open job op file' })
+
 
 -- Define a custom command to go to the last opened buffer
 vim.cmd([[
