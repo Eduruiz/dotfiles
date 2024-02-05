@@ -738,16 +738,11 @@ vim.api.nvim_set_keymap('n', '<Leader>or', ':so ~/.config/nvim/init.lua<CR>', {n
 vim.api.nvim_set_keymap('n', '<Leader>oh', ':e ~/Dropbox/docs/appcivico/hours.md<CR>', {noremap = true, desc = 'Open hours md file' })
 vim.api.nvim_set_keymap('n', '<Leader>ot', ':e ~/Dropbox/docs/appcivico/vagas.md<CR>', {noremap = true, desc = 'Open job op file' })
 
-
--- Define a custom command to go to the last opened buffer
-vim.cmd([[
-  command! LastBuffer :lua require('utils').goto_last_buffer()
-]])
-
--- Define the Lua function to do it
-_G.goto_last_buffer = function()
-  vim.cmd('buffer#')
-end
+-- Add minifiles shortcut
+vim.api.nvim_set_keymap('n', '<F2>', ':lua MiniFiles.open()<CR>', {noremap = true, desc = 'Open minifiles explorer'})
 
 -- Map <C-6> to execute the LastBuffer command in normal mode
-vim.api.nvim_set_keymap('n', '<C-6>', ':LastBuffer<CR>', {noremap = true})
+vim.api.nvim_set_keymap('n', '<C-6>', ':b#<CR>', {noremap = true})
+
+-- Add shortcut to quick close buffer
+vim.api.nvim_set_keymap('n', '<Leader>x', ':bd<CR>', {noremap = true, desc = 'Close current buffer'})
