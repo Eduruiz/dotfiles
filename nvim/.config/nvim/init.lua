@@ -205,12 +205,6 @@ require('lazy').setup({
       },
       tabline = {
         lualine_a = {'buffers'},
-        lualine_c = {
-          {
-            'filename',
-            path = 0, -- just file name
-          }
-        },
       },
     },
   },
