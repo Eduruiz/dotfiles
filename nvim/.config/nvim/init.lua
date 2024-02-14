@@ -8,10 +8,6 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- This is required required to use nvimtree
--- vim.g.loaded_netrw = 1
--- vim.g.loaded_netrwPlugin = 1
-
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -54,7 +50,8 @@ require('lazy').setup({
   'Eduruiz/vim-blade',
 
   -- Trying mini-files since I'm sick of nerdtree bugs
-  { 'echasnovski/mini.files',
+  { 
+    'echasnovski/mini.files',
     version = 'false',
     opts = {},
     dependencies = {
@@ -71,6 +68,42 @@ require('lazy').setup({
     dependencies = {
       'tpope/vim-repeat'
     }
+  },
+  {
+    'voldikss/vim-floaterm',
+    keys = {
+      { '<F1>', ':FloatermToggle<CR>' },
+      { '<F1>', '<C-\\><C-n>:FloatermToggle<CR>', mode = 't' },
+    },
+    cmd = { 'FloatermToggle' },
+    init = function()
+      vim.g.floaterm_width = 0.8
+      vim.g.floaterm_height = 0.8
+    end,
+  },
+  {
+    'petertriho/nvim-scrollbar',
+    opts = {
+      -- show_in_active_only = true,
+      excluded_filetypes = {
+        'neo-tree',
+      },
+      marks = {
+        Cursor = {
+          text = " ",
+          priority = 99,
+        },
+      },
+      handle = {
+        blend = 90,
+        highlight = "Cursor",
+      },
+    }
+  },
+  {
+    'rest-nvim/rest.nvim',
+    opts = {},
+    dependencies = { "nvim-lua/plenary.nvim" },
   },
 
   -- Auto session management
@@ -190,17 +223,192 @@ require('lazy').setup({
     },
   },
 
-  {
     -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
-    priority = 1000,
+  --   'navarasu/onedark.nvim',
+  --   priority = 1000,
+  --   lazy = false,
+  --   config = function()
+  --     require('onedark').setup {
+  --       -- Set a style preset. 'dark' is default.
+  --       style = 'warm', -- dark, darker, cool, deep, warm, warmer, light
+  --     }
+  --     require('onedark').load()
+  --   end,
+  -- },
+  {
+    'folke/tokyonight.nvim',
     lazy = false,
-    config = function()
-      require('onedark').setup {
-        -- Set a style preset. 'dark' is default.
-        style = 'warm', -- dark, darker, cool, deep, warm, warmer, light
-      }
-      require('onedark').load()
+    priority = 1000,
+    opts = { -- test
+      on_colors = function (colors)
+        local util = require('tokyonight.util')
+        colors.gitSigns = {
+          add = colors.teal,
+          change = colors.purple,
+          delete = colors.red,
+        }
+      end,
+      on_highlights = function(hl, c)
+        local util = require('tokyonight.util')
+        local prompt = "#2d3149"
+
+        hl.BufferlineInactive = {
+          bg = c.bg_dark,
+        }
+        hl.BufferlineActiveSeparator = {
+          bg = c.bg,
+          fg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+        hl.BufferlineInactiveSeparator = {
+          bg = c.bg_dark,
+          fg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+
+        hl.NeoTreeFileNameOpened = {
+          fg = c.orange,
+        }
+
+        hl.GitSignsCurrentLineBlame = {
+          fg = c.fg_gutter,
+        }
+
+        -- Tabs
+        hl.TabActive = {
+          bg = c.bg,
+        }
+        hl.TabActiveSeparator = {
+          bg = c.bg,
+          fg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+        hl.TabInactive = {
+          bg = c.bg_dark,
+        }
+        hl.TabInactiveSeparator = {
+          bg = c.bg_dark,
+          fg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+
+        hl.SidebarTabActive = {
+          bg = c.bg_dark,
+        }
+        hl.SidebarTabActiveSeparator = {
+          bg = c.bg_dark,
+          fg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+        hl.SidebarTabInactive = {
+          bg = util.darken(c.bg_dark, 0.75, '#000000'),
+          fg = c.comment,
+        }
+        hl.SidebarTabInactiveSeparator = {
+          bg = util.darken(c.bg_dark, 0.75, '#000000'),
+          fg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+
+
+        hl.StatusLine = {
+          bg = util.darken(c.bg_dark, 0.85, '#000000'),
+          fg = c.fg_dark,
+        }
+        hl.StatusLineComment = {
+          bg = util.darken(c.bg_dark, 0.85, '#000000'),
+          fg = c.comment,
+        }
+
+        hl.LineNrAbove = {
+          fg = c.fg_gutter,
+        }
+        hl.LineNr = {
+          fg = util.lighten(c.fg_gutter, 0.7),
+        }
+        hl.LineNrBelow = {
+          fg = c.fg_gutter,
+        }
+
+        hl.MsgArea = {
+          bg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+
+        -- Spelling
+        hl.SpellBad = {
+          undercurl = true,
+          sp = '#7F3A43',
+        }
+
+        -- Telescope
+        hl.TelescopeNormal = {
+          bg = c.bg_dark,
+          fg = c.fg_dark,
+        }
+        hl.TelescopeBorder = {
+          bg = c.bg_dark,
+          fg = c.bg_dark,
+        }
+        hl.TelescopePromptNormal = {
+          bg = prompt,
+        }
+        hl.TelescopePromptBorder = {
+          bg = prompt,
+          fg = prompt,
+        }
+        hl.TelescopePromptTitle = {
+          bg = c.bg,
+          fg = c.fg_dark,
+        }
+        hl.TelescopePreviewTitle = {
+          bg = c.bg_dark,
+          fg = c.bg_dark,
+        }
+        hl.TelescopeResultsTitle = {
+          bg = c.bg_dark,
+          fg = c.bg_dark,
+        }
+
+        -- Indent
+        hl.IblIndent = {
+          fg = c.bg_highlight,
+        }
+        hl.IblScope = {
+          fg = util.lighten(c.bg_highlight, 0.95),
+        }
+
+        -- Floaterm
+        hl.Floaterm = {
+          bg = prompt,
+        }
+        hl.FloatermBorder = {
+          bg = prompt,
+          fg = prompt,
+        }
+
+        -- Copilot
+        hl.CopilotSuggestion = {
+          fg = c.comment,
+        }
+
+        -- NvimTree
+        hl.NvimTreeIndentMarker = {
+          fg = c.bg_highlight,
+        }
+        hl.NvimTreeOpenedFile = {
+          fg = c.fg,
+          bold = true
+        }
+        hl.NvimTreeNormal = {
+          bg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+        hl.NvimTreeNormalNC = {
+          bg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+        hl.NvimTreeWinSeparator = {
+          fg = util.darken(c.bg_dark, 0.85, '#000000'),
+          bg = util.darken(c.bg_dark, 0.85, '#000000'),
+        }
+      end,
+    },
+    config = function (plugin, opts)
+      require('tokyonight').setup(opts)
+
+      vim.cmd('colorscheme tokyonight')
     end,
   },
 
@@ -625,6 +833,7 @@ local servers = {
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
+  stylelint_lsp = { filetypes = { 'css', 'scss', 'vue' } },
   tsserver = {},
   html = { filetypes = { 'html', 'blade', 'twig', 'hbs'} },
 
@@ -757,6 +966,7 @@ vim.api.nvim_set_keymap('n', '<Leader>ov', ':e ~/.config/nvim/init.lua<CR>', {no
 vim.api.nvim_set_keymap('n', '<Leader>or', ':so ~/.config/nvim/init.lua<CR>', {noremap = true, desc = 'Reload nvim config' })
 vim.api.nvim_set_keymap('n', '<Leader>oh', ':e ~/Dropbox/docs/appcivico/hours.md<CR>', {noremap = true, desc = 'Open hours md file' })
 vim.api.nvim_set_keymap('n', '<Leader>ot', ':e ~/Dropbox/docs/appcivico/vagas.md<CR>', {noremap = true, desc = 'Open job op file' })
+vim.api.nvim_set_keymap('n', '<Leader>ok', ':e ~/.config/kitty/kitty.conf<CR>', {noremap = true, desc = 'Open job op file' })
 
 -- Add minifiles shortcut
 vim.api.nvim_set_keymap('n', '<F2>', ':lua MiniFiles.open()<CR>', {noremap = true, desc = 'Open minifiles explorer'})
@@ -766,3 +976,43 @@ vim.api.nvim_set_keymap('n', '<C-6>', ':b#<CR>', {noremap = true})
 
 -- Add shortcut to quick close buffer
 vim.api.nvim_set_keymap('n', '<Leader>x', ':bd<CR>', {noremap = true, desc = 'Close current buffer'})
+
+
+-- Define a Lua function to create a new HTTP request file and execute it using rest-nvim
+local function http_request()
+    -- Get the start and end columns of the visual selection
+    local start_col = vim.fn.col("'<")
+    local end_col = vim.fn.col("'>")
+
+    -- Get the line containing the visual selection
+    local selected_line = vim.fn.getline("'<")
+
+    -- Extract the visually selected text within the line
+    local selected_text = selected_line:sub(start_col, end_col)
+
+    -- Create a new buffer and set its filetype to http
+    vim.cmd('enew')
+    vim.bo.filetype = 'http'
+
+    -- Ask the user if this is a GET or POST request
+    local method = vim.fn.input('Is this a GET or POST request? (1 for get, 2 for post, default is get): ')
+    if method == '' or method == '1' then
+        method = 'GET'
+    elseif method == '2' then
+        method = 'POST'
+    else
+        print('Invalid input. Using default method (GET).')
+        method = 'GET'
+    end
+
+    -- Write the HTTP request to the new file
+    local request = method .. ' ' .. selected_text
+    vim.fn.append(0, request)
+
+    -- Run rest-nvim
+    vim.cmd('lua require("rest-nvim").run()')
+end
+
+vim.api.nvim_create_user_command('HttpRequest', http_request, {})
+
+vim.api.nvim_set_keymap('v', '<Leader>gr', ':<C-u>HttpRequest<CR>', {noremap = true})
