@@ -101,6 +101,11 @@ require('lazy').setup({
     }
   },
   {
+    'nvim-pack/nvim-spectre', -- Great find and replace project wide
+    opts = {},
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
+  {
     'rest-nvim/rest.nvim',
     opts = {},
     dependencies = { "nvim-lua/plenary.nvim" },
