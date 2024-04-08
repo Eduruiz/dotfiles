@@ -573,6 +573,10 @@ vim.wo.signcolumn = 'yes'
 -- Set hybrid line numbers
 vim.opt.relativenumber = true
 
+-- Set spell checking
+vim.opt.spelllang = 'en_us'
+vim.opt.spell = true
+
 -- Decrease update time
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
