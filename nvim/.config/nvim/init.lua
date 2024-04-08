@@ -43,14 +43,38 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  -- multi cursor for nvim
+  {
+    "smoka7/multicursors.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      'smoka7/hydra.nvim',
+    },
+    opts = {},
+    cmd = { 'MCstart', 'MCvisual', 'MCclear', 'MCpattern', 'MCvisualPattern', 'MCunderCursor' },
+    keys = {
+      {
+        mode = { 'v', 'n' },
+        'C-n',
+        '<cmd>MCstart<cr>',
+        desc = 'Create a selection for selected text or word under the cursor',
+      },
+    },
+  },
+
   -- make surround things really easier, this is a must have
-  'tpope/vim-surround',
+  { 'tpope/vim-surround' },
+
+  {
+  'jsongerber/nvim-px-to-rem',
+    opts={}
+  },
 
   -- vim blade syntax highlight
   'Eduruiz/vim-blade',
 
   -- Trying mini-files since I'm sick of nerdtree bugs
-  { 
+  {
     'echasnovski/mini.files',
     version = 'false',
     opts = {},
