@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
@@ -6,7 +13,7 @@ export ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 # ZSH_THEME="cobalt2"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME="powerlevel9k/powerlevel9k"
 POWERLEVEL9K_MODE="nerdfont-complete"
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 
@@ -55,8 +62,8 @@ POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 plugins=(
     archlinux
     composer
-    docker
     artisan
+    cloudapp
     common-aliases
     fzf
     git
@@ -76,8 +83,6 @@ export PATH=~/.config/composer/vendor/bin:$PATH
 export PATH=~/.npm-global/bin:$PATH
 export PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
 export PATH="$PATH":/home/eduruiz/.bin
-export PATH="$PATH":/home/eduruiz/.local/bin
-export PATH="$PATH":/home/eduruiz/code/kennel/bin
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -122,8 +127,7 @@ alias pploy="phploy"
 alias v="nvim"
 alias o="xdg-open"
 alias t="trash-put"
-alias ssha='eval "$(ssh-agent -s)" && ssh-add'
-alias dc='docker compose'
+alias ssha='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_rsa'
 
 #run homestead from everywhere... EVERYWHEREEEEEE
 function homestead() {
@@ -163,5 +167,7 @@ bindkey '^s' sudo-command-line
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 
-eval $(thefuck --alias)
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
