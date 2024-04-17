@@ -13,7 +13,7 @@ export ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 # ZSH_THEME="cobalt2"
-ZSH_THEME="powerlevel9k/powerlevel9k"
+# ZSH_THEME="powerlevel9k/powerlevel9k"
 POWERLEVEL9K_MODE="nerdfont-complete"
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs time)
 
@@ -63,7 +63,7 @@ plugins=(
     archlinux
     composer
     artisan
-    cloudapp
+    docker
     common-aliases
     fzf
     git
@@ -81,7 +81,7 @@ plugins=(
 # export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
 export PATH=~/.config/composer/vendor/bin:$PATH
 export PATH=~/.npm-global/bin:$PATH
-export PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
+# export PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
 export PATH="$PATH":/home/eduruiz/.bin
 # export MANPATH="/usr/local/man:$MANPATH"
 
