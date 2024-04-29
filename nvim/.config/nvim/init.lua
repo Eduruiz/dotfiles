@@ -574,7 +574,7 @@ vim.wo.signcolumn = 'yes'
 vim.opt.relativenumber = true
 
 -- Set spell checking
-vim.opt.spelllang = 'en_us'
+vim.opt.spelllang = 'en_us,pt_br'
 vim.opt.spell = true
 
 -- Decrease update time
