@@ -130,10 +130,22 @@ require('lazy').setup({
     dependencies = { "nvim-lua/plenary.nvim" },
   },
   {
-    'rest-nvim/rest.nvim',
-    opts = {},
-    dependencies = { "nvim-lua/plenary.nvim" },
+  'Exafunction/codeium.vim',
+    -- require("codeium").setup({});
+    config = function ()
+      -- Change '<C-g>' here to any keycode you like.
+      vim.g.codium_chat_enabled = true
+      vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
+      vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true, silent = true })
+      vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true, silent = true })
+      vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true, silent = true })
+    end
   },
+  -- {
+  --   'rest-nvim/rest.nvim',
+  --   opts = {},
+  --   dependencies = { "luarocks.nvim" },
+  -- },
 
   -- Auto session management
   -- restore last opened buffers, windows and keep cursor position
@@ -165,6 +177,7 @@ require('lazy').setup({
       -- Snippet Engine & its associated nvim-cmp source
       'L3MON4D3/LuaSnip',
       'saadparwaiz1/cmp_luasnip',
+      "mlaursen/vim-react-snippets",
 
       -- Adds LSP completion capabilities
       'hrsh7th/cmp-nvim-lsp',
@@ -911,6 +924,7 @@ mason_lspconfig.setup_handlers {
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
+require("vim-react-snippets").lazy_load()
 luasnip.config.setup {}
 
 cmp.setup {
@@ -955,6 +969,7 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     { name = 'path' },
+    { name = "codeium" }
   },
 }
 
