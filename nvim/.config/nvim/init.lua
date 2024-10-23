@@ -33,6 +33,8 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
+  'jbyuki/quickmath.nvim',
+
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -43,27 +45,38 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  -- multi cursor for nvim
+  -- Better "gf" for javascript
+  'hotoo/jsgf.vim',
+
   {
-    "smoka7/multicursors.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      'smoka7/hydra.nvim',
-    },
+  "pmizio/typescript-tools.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     opts = {},
-    cmd = { 'MCstart', 'MCvisual', 'MCclear', 'MCpattern', 'MCvisualPattern', 'MCunderCursor' },
-    keys = {
-      {
-        mode = { 'v', 'n' },
-        'C-n',
-        '<cmd>MCstart<cr>',
-        desc = 'Create a selection for selected text or word under the cursor',
-      },
-    },
   },
+
+  -- multi cursor for nvim
+  -- {
+  --   "smoka7/multicursors.nvim",
+  --   event = "VeryLazy",
+  --   dependencies = {
+  --     'smoka7/hydra.nvim',
+  --   },
+  --   opts = {},
+  --   cmd = { 'MCstart', 'MCvisual', 'MCclear', 'MCpattern', 'MCvisualPattern', 'MCunderCursor' },
+  --   keys = {
+  --     {
+  --       mode = { 'v', 'n' },
+  --       'C-n',
+  --       '<cmd>MCstart<cr>',
+  --       desc = 'Create a selection for selected text or word under the cursor',
+  --     },
+  --   },
+  -- },
 
   -- make surround things really easier, this is a must have
   { 'tpope/vim-surround' },
+
+  -- { 'github/copilot.vim' },
 
   {
   'jsongerber/nvim-px-to-rem',
@@ -129,6 +142,8 @@ require('lazy').setup({
     opts = {},
     dependencies = { "nvim-lua/plenary.nvim" },
   },
+
+  -- Copilot like AI code autocomplete
   {
   'Exafunction/codeium.vim',
     -- require("codeium").setup({});
@@ -620,11 +635,23 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
+    layout_config = {
+      preview_width = 50,
+      horizontal = {
+        width = 0.9,
+        preview_cutoff = 0,
+      },
+    },
+    path_display = {
+      "smart"
+    },
     mappings = {
-      -- i = {
-      --   ['<C-u>'] = false,
-      --   ['<C-d>'] = false,
-      -- },
+      i = {
+        ['<C-;>'] = require('telescope.actions.layout').toggle_preview
+
+        -- ['<C-u>'] = false,
+        -- ['<C-d>'] = false,
+      },
     },
   },
 }
@@ -693,7 +720,8 @@ local function telescope_live_grep()
     layout_config = {
       preview_width = 70,
       horizontal = {
-        width = 0.9
+        width = 0.9,
+        preview_cutoff = 0,
       },
     },
     path_display = {
@@ -882,7 +910,7 @@ local servers = {
   -- rust_analyzer = {},
   stylelint_lsp = { filetypes = { 'css', 'scss', 'vue' } },
   tsserver = {},
-  html = { filetypes = { 'html', 'blade', 'twig', 'hbs'} },
+  html = { filetypes = { 'html', 'vue', 'blade', 'twig', 'hbs'} },
 
   lua_ls = {
     Lua = {
@@ -1014,6 +1042,7 @@ vim.api.nvim_set_keymap('n', '<Leader>lv', ':e resources/views/<CR>', {noremap =
 vim.api.nvim_set_keymap('n', '<Leader>ov', ':e ~/.config/nvim/init.lua<CR>', {noremap = true, desc = 'Open nvim config file' })
 vim.api.nvim_set_keymap('n', '<Leader>or', ':so ~/.config/nvim/init.lua<CR>', {noremap = true, desc = 'Reload nvim config' })
 vim.api.nvim_set_keymap('n', '<Leader>oh', ':e ~/Dropbox/docs/appcivico/hours.md<CR>', {noremap = true, desc = 'Open hours md file' })
+vim.api.nvim_set_keymap('n', '<Leader>op', ':e ~/Dropbox/docs/appcivico/proposta<CR>', {noremap = true, desc = 'Open proposal file' })
 vim.api.nvim_set_keymap('n', '<Leader>ot', ':e ~/Dropbox/docs/appcivico/vagas.md<CR>', {noremap = true, desc = 'Open job op file' })
 vim.api.nvim_set_keymap('n', '<Leader>ok', ':e ~/.config/kitty/kitty.conf<CR>', {noremap = true, desc = 'Open job op file' })
 
