@@ -909,7 +909,7 @@ local servers = {
   -- pyright = {},
   -- rust_analyzer = {},
   stylelint_lsp = { filetypes = { 'css', 'scss', 'vue' } },
-  tsserver = {},
+  ts_ls = {},
   html = { filetypes = { 'html', 'vue', 'blade', 'twig', 'hbs'} },
 
   lua_ls = {
