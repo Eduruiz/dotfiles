@@ -78,6 +78,19 @@ require('lazy').setup({
 
   -- { 'github/copilot.vim' },
 
+  -- {
+  --   "CopilotC-Nvim/CopilotChat.nvim",
+  --   dependencies = {
+  --     { "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
+  --     { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
+  --   },
+  --   build = "make tiktoken", -- Only on MacOS or Linux
+  --   opts = {
+  --     -- See Configuration section for options
+  --   },
+  --   -- See Commands section for default commands if you want to lazy load on them
+  -- },
+
   {
   'jsongerber/nvim-px-to-rem',
     opts={}
@@ -1028,6 +1041,14 @@ vim.api.nvim_set_keymap('n', '<C-J>', '<C-W><C-J>', {noremap = true})
 vim.api.nvim_set_keymap('n', '<C-K>', '<C-W><C-K>', {noremap = true})
 vim.api.nvim_set_keymap('n', '<C-H>', '<C-W><C-H>', {noremap = true})
 vim.api.nvim_set_keymap('n', '<C-L>', '<C-W><C-L>', {noremap = true})
+
+-- Convert px to rem under cursor
+vim.api.nvim_set_keymap("n", "<leader>pxx", ":PxToRemCursor<CR>", { noremap = true })
+-- Convert px to rem on the whole line
+vim.api.nvim_set_keymap("n", "<leader>pxl", ":PxToRemLine<CR>", { noremap = true })
+-- Convert px to rem on all the selected lines
+vim.api.nvim_set_keymap("v", "<leader>px", ":PxToRemLine<CR>", { noremap = true })
+
 
 -- words I can't get right
 vim.cmd([[iabbrev lenght length]])
