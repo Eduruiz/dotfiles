@@ -173,10 +173,10 @@ git commit -m "Remove zsh configuration"
 git push origin main
 ```
 
-🔧 Customization
+## 🔧 Customization
 
 Feel free to fork this repository and customize it to your heart's content!
 
-🤝 Contributing
+## 🤝 Contributing
 
 While these are my personal dotfiles, if you spot an error, a potential improvement, or have a suggestion, feel free to open an issue!
