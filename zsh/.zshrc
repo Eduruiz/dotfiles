@@ -81,6 +81,8 @@ plugins=(
 # export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
 export PATH=~/.config/composer/vendor/bin:$PATH
 export PATH=~/.npm-global/bin:$PATH
+NPM_PACKAGES="${HOME}/.npm-packages"
+export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
 # export PATH="$PATH:$(ruby -e 'print Gem.user_dir')/bin"
 export PATH="$PATH":/home/eduruiz/.bin
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -167,9 +169,19 @@ bindkey '^s' sudo-command-line
 alias config="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+# Secrets from keyring (store with: echo -n "value" | secret-tool store --label="NTFY Topic" service ntfy key topic)
+export NTFY_TOPIC=$(secret-tool lookup service ntfy key topic)
 source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 eval $(thefuck --alias)
+
+# Added by CodeRabbit CLI installer
+export PATH="/home/eduruiz/.local/bin:$PATH"
+
+export PATH="$PATH:$NPM_PACKAGES/bin"
+
+# Preserve MANPATH if you already defined it somewhere in your config.
+# Otherwise, fall back to `manpath` so we can inherit from `/etc/manpath`.
