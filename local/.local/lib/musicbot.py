@@ -362,8 +362,11 @@ def sanitize(s: str) -> str:
     return re.sub(r"[/\\]", "_", s).replace("..", "_")
 
 
-def download_track(artist: str, title: str, album: str = "") -> str | None:
-    """Download a track and write basic tags. Returns the file path or None."""
+def download_track(artist: str, title: str, album: str = "", candidate: int = 1) -> str | None:
+    """Download a track and write basic tags. Returns the file path or None.
+
+    candidate: which ytsearch result to pick (1=first, 2=second, 3=third).
+    """
     safe_artist = sanitize(artist)
     safe_title = sanitize(title)
     outfile = f"{DOWNLOADS}/{safe_artist} - {safe_title}.opus"
@@ -376,7 +379,8 @@ def download_track(artist: str, title: str, album: str = "") -> str | None:
         "--match-filter", "!is_live & duration < 1800",
         "--output", outfile,
         "--no-playlist",
-        f"ytsearch3:{artist} {search_title} audio"
+        f"ytsearch{candidate}:{artist} {search_title} audio",
+        "--playlist-items", str(candidate),
     ], capture_output=True)
 
     opus_files = [f for f in os.listdir(DOWNLOADS) if f.endswith(".opus")]
@@ -394,6 +398,31 @@ def download_track(artist: str, title: str, album: str = "") -> str | None:
     f["title"] = title
     f.save()
     return outfile
+
+
+def download_track_for_album(artist: str, title: str, album: str,
+                             release_id: str) -> tuple[str | None, bool]:
+    """Download the best matching candidate for a specific album release.
+
+    Tries up to 3 yt-dlp candidates. For each, runs AcoustID and checks if
+    the result matches release_id. Returns (filepath, confirmed) where
+    confirmed=True means AcoustID matched the expected release.
+    """
+    for candidate in range(1, 4):
+        filepath = download_track(artist, title, album, candidate)
+        if not filepath:
+            continue
+        match = acoustid_lookup(filepath)
+        if match and match.get("mb_albumid") == release_id:
+            logging.info(f"[download] candidate {candidate} confirmed for {release_id}")
+            return filepath, True
+        logging.info(f"[download] candidate {candidate} not matched "
+                     f"(got {match.get('mb_albumid') if match else 'no match'}), trying next")
+        os.remove(filepath)
+    # All candidates exhausted — download first one as fallback
+    logging.warning(f"[download] no candidate matched {release_id} for '{title}', using first")
+    filepath = download_track(artist, title, album, candidate=1)
+    return filepath, False
 
 
 def already_in_library(artist: str, title: str) -> bool:
@@ -946,7 +975,15 @@ async def handle_album_confirm(update: Update, context: ContextTypes.DEFAULT_TYP
             await update.message.reply_text(f"⏭️ [{i}/{len(tracks)}] {title} (já existe)")
             continue
         await update.message.reply_text(f"⬇️ [{i}/{len(tracks)}] {title}")
-        filepath = download_track(artist, title, album_title)
+        if release_id:
+            filepath, confirmed = download_track_for_album(artist, title, album_title, release_id)
+            if filepath and not confirmed:
+                await update.message.reply_text(
+                    f"⚠️ [{i}/{len(tracks)}] {title} — versão do álbum não confirmada"
+                )
+        else:
+            filepath = download_track(artist, title, album_title)
+            confirmed = False
         if not filepath:
             failed.append(title)
             continue
