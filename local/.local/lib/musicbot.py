@@ -387,11 +387,13 @@ def download_track(artist: str, title: str, album: str = "", candidate: int = 1)
         "--playlist-items", str(candidate),
     ], capture_output=True)
 
-    opus_files = [f for f in os.listdir(DOWNLOADS) if f.endswith(".opus")]
+    opus_files = [f for f in os.listdir(DOWNLOADS)
+                  if f.endswith(".opus") and not f.startswith(".")]
     if not opus_files:
         return None
 
-    subprocess.run(["find", DOWNLOADS, "-type", "f", "!", "-name", "*.opus", "-delete"])
+    subprocess.run(["find", DOWNLOADS, "-maxdepth", "1", "-type", "f",
+                    "!", "-path", f"{REVIEW}/*", "!", "-name", "*.opus", "-delete"])
 
     actual = f"{DOWNLOADS}/{opus_files[0]}"
     if actual != outfile:
@@ -875,7 +877,8 @@ async def handle_youtube(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "--output", f"{DOWNLOADS}/%(artist)s - %(title)s.%(ext)s",
         url
     ], capture_output=True)
-    subprocess.run(["find", DOWNLOADS, "-type", "f", "!", "-name", "*.opus", "-delete"])
+    subprocess.run(["find", DOWNLOADS, "-maxdepth", "1", "-type", "f",
+                    "!", "-path", f"{REVIEW}/*", "!", "-name", "*.opus", "-delete"])
     await msg.edit_text("📚 Importando para a biblioteca...")
     opus_files = [f"{DOWNLOADS}/{f}" for f in os.listdir(DOWNLOADS) if f.endswith(".opus")]
     for fp in opus_files:
