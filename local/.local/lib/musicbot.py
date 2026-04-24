@@ -251,19 +251,23 @@ def tag_track(filepath: str, mb_context: dict | None = None) -> str | None:
     if match and match.get("mb_albumid"):
         logging.info(f"[tag] AcoustID match: {match['artist']} - {match['title']} "
                      f"album={match['album']} score={match['score']:.2f}")
-        f["musicbrainz_albumid"] = match["mb_albumid"]
+        # If we have a release_id from /album, use it as the canonical mb_albumid
+        # so all tracks in the album share the same release. AcoustID may pick
+        # different releases within the same release group.
+        canonical_albumid = (mb_context or {}).get("release_id") or match["mb_albumid"]
+        f["musicbrainz_albumid"] = canonical_albumid
         f["musicbrainz_trackid"] = match["mb_trackid"]
         if match.get("tracknumber"):
             f["tracknumber"] = str(match["tracknumber"])
         if match.get("album"):
-            f["album"] = match["album"]
+            f["album"] = (mb_context or {}).get("album") or match["album"]
         if match.get("title"):
             f["title"] = match["title"]
         if match.get("artist"):
             f["artist"] = match["artist"]
             f["albumartist"] = match["artist"]
         f.save()
-        return match["mb_albumid"]
+        return canonical_albumid
 
     # 2) MB context passed from /album (release_id already resolved)
     if mb_context and mb_context.get("release_id"):
@@ -400,27 +404,40 @@ def download_track(artist: str, title: str, album: str = "", candidate: int = 1)
     return outfile
 
 
+def _release_group_id(release_id: str) -> str | None:
+    """Return the MusicBrainz release group ID for a given release ID."""
+    try:
+        r = musicbrainzngs.get_release_by_id(release_id, includes=["release-groups"])
+        return r["release"].get("release-group", {}).get("id")
+    except Exception:
+        return None
+
+
 def download_track_for_album(artist: str, title: str, album: str,
                              release_id: str) -> tuple[str | None, bool]:
     """Download the best matching candidate for a specific album release.
 
     Tries up to 3 yt-dlp candidates. For each, runs AcoustID and checks if
-    the result matches release_id. Returns (filepath, confirmed) where
-    confirmed=True means AcoustID matched the expected release.
+    the result belongs to the same release group as release_id.
+    Returns (filepath, confirmed) where confirmed=True means AcoustID matched.
     """
+    expected_rg = _release_group_id(release_id)
+    logging.info(f"[download] expected release group: {expected_rg}")
+
     for candidate in range(1, 4):
         filepath = download_track(artist, title, album, candidate)
         if not filepath:
             continue
         match = acoustid_lookup(filepath)
-        if match and match.get("mb_albumid") == release_id:
-            logging.info(f"[download] candidate {candidate} confirmed for {release_id}")
-            return filepath, True
-        logging.info(f"[download] candidate {candidate} not matched "
-                     f"(got {match.get('mb_albumid') if match else 'no match'}), trying next")
+        if match and match.get("mb_albumid"):
+            candidate_rg = _release_group_id(match["mb_albumid"])
+            if expected_rg and candidate_rg == expected_rg:
+                logging.info(f"[download] candidate {candidate} confirmed (rg={candidate_rg})")
+                return filepath, True
+        logging.info(f"[download] candidate {candidate} not matched, trying next")
         os.remove(filepath)
     # All candidates exhausted — download first one as fallback
-    logging.warning(f"[download] no candidate matched {release_id} for '{title}', using first")
+    logging.warning(f"[download] no candidate matched release group for '{title}', using first")
     filepath = download_track(artist, title, album, candidate=1)
     return filepath, False
 
