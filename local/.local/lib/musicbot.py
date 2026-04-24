@@ -642,18 +642,41 @@ async def handle_album(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"🔍 Buscando {album}...")
 
     try:
-        result = musicbrainzngs.search_releases(artist=artist, release=album, limit=5)
+        result = musicbrainzngs.search_releases(artist=artist, release=album, limit=20)
         releases = result.get("release-list", [])
         if not releases:
             await update.message.reply_text("❌ Álbum não encontrado.")
             return
+
+        # Sort: CD/Digital before Vinyl/SACD, no country or date preference
+        FORMAT_ORDER = {"CD": 0, "Digital Media": 1, "Hybrid SACD (CD layer)": 2,
+                        "SACD": 3, "Vinyl": 4, "12\" Vinyl": 5}
+
+        releases.sort(key=lambda r: FORMAT_ORDER.get(
+            r.get("medium-list", [{}])[0].get("format", "") if r.get("medium-list") else "", 9
+        ))
+
+        # Deduplicate: keep one release per (title, format, country, year) combo
+        seen = set()
+        unique = []
+        for r in releases:
+            rdate = r.get("date", "")[:4]
+            rformat = r.get("medium-list", [{}])[0].get("format", "?") if r.get("medium-list") else "?"
+            rcountry = r.get("country", "")
+            key = (r.get("title", "").lower(), rformat, rcountry, rdate)
+            if key not in seen:
+                seen.add(key)
+                unique.append(r)
+        releases = unique[:10]
 
         lines = []
         for i, r in enumerate(releases, 1):
             rtitle = r.get("title", "?")
             rdate = r.get("date", "")[:4]
             rformat = r.get("medium-list", [{}])[0].get("format", "?") if r.get("medium-list") else "?"
-            info = f"{rformat}, {rdate}" if rdate else rformat
+            rcountry = r.get("country", "")
+            parts = [p for p in [rformat, rcountry, rdate] if p]
+            info = ", ".join(parts) if parts else "?"
             lines.append(f"{i}. {artist} - {rtitle} ({info})")
 
         context.user_data["pending"] = {
