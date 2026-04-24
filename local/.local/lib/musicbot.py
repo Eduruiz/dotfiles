@@ -8,6 +8,7 @@ import logging
 import requests
 import pyotp
 from mutagen.oggopus import OggOpus
+from mutagen.flac import Picture
 from telegram import Update
 from telegram.ext import (
     Application, CommandHandler, MessageHandler, ConversationHandler,
@@ -142,19 +143,28 @@ def acoustid_lookup(filepath: str) -> dict | None:
     album_title = rg_best.get("title", "")
 
     # Cross-reference with MusicBrainz to get the mb_releasetrackid and tracknumber.
-    # The recording ID from AcoustID is not the same as mb_releasetrackid.
+    # The recording ID from AcoustID may differ from the one in the chosen release
+    # (MB can have multiple recordings for the same track). Fall back to title match.
     mb_releasetrackid = None
     tracknumber = None
     try:
         release = musicbrainzngs.get_release_by_id(mb_albumid, includes=["recordings"])
+        title_match_track = None
         for medium in release["release"].get("medium-list", []):
             for track in medium.get("track-list", []):
                 if track["recording"]["id"] == mb_trackid:
                     mb_releasetrackid = track["id"]
                     tracknumber = int(track["position"])
                     break
+                if (title_match_track is None and
+                        track["recording"]["title"].lower() == rec_title.lower()):
+                    title_match_track = track
             if mb_releasetrackid:
                 break
+        if not mb_releasetrackid and title_match_track:
+            logging.info("[acoustid] recording ID mismatch, matched by title instead")
+            mb_releasetrackid = title_match_track["id"]
+            tracknumber = int(title_match_track["position"])
     except Exception as e:
         logging.warning(f"[acoustid] MB release lookup failed: {e}")
 
@@ -172,7 +182,8 @@ def acoustid_lookup(filepath: str) -> dict | None:
 def _pick_best_rg_release(releasegroups: list[dict]) -> tuple[dict, dict]:
     """Pick the best (releasegroup, release) pair from AcoustID data.
 
-    Prefers Album > EP > Single, earliest date.
+    Prefers Album > EP > Single > Compilation, earliest date within each tier.
+    If studio albums exist, compilations are excluded entirely.
     Returns (rg, release) or ({}, {}) if nothing suitable found.
     """
     TYPE_ORDER = {"Album": 0, "EP": 1, "Single": 2, "Compilation": 3}
@@ -190,6 +201,13 @@ def _pick_best_rg_release(releasegroups: list[dict]) -> tuple[dict, dict]:
         return {}, {}
 
     candidates.sort(key=lambda x: (x[0], x[1]))
+
+    # If a studio album exists, discard compilations
+    best_rank = candidates[0][0]
+    compilation_rank = TYPE_ORDER["Compilation"]
+    if best_rank < compilation_rank:
+        candidates = [c for c in candidates if c[0] < compilation_rank]
+
     _, _, best_rg, best_rel = candidates[0]
     return best_rg, best_rel
 
@@ -220,12 +238,11 @@ def recording_sort_key(r: dict) -> tuple:
     return (score, rel.get("date", "9999"))
 
 
-def tag_track(filepath: str, mb_context: dict | None = None) -> bool:
+def tag_track(filepath: str, mb_context: dict | None = None) -> str | None:
     """Write the best available tags to a file before beets touches it.
 
     Priority: 1) AcoustID fingerprint  2) MB context from /album  3) keep existing tags.
-    Returns True if MusicBrainz IDs were written (beets can do a clean move),
-    False if we only have minimal tags (beets will still move, just less metadata).
+    Returns mb_albumid if MusicBrainz IDs were written, None otherwise.
     """
     f = OggOpus(filepath)
 
@@ -244,8 +261,9 @@ def tag_track(filepath: str, mb_context: dict | None = None) -> bool:
             f["title"] = match["title"]
         if match.get("artist"):
             f["artist"] = match["artist"]
+            f["albumartist"] = match["artist"]
         f.save()
-        return True
+        return match["mb_albumid"]
 
     # 2) MB context passed from /album (release_id already resolved)
     if mb_context and mb_context.get("release_id"):
@@ -265,14 +283,55 @@ def tag_track(filepath: str, mb_context: dict | None = None) -> bool:
                             f["album"] = mb_context["album"]
                         if mb_context.get("artist"):
                             f["artist"] = mb_context["artist"]
+                            f["albumartist"] = mb_context["artist"]
                         f.save()
-                        return True
+                        return mb_context["release_id"]
         except Exception as e:
             logging.warning(f"[tag] MB context lookup failed: {e}")
 
     # 3) Keep whatever download_track already wrote (artist + title at minimum)
     f.save()
-    return False
+    return None
+
+
+def embed_cover_art(mb_albumid: str, filepaths: list[str]):
+    """Fetch cover art from Cover Art Archive and embed it in all given opus files."""
+    try:
+        resp = requests.get(
+            f"https://coverartarchive.org/release/{mb_albumid}/front",
+            timeout=15, allow_redirects=True
+        )
+        if not resp.ok or not resp.content:
+            # Fall back to release group
+            try:
+                rg = musicbrainzngs.get_release_by_id(mb_albumid, includes=["release-groups"])
+                rg_id = rg["release"].get("release-group", {}).get("id")
+                if rg_id:
+                    resp = requests.get(
+                        f"https://coverartarchive.org/release-group/{rg_id}/front",
+                        timeout=15, allow_redirects=True
+                    )
+            except Exception:
+                pass
+        if not resp.ok or not resp.content:
+            logging.warning(f"[art] no cover found for {mb_albumid}")
+            return
+        import base64
+        pic = Picture()
+        pic.type = 3  # front cover
+        pic.mime = resp.headers.get("Content-Type", "image/jpeg").split(";")[0]
+        pic.data = resp.content
+        encoded = base64.b64encode(pic.write()).decode("ascii")
+        for fp in filepaths:
+            try:
+                f = OggOpus(fp)
+                f["metadata_block_picture"] = [encoded]
+                f.save()
+            except Exception as e:
+                logging.warning(f"[art] failed to embed in {fp}: {e}")
+        logging.info(f"[art] embedded cover for {mb_albumid} in {len(filepaths)} file(s)")
+    except Exception as e:
+        logging.warning(f"[art] cover fetch failed for {mb_albumid}: {e}")
 
 
 def _beet_move(filepath: str):
@@ -287,7 +346,7 @@ def _beet_move(filepath: str):
 
 def run_beet_import(filepath: str, artist: str = "", mb_context: dict | None = None) -> list[str]:
     """Tag then move a single downloaded file. Returns list of filenames sent to review."""
-    tagged_with_mb = tag_track(filepath, mb_context)
+    mb_albumid = tag_track(filepath, mb_context)
     _beet_move(filepath)
 
     skipped = []
@@ -296,14 +355,7 @@ def run_beet_import(filepath: str, artist: str = "", mb_context: dict | None = N
 
     subprocess.run(["find", DOWNLOADS, "-type", "f", "!", "-path", f"{REVIEW}/*",
                     "!", "-name", "*.opus", "-delete"])
-
-    query = f"artist:{artist}" if artist else ""
-    subprocess.run(["beet", "fetchart"] + ([query] if query else []), capture_output=True)
-    subprocess.run(
-        ["beet", "embedart"] + ([query] if query else []),
-        input="y\n", text=True, capture_output=True
-    )
-    return skipped
+    return skipped, mb_albumid
 
 
 def sanitize(s: str) -> str:
@@ -321,7 +373,7 @@ def download_track(artist: str, title: str, album: str = "") -> str | None:
     subprocess.run([
         "yt-dlp",
         "--extract-audio", "--audio-format", "opus", "--audio-quality", "192K",
-        "--match-filter", "!is_live & duration < 600",
+        "--match-filter", "!is_live & duration < 1800",
         "--output", outfile,
         "--no-playlist",
         f"ytsearch3:{artist} {search_title} audio"
@@ -698,6 +750,8 @@ async def handle_playlist_confirm(update: Update, context: ContextTypes.DEFAULT_
 
     await update.message.reply_text(f"⬇️ Baixando *{playlist_name}* ({total} faixas)...", parse_mode="Markdown")
 
+    cover_queue: dict[str, list[str]] = {}  # mb_albumid -> [filepath, ...]
+
     for i, track in enumerate(tracks, 1):
         artist, title, album = track["artist"], track["title"], track["album"]
         if already_in_library(artist, title):
@@ -708,12 +762,19 @@ async def handle_playlist_confirm(update: Update, context: ContextTypes.DEFAULT_
             if not filepath:
                 failed.append(f"{artist} - {title}")
                 continue
-            skipped = run_beet_import(filepath, artist)
+            skipped, mb_albumid = run_beet_import(filepath, artist)
             if skipped:
                 failed.append(f"{artist} - {title} (review)")
+            elif mb_albumid:
+                final = beet_path(artist, title)
+                if final:
+                    cover_queue.setdefault(mb_albumid, []).append(final)
         path = beet_path(artist, title)
         if path:
             playlist_paths.append(path)
+
+    for mb_albumid, paths in cover_queue.items():
+        embed_cover_art(mb_albumid, paths)
 
     if playlist_paths:
         save_playlist_m3u(playlist_name, playlist_paths)
@@ -792,10 +853,14 @@ async def handle_choice(update: Update, context: ContextTypes.DEFAULT_TYPE):
         filepath = download_track(artist, title, album)
         await msg.edit_text("📚 Importando para a biblioteca...")
         if filepath:
-            skipped = run_beet_import(filepath, artist)
+            skipped, mb_albumid = run_beet_import(filepath, artist)
             if skipped:
                 await msg.edit_text(f"⚠️ {artist} - {title} salvo em review (sem match).")
             else:
+                if mb_albumid:
+                    final = beet_path(artist, title)
+                    if final:
+                        embed_cover_art(mb_albumid, [final])
                 await msg.edit_text(f"✅ {artist} - {title} adicionado!")
         else:
             await msg.edit_text("❌ Não consegui baixar.")
@@ -874,6 +939,8 @@ async def handle_album_confirm(update: Update, context: ContextTypes.DEFAULT_TYP
     mb_context = {"release_id": release_id, "album": album_title, "artist": artist}
 
     failed = []
+    cover_queue: dict[str, list[str]] = {}  # mb_albumid -> [filepath, ...]
+
     for i, title in enumerate(tracks, 1):
         if already_in_library(artist, title):
             await update.message.reply_text(f"⏭️ [{i}/{len(tracks)}] {title} (já existe)")
@@ -883,9 +950,16 @@ async def handle_album_confirm(update: Update, context: ContextTypes.DEFAULT_TYP
         if not filepath:
             failed.append(title)
             continue
-        skipped = run_beet_import(filepath, artist, mb_context)
+        skipped, mb_albumid = run_beet_import(filepath, artist, mb_context)
         if skipped:
             failed.append(f"{title} (review)")
+        elif mb_albumid:
+            final = beet_path(artist, title)
+            if final:
+                cover_queue.setdefault(mb_albumid, []).append(final)
+
+    for mb_albumid, paths in cover_queue.items():
+        embed_cover_art(mb_albumid, paths)
 
     msg = f"✅ *{album_title}* baixado!"
     if failed:
