@@ -220,17 +220,20 @@ def recording_sort_key(r: dict) -> tuple:
     return (score, rel.get("date", "9999"))
 
 
-def import_track(filepath: str, artist: str = "") -> bool:
-    """Try AcoustID-assisted import. Falls back to standard beet import.
+def tag_track(filepath: str, mb_context: dict | None = None) -> bool:
+    """Write the best available tags to a file before beets touches it.
 
-    Returns True if imported successfully, False if sent to review.
+    Priority: 1) AcoustID fingerprint  2) MB context from /album  3) keep existing tags.
+    Returns True if MusicBrainz IDs were written (beets can do a clean move),
+    False if we only have minimal tags (beets will still move, just less metadata).
     """
-    match = acoustid_lookup(filepath)
+    f = OggOpus(filepath)
 
+    # 1) AcoustID
+    match = acoustid_lookup(filepath)
     if match and match.get("mb_albumid"):
-        logging.info(f"[import] AcoustID match: {match['artist']} - {match['title']} "
+        logging.info(f"[tag] AcoustID match: {match['artist']} - {match['title']} "
                      f"album={match['album']} score={match['score']:.2f}")
-        f = OggOpus(filepath)
         f["musicbrainz_albumid"] = match["mb_albumid"]
         f["musicbrainz_trackid"] = match["mb_trackid"]
         if match.get("tracknumber"):
@@ -242,34 +245,53 @@ def import_track(filepath: str, artist: str = "") -> bool:
         if match.get("artist"):
             f["artist"] = match["artist"]
         f.save()
-
-        # --singletons: import as individual track, no album completeness check
-        # --noautotag: trust the tags we just wrote (mb_albumid, mb_trackid, album, title)
-        subprocess.run(
-            ["beet", "import", "--quiet", "--singletons", "--noautotag", filepath],
-            capture_output=True, text=True
-        )
-        if os.path.exists(filepath):
-            os.rename(filepath, f"{REVIEW}/{os.path.basename(filepath)}")
-            return False
         return True
 
-    # Fallback: standard beet import
+    # 2) MB context passed from /album (release_id already resolved)
+    if mb_context and mb_context.get("release_id"):
+        logging.info(f"[tag] Using MB context: release_id={mb_context['release_id']}")
+        try:
+            release = musicbrainzngs.get_release_by_id(
+                mb_context["release_id"], includes=["recordings"]
+            )
+            title = f.get("title", [""])[0]
+            for medium in release["release"].get("medium-list", []):
+                for track in medium.get("track-list", []):
+                    if track["recording"]["title"].lower() == title.lower():
+                        f["musicbrainz_albumid"] = mb_context["release_id"]
+                        f["musicbrainz_trackid"] = track["id"]
+                        f["tracknumber"] = str(track["position"])
+                        if mb_context.get("album"):
+                            f["album"] = mb_context["album"]
+                        if mb_context.get("artist"):
+                            f["artist"] = mb_context["artist"]
+                        f.save()
+                        return True
+        except Exception as e:
+            logging.warning(f"[tag] MB context lookup failed: {e}")
+
+    # 3) Keep whatever download_track already wrote (artist + title at minimum)
+    f.save()
+    return False
+
+
+def _beet_move(filepath: str):
+    """Move a file into the beets library. beets owns the move; we own the tags."""
     subprocess.run(
-        ["beet", "import", "--quiet", os.path.dirname(filepath)],
+        ["beet", "import", "--quiet", "--singletons", "--noautotag", filepath],
         capture_output=True, text=True
     )
     if os.path.exists(filepath):
         os.rename(filepath, f"{REVIEW}/{os.path.basename(filepath)}")
-        return False
-    return True
 
 
-def run_beet_import(filepath: str, artist: str = "") -> list[str]:
-    """Import a single downloaded file. Returns list of skipped filenames."""
+def run_beet_import(filepath: str, artist: str = "", mb_context: dict | None = None) -> list[str]:
+    """Tag then move a single downloaded file. Returns list of filenames sent to review."""
+    tagged_with_mb = tag_track(filepath, mb_context)
+    _beet_move(filepath)
+
     skipped = []
-    ok = import_track(filepath, artist)
-    if not ok:
+    if os.path.exists(f"{REVIEW}/{os.path.basename(filepath)}"):
         skipped.append(os.path.basename(filepath))
 
     subprocess.run(["find", DOWNLOADS, "-type", "f", "!", "-path", f"{REVIEW}/*",
@@ -727,7 +749,8 @@ async def handle_youtube(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await msg.edit_text("📚 Importando para a biblioteca...")
     opus_files = [f"{DOWNLOADS}/{f}" for f in os.listdir(DOWNLOADS) if f.endswith(".opus")]
     for fp in opus_files:
-        import_track(fp)
+        tag_track(fp)
+        _beet_move(fp)
     subprocess.run(["find", DOWNLOADS, "-type", "f", "!", "-path", f"{REVIEW}/*", "-delete"])
     subprocess.run(["beet", "fetchart"], capture_output=True)
     subprocess.run(["beet", "embedart"], input="y\n", text=True, capture_output=True)
@@ -805,6 +828,7 @@ async def handle_choice(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "album_title": album_title,
                 "tracks": tracks,
             }
+            context.user_data["pending_album_release_id"] = release_id
 
             await update.message.reply_text("\n".join(lines), parse_mode="Markdown")
             return CONFIRMING_ALBUM
@@ -846,6 +870,9 @@ async def handle_album_confirm(update: Update, context: ContextTypes.DEFAULT_TYP
 
     await update.message.reply_text(f"⬇️ Baixando *{album_title}*...", parse_mode="Markdown")
 
+    release_id = context.user_data.pop("pending_album_release_id", None)
+    mb_context = {"release_id": release_id, "album": album_title, "artist": artist}
+
     failed = []
     for i, title in enumerate(tracks, 1):
         if already_in_library(artist, title):
@@ -856,7 +883,7 @@ async def handle_album_confirm(update: Update, context: ContextTypes.DEFAULT_TYP
         if not filepath:
             failed.append(title)
             continue
-        skipped = run_beet_import(filepath, artist)
+        skipped = run_beet_import(filepath, artist, mb_context)
         if skipped:
             failed.append(f"{title} (review)")
 
