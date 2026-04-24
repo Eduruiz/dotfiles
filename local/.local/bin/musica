@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOWNLOADS="/srv/navidrome/downloads"
+URL="$1"
+
+if [[ -z "$URL" ]]; then
+  echo "Uso: musica <url>"
+  exit 1
+fi
+
+echo "==> Baixando..."
+yt-dlp \
+  --extract-audio \
+  --audio-format opus \
+  --audio-quality 192K \
+  --embed-metadata \
+  --parse-metadata "title:(?P<artist>.+?) - (?P<title>.+)" \
+  --replace-in-metadata "title" " ?\(Official.*?\)| ?\(.*?Video.*?\)| ?\(.*?Remaster.*?\)| ?\(.*?Lyric.*?\)| ?\[.*?Video.*?\]" "" \
+  --match-filter "!is_live & duration < 600" \
+  --output "$DOWNLOADS/%(artist)s - %(title)s.%(ext)s" \
+  "$URL"
+
+find "$DOWNLOADS" -type f ! -name "*.opus" -delete
+
+echo "==> Importando para a biblioteca..."
+beet import --quiet "$DOWNLOADS" 2>/dev/null || true
+if compgen -G "$DOWNLOADS/*.opus" > /dev/null; then
+  echo "==> Sem álbum encontrado, importando como faixas avulsas..."
+  beet import --quiet --singleton "$DOWNLOADS" 2>/dev/null || true
+fi
+
+echo "==> Limpando downloads..."
+find "$DOWNLOADS" -type f -delete
+
+echo "==> Feito!"

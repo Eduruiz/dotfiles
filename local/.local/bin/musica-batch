@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DOWNLOADS="/srv/navidrome/downloads"
+CSV="${1:-}"
+FAILED_LOG="$HOME/.local/share/musica-batch-failed.log"
+
+if [[ -z "$CSV" ]]; then
+  echo "Uso: musica-batch <arquivo.csv>"
+  echo "Formato CSV: artista,titulo"
+  exit 1
+fi
+
+> "$FAILED_LOG"
+total=$(wc -l < "$CSV")
+count=0
+
+while IFS=',' read -r artist album title _rest; do
+  count=$((count + 1))
+  echo "==> [$count/$total] $artist - $title"
+
+  existing=$(beet ls "artist:${artist}" 2>/dev/null | grep -i "${title}" || true)
+  if [[ -n "$existing" ]]; then
+    echo "    já existe, pulando."
+    continue
+  fi
+
+  query="$artist $title"
+  outfile="$DOWNLOADS/$artist - $title.opus"
+
+  yt-dlp \
+    --extract-audio \
+    --audio-format opus \
+    --audio-quality 192K \
+    --match-filter "!is_live & duration < 600" \
+    --output "$outfile" \
+    --no-playlist \
+    "ytsearch3:$query audio" 2>/dev/null || true
+
+  find "$DOWNLOADS" -type f ! -name "*.opus" -delete
+
+  if ! compgen -G "$DOWNLOADS/*.opus" > /dev/null; then
+    echo "    FALHOU: $artist - $title" | tee -a "$FAILED_LOG"
+    continue
+  fi
+
+  # renomeia qualquer opus gerado pro nome correto
+  find "$DOWNLOADS" -name "*.opus" ! -name "$(basename "$outfile")" -exec mv {} "$outfile" \;
+
+  python3 - "$outfile" "$artist" "$album" "$title" <<'EOF'
+import sys
+from mutagen.oggopus import OggOpus
+f = OggOpus(sys.argv[1])
+f["artist"] = sys.argv[2]
+f["album"] = sys.argv[3]
+f["title"] = sys.argv[4]
+f.save()
+EOF
+
+  beet import --quiet "$DOWNLOADS" 2>/dev/null || true
+
+  if compgen -G "$DOWNLOADS/*.opus" > /dev/null; then
+    beet import --quiet --singleton "$DOWNLOADS" 2>/dev/null || true
+  fi
+
+  # corrige título vazio após import
+  beet modify --yes "artist:$artist album:$album title:" "title=$title" 2>/dev/null || true
+
+  find "$DOWNLOADS" -type f -delete
+
+done < "$CSV"
+
+echo ""
+echo "==> Buscando capas dos álbuns..."
+beet fetchart 2>/dev/null || true
+echo "y" | beet embedart 2>/dev/null || true
+
+echo "==> Concluído! $count músicas processadas."
+if [[ -s "$FAILED_LOG" ]]; then
+  echo "==> Falhas salvas em: $FAILED_LOG"
+fi
