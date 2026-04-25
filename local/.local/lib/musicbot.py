@@ -32,6 +32,7 @@ WAITING_MUSICA_ARTIST = 4
 WAITING_MUSICA_TITLE = 5
 WAITING_ALBUM_ARTIST = 6
 WAITING_ALBUM_TITLE = 7
+CONFIRMING_COMPLETAR = 8
 
 RELEASE_PRIORITY = {"Album": 0, "Single": 1, "EP": 2}
 LASTFM_API_KEY = os.environ["LASTFM_API_KEY"]
@@ -402,6 +403,8 @@ def download_track(artist: str, title: str, album: str = "", candidate: int = 1)
     f = OggOpus(outfile)
     f["artist"] = artist
     f["title"] = title
+    f["discnumber"] = "1"
+    f["disctotal"] = "1"
     f.save()
     return outfile
 
@@ -582,6 +585,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Comandos disponíveis:\n\n"
         "🎵 /musica Artista - Título\n"
         "💿 /album Artista - Nome do Álbum\n"
+        "🔧 /completar Artista - Álbum\n"
         "🎧 /playlist URL do Spotify\n"
         "🔗 /youtube URL"
     )
@@ -1048,6 +1052,146 @@ async def handle_album_confirm(update: Update, context: ContextTypes.DEFAULT_TYP
     return ConversationHandler.END
 
 
+async def handle_completar(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not auth(update):
+        return
+    text = " ".join(context.args)
+    if " - " not in text:
+        await update.message.reply_text("Formato: /completar Artista - Álbum")
+        return
+
+    artist, album = text.split(" - ", 1)
+    await update.message.reply_text(f"🔍 Verificando {artist} - {album}...")
+
+    try:
+        # Try to find the release_id from tracks already in the library
+        result = subprocess.run(
+            ["beet", "ls", "-f", "$mb_albumid", f"albumartist:{artist}", f"album:{album}"],
+            capture_output=True, text=True
+        )
+        existing_ids = [l.strip() for l in result.stdout.splitlines() if l.strip()]
+        release_id = next((i for i in existing_ids if i), None)
+
+        if not release_id:
+            # Fall back to MB search
+            mb_result = musicbrainzngs.search_releases(artist=artist, release=album, limit=1)
+            releases = mb_result.get("release-list", [])
+            if not releases:
+                await update.message.reply_text("❌ Álbum não encontrado no MusicBrainz.")
+                return
+            release_id = releases[0]["id"]
+
+        release = musicbrainzngs.get_release_by_id(release_id, includes=["recordings"])
+        all_tracks = []
+        for medium in release["release"].get("medium-list", []):
+            for track in medium.get("track-list", []):
+                all_tracks.append({
+                    "title": track["recording"]["title"],
+                    "position": int(track["position"]),
+                })
+
+        # Compare by tracknumber first (most reliable), fall back to title
+        lib_tracks_result = subprocess.run(
+            ["beet", "ls", "-f", "$track::$title", f"albumartist:{artist}", f"album:{album}"],
+            capture_output=True, text=True
+        )
+        lib_track_nums = set()
+        lib_titles = set()
+        for line in lib_tracks_result.stdout.splitlines():
+            if "::" in line:
+                num, title = line.split("::", 1)
+                try:
+                    lib_track_nums.add(int(num.strip()))
+                except ValueError:
+                    pass
+                lib_titles.add(title.strip().lower())
+
+        def _is_present(t: dict) -> bool:
+            if t["position"] > 0 and t["position"] in lib_track_nums:
+                return True
+            return t["title"].lower() in lib_titles
+
+        missing = [t for t in all_tracks if not _is_present(t)]
+
+        if not missing:
+            await update.message.reply_text(f"✅ {artist} - {album} já está completo!")
+            return
+
+        album_title = release["release"].get("title", album)
+        lines = [f"💿 *{album_title}* — faltam {len(missing)}/{len(all_tracks)} faixas:\n"]
+        for t in missing:
+            lines.append(f"{t['position']}. {t['title']}")
+        lines.append("\nBaixar as faixas faltando? (sim/não)")
+
+        context.user_data["pending_completar"] = {
+            "artist": artist,
+            "album_title": album_title,
+            "release_id": release_id,
+            "missing": missing,
+        }
+
+        await update.message.reply_text("\n".join(lines), parse_mode="Markdown")
+        return CONFIRMING_COMPLETAR
+
+    except Exception as e:
+        await update.message.reply_text(f"❌ Erro: {e}")
+
+
+async def handle_completar_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not auth(update):
+        return ConversationHandler.END
+
+    text = update.message.text.strip().lower()
+    pending = context.user_data.pop("pending_completar", None)
+
+    if not pending or text not in ("sim", "não", "nao", "s", "n"):
+        await update.message.reply_text("Responde sim ou não.")
+        return CONFIRMING_COMPLETAR
+
+    if text in ("não", "nao", "n"):
+        await update.message.reply_text("Cancelado.")
+        return ConversationHandler.END
+
+    artist = pending["artist"]
+    album_title = pending["album_title"]
+    release_id = pending["release_id"]
+    missing = pending["missing"]
+
+    await update.message.reply_text(
+        f"⬇️ Completando *{album_title}* ({len(missing)} faixas)...", parse_mode="Markdown"
+    )
+
+    mb_context = {"release_id": release_id, "album": album_title, "artist": artist}
+    failed = []
+    cover_queue: dict[str, list[str]] = {}
+
+    for i, track in enumerate(missing, 1):
+        title = track["title"]
+        await update.message.reply_text(f"⬇️ [{i}/{len(missing)}] {title}")
+        filepath, confirmed = download_track_for_album(artist, title, album_title, release_id)
+        if not filepath:
+            failed.append(title)
+            continue
+        if not confirmed:
+            await update.message.reply_text(f"⚠️ [{i}/{len(missing)}] {title} — versão não confirmada")
+        skipped, mb_albumid = run_beet_import(filepath, artist, mb_context)
+        if skipped:
+            failed.append(f"{title} (review)")
+        elif mb_albumid:
+            final = beet_path(artist, title)
+            if final:
+                cover_queue.setdefault(mb_albumid, []).append(final)
+
+    for mb_albumid, paths in cover_queue.items():
+        embed_cover_art(mb_albumid, paths)
+
+    msg = f"✅ *{album_title}* completado!"
+    if failed:
+        msg += f"\n⚠️ Review manual: {', '.join(failed)}"
+    await update.message.reply_text(msg, parse_mode="Markdown")
+    return ConversationHandler.END
+
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.pop("pending", None)
     context.user_data.pop("pending_playlist", None)
@@ -1063,6 +1207,7 @@ def main():
             CommandHandler("musica", handle_musica),
             CommandHandler("album", handle_album),
             CommandHandler("playlist", handle_playlist),
+            CommandHandler("completar", handle_completar),
         ],
         states={
             WAITING_MUSICA_ARTIST: [MessageHandler(filters.TEXT & ~filters.COMMAND, waiting_musica_artist)],
@@ -1072,6 +1217,7 @@ def main():
             CHOOSING: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_choice)],
             CONFIRMING_ALBUM: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_album_confirm)],
             CONFIRMING_PLAYLIST: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_playlist_confirm)],
+            CONFIRMING_COMPLETAR: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_completar_confirm)],
         },
         fallbacks=[CommandHandler("cancel", cancel)],
     )
