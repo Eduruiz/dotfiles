@@ -14,7 +14,10 @@ from telegram.ext import (
     Application, CommandHandler, MessageHandler, ConversationHandler,
     filters, ContextTypes
 )
+import unicodedata
 import musicbrainzngs
+from beets import config as beets_config
+from beets.library import Library as BeetsLibrary
 
 TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
 DOWNLOADS = "/srv/navidrome/downloads"
@@ -24,6 +27,12 @@ os.makedirs(REVIEW, exist_ok=True)
 
 logging.basicConfig(level=logging.INFO)
 musicbrainzngs.set_useragent("musicbot", "1.0", "contact@musicbot.local")
+
+beets_config.read()
+_beets_lib = BeetsLibrary(
+    beets_config["library"].as_filename(),
+    beets_config["directory"].as_filename(),
+)
 
 CHOOSING = 1
 CONFIRMING_ALBUM = 2
@@ -447,23 +456,64 @@ def download_track_for_album(artist: str, title: str, album: str,
     return filepath, False
 
 
+def _normalize(s: str) -> str:
+    return unicodedata.normalize('NFD', s).encode('ascii', 'ignore').decode().lower()
+
+
+def _title_variants(title: str) -> list[str]:
+    """Return title and versions stripped of feat./parenthetical/slash suffixes.
+
+    Only strips if there's actual content before the suffix — titles that
+    start with ( or [ (e.g. '(!!!)') are left as-is.
+    """
+    variants = [title]
+    short = re.split(r'\s+[\(\[]|\s+feat\.|\s+/\s+', title, maxsplit=1)[0].strip()
+    if short and short != title:
+        variants.append(short)
+    return variants
+
+
+def _artist_items(artist: str) -> list:
+    """Return library items by this artist, deduped by id."""
+    seen = set()
+    items = []
+    for query in [f'artist:"{artist}"', f'albumartist:"{artist}"']:
+        for item in _beets_lib.items(query):
+            if item.id not in seen:
+                seen.add(item.id)
+                items.append(item)
+    return items
+
+
 def already_in_library(artist: str, title: str) -> bool:
-    result = subprocess.run(
-        ["beet", "ls", f"artist:{artist}"],
-        capture_output=True, text=True
-    ).stdout
-    return title.lower() in result.lower()
+    # Fast path: exact query
+    for t in _title_variants(title):
+        for query in [
+            f'title:"{t}" artist:"{artist}"',
+            f'title:"{t}" albumartist:"{artist}"',
+        ]:
+            if list(_beets_lib.items(query)):
+                return True
+    # Fallback: normalized comparison across all artist tracks
+    norm_variants = {_normalize(t) for t in _title_variants(title)}
+    return any(_normalize(i.title) in norm_variants for i in _artist_items(artist))
 
 
 def beet_path(artist: str, title: str) -> str | None:
-    result = subprocess.run(
-        ["beet", "ls", "-p", f"artist:{artist}", f"title:{title}"],
-        capture_output=True, text=True
-    ).stdout.strip()
-    # pick the first matching path
-    for line in result.splitlines():
-        if line.strip():
-            return line.strip()
+    # Fast path: exact query
+    for t in _title_variants(title):
+        for query in [
+            f'title:"{t}" artist:"{artist}"',
+            f'title:"{t}" albumartist:"{artist}"',
+        ]:
+            results = list(_beets_lib.items(query))
+            if results:
+                return results[0].path.decode()
+    # Fallback: normalized comparison across all artist tracks
+    norm_variants = {_normalize(t) for t in _title_variants(title)}
+    for item in _artist_items(artist):
+        if _normalize(item.title) in norm_variants:
+            return item.path.decode()
     return None
 
 
@@ -1065,15 +1115,10 @@ async def handle_completar(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         # Try to find the release_id from tracks already in the library
-        result = subprocess.run(
-            ["beet", "ls", "-f", "$mb_albumid", f"albumartist:{artist}", f"album:{album}"],
-            capture_output=True, text=True
-        )
-        existing_ids = [l.strip() for l in result.stdout.splitlines() if l.strip()]
-        release_id = next((i for i in existing_ids if i), None)
+        lib_items = list(_beets_lib.items(f'albumartist:"{artist}" album:"{album}"'))
+        release_id = next((i.mb_albumid for i in lib_items if i.mb_albumid), None)
 
         if not release_id:
-            # Fall back to MB search
             mb_result = musicbrainzngs.search_releases(artist=artist, release=album, limit=1)
             releases = mb_result.get("release-list", [])
             if not releases:
@@ -1091,20 +1136,8 @@ async def handle_completar(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 })
 
         # Compare by tracknumber first (most reliable), fall back to title
-        lib_tracks_result = subprocess.run(
-            ["beet", "ls", "-f", "$track::$title", f"albumartist:{artist}", f"album:{album}"],
-            capture_output=True, text=True
-        )
-        lib_track_nums = set()
-        lib_titles = set()
-        for line in lib_tracks_result.stdout.splitlines():
-            if "::" in line:
-                num, title = line.split("::", 1)
-                try:
-                    lib_track_nums.add(int(num.strip()))
-                except ValueError:
-                    pass
-                lib_titles.add(title.strip().lower())
+        lib_track_nums = {i.track for i in lib_items if i.track}
+        lib_titles = {i.title.lower() for i in lib_items if i.title}
 
         def _is_present(t: dict) -> bool:
             if t["position"] > 0 and t["position"] in lib_track_nums:
