@@ -45,6 +45,7 @@ async function downloadSelected() {
         status: 'pending',
         tracks: [],
         error: null,
+        status_message: null,
         artist: release?.artist_credit_name ?? job.artist,
         album: release?.release_name ?? job.album,
       })

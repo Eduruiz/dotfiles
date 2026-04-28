@@ -1,23 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { NSpin, NEmpty, NInput, NButton, NRadioGroup, NRadioButton } from 'naive-ui'
-import { searchReleases, searchByArtist, startDownload, type ReleaseResult } from '@/api'
+import { startDownload, type ReleaseResult } from '@/api'
 import { useFreshStore, type ReleaseItem } from '@/stores/fresh'
 import { useJobsStore } from '@/stores/jobs'
+import { useSearchStore } from '@/stores/search'
 import { useRouter } from 'vue-router'
 import ReleaseCard from '@/components/ReleaseCard.vue'
 
-const store = useFreshStore()
+const freshStore = useFreshStore()
 const jobsStore = useJobsStore()
+const searchStore = useSearchStore()
 const router = useRouter()
 
-const query = ref('')
-const activeFilter = ref<string>('all')
-const results = ref<ReleaseResult[]>([])
-const loading = ref(false)
-const error = ref<string | null>(null)
 const downloading = ref(false)
-let debounceTimer: ReturnType<typeof setTimeout>
 
 const filters = [
   { label: 'Tudo', value: 'all' },
@@ -38,48 +34,26 @@ function toReleaseItem(r: ReleaseResult): ReleaseItem {
   }
 }
 
-async function doSearch() {
-  if (query.value.length < 2) { results.value = []; return }
-  loading.value = true
-  error.value = null
-  try {
-    if (activeFilter.value === 'artist') {
-      results.value = await searchByArtist(query.value)
-    } else {
-      const type = activeFilter.value === 'all' ? undefined : activeFilter.value
-      results.value = await searchReleases(query.value, type)
-    }
-  } catch (e) {
-    error.value = (e as Error).message
-  } finally {
-    loading.value = false
-  }
-}
-
-watch(query, () => {
-  clearTimeout(debounceTimer)
-  store.expanded = {}
-  results.value = []
-  if (query.value.length < 2) return
-  debounceTimer = setTimeout(doSearch, 400)
+// Clear expanded state when search changes
+watch(() => searchStore.query, () => {
+  freshStore.expanded = {}
 })
 
-watch(activeFilter, () => {
-  store.expanded = {}
-  if (query.value.length >= 2) doSearch()
+watch(() => searchStore.activeFilter, () => {
+  freshStore.expanded = {}
 })
 
 const buttonLabel = computed(() => {
-  const n = store.totalSelected
+  const n = freshStore.totalSelected
   return n > 0 ? `Baixar ${n} faixa${n > 1 ? 's' : ''}` : ''
 })
 
 async function downloadSelected() {
-  if (downloading.value || store.totalSelected === 0) return
+  if (downloading.value || freshStore.totalSelected === 0) return
   downloading.value = true
   try {
-    for (const { mbid, positions } of store.selectedByRelease) {
-      const r = results.value.find((rel) => rel.release_mbid === mbid)
+    for (const { mbid, positions } of freshStore.selectedByRelease) {
+      const r = searchStore.results.find((rel) => rel.release_mbid === mbid)
       const job = await startDownload(mbid, positions)
       jobsStore.addJob({
         ...job,
@@ -87,44 +61,46 @@ async function downloadSelected() {
         status: 'pending',
         tracks: [],
         error: null,
+        status_message: null,
         artist: r?.artist_credit_name ?? job.artist,
         album: r?.release_name ?? job.album,
       })
     }
     router.push(`/jobs/${jobsStore.lastJobId}`)
   } catch (e) {
-    error.value = (e as Error).message
+    searchStore.error = (e as Error).message
     downloading.value = false
   }
 }
 
-onUnmounted(() => { store.expanded = {} })
+onUnmounted(() => { freshStore.expanded = {} })
 </script>
 
 <template>
   <div class="view">
     <div class="search-bar">
       <n-input
-        v-model:value="query"
+        :value="searchStore.query"
+        @update:value="searchStore.updateQuery"
         placeholder="Artista, álbum..."
         clearable
         :input-props="{ autocomplete: 'off', autocorrect: 'off', spellcheck: 'false' }"
       />
-      <n-radio-group v-model:value="activeFilter" class="filters" size="small">
+      <n-radio-group :value="searchStore.activeFilter" @update:value="searchStore.updateFilter" class="filters" size="small">
         <n-radio-button v-for="f in filters" :key="f.value" :value="f.value">
           {{ f.label }}
         </n-radio-button>
       </n-radio-group>
     </div>
 
-    <div v-if="loading" class="center"><n-spin /></div>
-    <div v-else-if="error" class="center error">{{ error }}</div>
-    <n-empty v-else-if="query.length >= 2 && !results.length && !loading" description="Sem resultados" style="margin-top: 60px" />
-    <n-empty v-else-if="!query.length" description="Digite para buscar" style="margin-top: 60px" />
+    <div v-if="searchStore.loading" class="center"><n-spin /></div>
+    <div v-else-if="searchStore.error" class="center error">{{ searchStore.error }}</div>
+    <n-empty v-else-if="searchStore.query.length >= 2 && !searchStore.results.length && !searchStore.loading" description="Sem resultados" style="margin-top: 60px" />
+    <n-empty v-else-if="!searchStore.query.length" description="Digite para buscar" style="margin-top: 60px" />
 
     <div v-else class="list">
       <release-card
-        v-for="r in results"
+        v-for="r in searchStore.results"
         :key="r.release_mbid"
         :release="toReleaseItem(r)"
       />

@@ -42,7 +42,7 @@ async function download() {
   mb.showProgress()
   try {
     const job = await startDownload(mbid)
-    jobsStore.addJob({ ...job, release_id: mbid, status: 'pending', tracks: [], error: null })
+    jobsStore.addJob({ ...job, release_id: mbid, status: 'pending', tracks: [], error: null, status_message: null })
     router.push(`/jobs/${job.job_id}`)
   } catch (e) {
     error.value = (e as Error).message
