@@ -16,7 +16,7 @@ for key in ("LASTFM_API_KEY", "ACOUSTID_API_KEY", "SP_TOTP_SECRET", "TELEGRAM_BO
         os.environ[key] = m.group(1).strip()
 
 sys.path.insert(0, os.path.dirname(__file__))
-from musicbot import (
+from library import (
     acoustid_lookup, tag_track, _beet_move, embed_cover_art,
     download_track, download_track_for_album, beet_path,
     DOWNLOADS, REVIEW,

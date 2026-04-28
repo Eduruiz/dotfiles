@@ -3,3 +3,25 @@ vim/.vim/autoload/*
 vim/.vim/sessions/*
 vim/.vim/undo.old/*
 vim/.vim/plugged/*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

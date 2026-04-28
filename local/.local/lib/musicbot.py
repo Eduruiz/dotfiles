@@ -8,31 +8,25 @@ import logging
 import requests
 import pyotp
 from mutagen.oggopus import OggOpus
-from mutagen.flac import Picture
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, MessageHandler, ConversationHandler,
-    filters, ContextTypes
+    CallbackQueryHandler, filters, ContextTypes
 )
-import unicodedata
 import musicbrainzngs
-from beets import config as beets_config
-from beets.library import Library as BeetsLibrary
 
-TOKEN = os.environ["TELEGRAM_BOT_TOKEN"]
-DOWNLOADS = "/srv/navidrome/downloads"
-REVIEW = "/srv/navidrome/downloads/review"
-ALLOWED_USERS = {54647261}
-os.makedirs(REVIEW, exist_ok=True)
+from library import (
+    TOKEN, DOWNLOADS, REVIEW, ALLOWED_USERS, LISTENBRAINZ_USER,
+    RELEASE_PRIORITY, LASTFM_API_KEY, _beets_lib,
+    sanitize, _normalize, _title_variants, _artist_items,
+    already_in_library, beet_path,
+    download_track, download_track_for_album,
+    run_beet_import, _beet_move, embed_cover_art,
+    fetch_fresh_releases, tag_track, acoustid_lookup,
+    save_playlist_m3u, best_release, recording_sort_key,
+)
 
 logging.basicConfig(level=logging.INFO)
-musicbrainzngs.set_useragent("musicbot", "1.0", "contact@musicbot.local")
-
-beets_config.read()
-_beets_lib = BeetsLibrary(
-    beets_config["library"].as_filename(),
-    beets_config["directory"].as_filename(),
-)
 
 CHOOSING = 1
 CONFIRMING_ALBUM = 2
@@ -42,10 +36,7 @@ WAITING_MUSICA_TITLE = 5
 WAITING_ALBUM_ARTIST = 6
 WAITING_ALBUM_TITLE = 7
 CONFIRMING_COMPLETAR = 8
-
-RELEASE_PRIORITY = {"Album": 0, "Single": 1, "EP": 2}
-LASTFM_API_KEY = os.environ["LASTFM_API_KEY"]
-ACOUSTID_API_KEY = os.environ["ACOUSTID_API_KEY"]
+CONFIRMING_FRESH = 9
 
 _SP_TOTP_SECRET = os.environ["SP_TOTP_SECRET"]
 _SP_TOTP_VERSION = 61
@@ -637,7 +628,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "💿 /album Artista - Nome do Álbum\n"
         "🔧 /completar Artista - Álbum\n"
         "🎧 /playlist URL do Spotify\n"
-        "🔗 /youtube URL"
+        "🔗 /youtube URL\n"
+        "🆕 /freshreleases — lançamentos do ListenBrainz\n"
+        "🆕 /freshreleases albums — só álbuns e EPs"
     )
 
 
@@ -1225,6 +1218,286 @@ async def handle_completar_confirm(update: Update, context: ContextTypes.DEFAULT
     return ConversationHandler.END
 
 
+def fetch_fresh_releases(only_albums: bool = False) -> list[dict]:
+    resp = requests.get(
+        f"https://api.listenbrainz.org/1/user/{LISTENBRAINZ_USER}/fresh_releases",
+        timeout=15,
+    )
+    if not resp.ok:
+        return []
+    releases = resp.json().get("payload", {}).get("releases", [])
+    if only_albums:
+        releases = [r for r in releases if r.get("release_group_primary_type") in ("Album", "EP")]
+    releases.sort(key=lambda r: -r.get("confidence", 0))
+    return releases
+
+
+def _escape_html(s: str) -> str:
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _fresh_list_text(releases: list[dict], only_albums: bool) -> str:
+    type_emoji = {"Album": "💿", "EP": "📀", "Single": "🎵"}
+    lines = [f"🆕 <b>Fresh Releases</b>{'  •  álbuns/EPs' if only_albums else ''}:\n"]
+    for i, r in enumerate(releases, 1):
+        emoji = type_emoji.get(r.get("release_group_primary_type", ""), "🎵")
+        rtype = r.get("release_group_primary_type", "?")
+        secondary = r.get("release_group_secondary_type")
+        if secondary:
+            rtype = secondary
+        date = r.get("release_date", "")
+        try:
+            y, m, d = date.split("-")
+            date = f"{d}/{m}/{y}"
+        except ValueError:
+            pass
+        artist = _escape_html(r['artist_credit_name'])
+        name = _escape_html(r['release_name'])
+        lines.append(f"{i}. {emoji} <b>{artist}</b>")
+        lines.append(f"   {name}")
+        lines.append(f"   <i>{rtype} · {date}</i>\n")
+    return "\n".join(lines)
+
+
+def _fresh_list_keyboard(releases: list[dict]) -> InlineKeyboardMarkup:
+    buttons = [
+        [InlineKeyboardButton(
+            f"⬇️ {r['artist_credit_name']} — {r['release_name']}",
+            callback_data=f"fresh_detail:{i}"
+        )]
+        for i, r in enumerate(releases)
+    ]
+    return InlineKeyboardMarkup(buttons)
+
+
+async def handle_freshreleases(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not auth(update):
+        return
+
+    only_albums = "album" in " ".join(context.args).lower()
+    msg = await update.message.reply_text("🔍 Buscando lançamentos...")
+
+    releases = fetch_fresh_releases(only_albums)
+    if not releases:
+        await msg.edit_text("❌ Não consegui buscar os lançamentos.")
+        return
+
+    context.user_data["fresh_releases"] = releases
+    context.user_data["fresh_only_albums"] = only_albums
+
+    text = _fresh_list_text(releases, only_albums)
+    keyboard = _fresh_list_keyboard(releases)
+
+    # Send in chunks if needed — keyboard only on last chunk
+    chunks = [text[i:i+4096] for i in range(0, len(text), 4096)]
+    for j, chunk in enumerate(chunks):
+        if j == 0:
+            await msg.edit_text(chunk, parse_mode="HTML",
+                                reply_markup=keyboard if len(chunks) == 1 else None)
+        elif j == len(chunks) - 1:
+            await update.message.reply_text(chunk, parse_mode="HTML", reply_markup=keyboard)
+        else:
+            await update.message.reply_text(chunk, parse_mode="HTML")
+
+
+async def _do_download_fresh(query, context: ContextTypes.DEFAULT_TYPE, chosen: dict) -> list[str]:
+    """Download all missing tracks for a fresh release. Returns list of library paths."""
+    artist = chosen["artist_credit_name"]
+    release_mbid = chosen["release_mbid"]
+    release_name = chosen["release_name"]
+
+    release = musicbrainzngs.get_release_by_id(release_mbid, includes=["recordings"])
+    all_tracks = []
+    for medium in release["release"].get("medium-list", []):
+        for track in medium.get("track-list", []):
+            all_tracks.append({
+                "title": track["recording"]["title"],
+                "position": int(track["position"]),
+            })
+
+    album_title = release["release"].get("title", release_name)
+    lib_items = list(_beets_lib.items(f'albumartist:"{artist}" album:"{album_title}"'))
+    lib_track_nums = {i.track for i in lib_items if i.track}
+    lib_titles = {i.title.lower() for i in lib_items if i.title}
+
+    def _is_present(t: dict) -> bool:
+        if t["position"] > 0 and t["position"] in lib_track_nums:
+            return True
+        return t["title"].lower() in lib_titles
+
+    missing = [t for t in all_tracks if not _is_present(t)]
+    already_paths = [beet_path(artist, t["title"]) for t in all_tracks if _is_present(t)]
+    already_paths = [p for p in already_paths if p]
+
+    if not missing:
+        await query.message.reply_text(f"✅ {artist} — {album_title} já está completo!")
+        return already_paths
+
+    await query.message.reply_text(
+        f"⬇️ *{album_title}* — {len(missing)} faixa(s) novas", parse_mode="Markdown"
+    )
+
+    mb_context = {"release_id": release_mbid, "album": album_title, "artist": artist}
+    cover_queue: dict[str, list[str]] = {}
+    playlist_paths = list(already_paths)
+
+    for i, track in enumerate(missing, 1):
+        title = track["title"]
+        await query.message.reply_text(f"⬇️ [{i}/{len(missing)}] {title}")
+        filepath, confirmed = download_track_for_album(artist, title, album_title, release_mbid)
+        if not filepath:
+            await query.message.reply_text(f"❌ [{i}/{len(missing)}] {title} — falhou")
+            continue
+        if not confirmed:
+            await query.message.reply_text(f"⚠️ [{i}/{len(missing)}] {title} — versão não confirmada")
+        _, mb_albumid = run_beet_import(filepath, artist, mb_context)
+        if mb_albumid:
+            final = beet_path(artist, title)
+            if final:
+                cover_queue.setdefault(mb_albumid, []).append(final)
+                playlist_paths.append(final)
+
+    for mb_albumid, paths in cover_queue.items():
+        embed_cover_art(mb_albumid, paths)
+
+    return playlist_paths
+
+
+async def fresh_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    if query.from_user.id not in ALLOWED_USERS:
+        await query.answer("Acesso negado.")
+        return
+    await query.answer()
+
+    data = query.data
+    releases = context.user_data.get("fresh_releases", [])
+    only_albums = context.user_data.get("fresh_only_albums", False)
+
+    if data.startswith("fresh_detail:"):
+        idx = int(data.split(":")[1])
+        chosen = releases[idx]
+        artist = chosen["artist_credit_name"]
+        release_mbid = chosen["release_mbid"]
+        release_name = chosen["release_name"]
+
+        await query.edit_message_text(f"🔍 Carregando {artist} — {release_name}...", parse_mode="Markdown")
+
+        try:
+            release = musicbrainzngs.get_release_by_id(release_mbid, includes=["recordings"])
+            all_tracks = []
+            for medium in release["release"].get("medium-list", []):
+                for track in medium.get("track-list", []):
+                    all_tracks.append({
+                        "title": track["recording"]["title"],
+                        "position": int(track["position"]),
+                    })
+
+            album_title = release["release"].get("title", release_name)
+            lib_items = list(_beets_lib.items(f'albumartist:"{artist}" album:"{album_title}"'))
+            lib_track_nums = {i.track for i in lib_items if i.track}
+            lib_titles = {i.title.lower() for i in lib_items if i.title}
+
+            def _is_present(t: dict) -> bool:
+                if t["position"] > 0 and t["position"] in lib_track_nums:
+                    return True
+                return t["title"].lower() in lib_titles
+
+            missing_count = sum(1 for t in all_tracks if not _is_present(t))
+            have_count = len(all_tracks) - missing_count
+
+            lines = [f"💿 <b>{_escape_html(artist)}</b>", f"<i>{_escape_html(album_title)}</i>\n"]
+            for t in all_tracks:
+                present = _is_present(t)
+                mark = "✅" if present else "⬇️"
+                lines.append(f"{mark} {t['position']}. {_escape_html(t['title'])}")
+
+            lines.append(f"\n{have_count} já na biblioteca · {missing_count} a baixar")
+
+            keyboard = InlineKeyboardMarkup([
+                [InlineKeyboardButton("✅ Confirmar download", callback_data=f"fresh_confirm:{idx}")],
+                [InlineKeyboardButton("◀️ Voltar", callback_data="fresh_back")],
+            ])
+
+            text = "\n".join(lines)
+            if len(text) > 4096:
+                text = text[:4050] + "\n..."
+            await query.edit_message_text(text, parse_mode="HTML", reply_markup=keyboard)
+
+        except Exception as e:
+            await query.edit_message_text(f"❌ Erro: {e}")
+
+    elif data.startswith("fresh_confirm:"):
+        idx = int(data.split(":")[1])
+        chosen = releases[idx]
+
+        await query.edit_message_text(
+            f"⬇️ Baixando *{chosen['release_name']}*...", parse_mode="Markdown"
+        )
+
+        # Track playlist across multiple downloads — accumulate in user_data
+        if "fresh_playlist_paths" not in context.user_data:
+            context.user_data["fresh_playlist_paths"] = []
+
+        try:
+            paths = await _do_download_fresh(query, context, chosen)
+            context.user_data["fresh_playlist_paths"].extend(paths)
+        except Exception as e:
+            await query.message.reply_text(f"❌ Erro: {e}")
+
+        # Show list again so user can pick more
+        text = _fresh_list_text(releases, only_albums)
+        keyboard = _fresh_list_keyboard(releases)
+        playlist_paths = context.user_data.get("fresh_playlist_paths", [])
+
+        footer = f"\n<i>{len(playlist_paths)} faixa(s) na fila da playlist</i>"
+        full = text + footer
+        chunks = [full[i:i+4096] for i in range(0, len(full), 4096)]
+        await query.message.reply_text(
+            chunks[0], parse_mode="HTML",
+            reply_markup=keyboard if len(chunks) == 1 else None
+        )
+        for j, chunk in enumerate(chunks[1:], 1):
+            await query.message.reply_text(
+                chunk, parse_mode="HTML",
+                reply_markup=keyboard if j == len(chunks) - 1 else None
+            )
+
+        # Add "Criar playlist" button if we have paths
+        if playlist_paths:
+            await query.message.reply_text(
+                f"Quer criar a playlist com {len(playlist_paths)} faixa(s)?",
+                reply_markup=InlineKeyboardMarkup([[
+                    InlineKeyboardButton("🎵 Criar playlist", callback_data="fresh_save_playlist"),
+                    InlineKeyboardButton("➕ Baixar mais", callback_data="fresh_more"),
+                ]])
+            )
+
+    elif data == "fresh_back":
+        text = _fresh_list_text(releases, only_albums)
+        keyboard = _fresh_list_keyboard(releases)
+        chunks = [text[i:i+4096] for i in range(0, len(text), 4096)]
+        await query.edit_message_text(
+            chunks[0], parse_mode="HTML",
+            reply_markup=keyboard if len(chunks) == 1 else None
+        )
+
+    elif data == "fresh_save_playlist":
+        paths = context.user_data.pop("fresh_playlist_paths", [])
+        if paths:
+            playlist_name = f"Fresh Releases {time.strftime('%Y-%m-%d')}"
+            save_playlist_m3u(playlist_name, paths)
+            await query.edit_message_text(
+                f"✅ Playlist *{playlist_name}* criada com {len(paths)} faixa(s)!",
+                parse_mode="Markdown"
+            )
+        else:
+            await query.edit_message_text("❌ Nenhuma faixa na fila.")
+
+    elif data == "fresh_more":
+        await query.answer("Escolha mais releases na lista acima.")
+
+
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.pop("pending", None)
     context.user_data.pop("pending_playlist", None)
@@ -1241,6 +1514,7 @@ def main():
             CommandHandler("album", handle_album),
             CommandHandler("playlist", handle_playlist),
             CommandHandler("completar", handle_completar),
+            CommandHandler("freshreleases", handle_freshreleases),
         ],
         states={
             WAITING_MUSICA_ARTIST: [MessageHandler(filters.TEXT & ~filters.COMMAND, waiting_musica_artist)],
@@ -1257,6 +1531,7 @@ def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("youtube", handle_youtube))
+    app.add_handler(CallbackQueryHandler(fresh_callback, pattern="^fresh_"))
     app.add_handler(conv)
     app.run_polling()
 
