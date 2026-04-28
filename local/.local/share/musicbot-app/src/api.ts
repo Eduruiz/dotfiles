@@ -35,6 +35,7 @@ export interface TrackDownloadStatus {
   position: number
   title: string
   status: 'pending' | 'in_library' | 'downloading' | 'converting' | 'importing' | 'done' | 'failed' | 'cancelled'
+  needs_review: boolean
   source: string | null
   percent: number | null
   transfer_id: string | null

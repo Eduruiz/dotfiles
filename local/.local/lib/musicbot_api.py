@@ -133,6 +133,7 @@ class TrackDownloadStatus(BaseModel):
     position: int
     title: str
     status: Literal["pending", "in_library", "downloading", "converting", "importing", "done", "failed", "cancelled"]
+    needs_review: bool = False
     source: str | None = None
     percent: float | None = None
     transfer_id: str | None = None
@@ -332,16 +333,17 @@ class SoulseekSource(DownloadSource):
                     # Prefer consistent format (one ext), best format wins
                     fmt = min(self._fmt_rank(e) for e in exts_used)
                     n_matched = len(matched)
-                    candidates.append((n_matched, fmt, -upload_speed, username, matched))
+                    # Store as (sort_key, username, matched) to avoid comparing matched dicts
+                    candidates.append(((n_matched, fmt, -upload_speed), username, matched))
 
         if not candidates:
             return []
 
-        # Sort by: most matches first, then best format, then fastest speed
-        candidates.sort(reverse=True)
+        # Sort by sort_key: most matches first, then best format, then fastest speed
+        candidates.sort(key=lambda x: x[0], reverse=True)
         
         # Return up to max_peers, converted to (username, files) tuples
-        result = [(username, matched) for _, _, _, username, matched in candidates[:max_peers]]
+        result = [(username, matched) for _, username, matched in candidates[:max_peers]]
         logging.info(f"[slskd] found {len(result)} peer candidates (showing top {max_peers})")
         for i, (username, matched) in enumerate(result[:3], 1):
             logging.info(f"[slskd]   #{i}: {username!r} with {len(matched)}/{len(titles)} tracks")
@@ -537,6 +539,22 @@ def _update_track(job_id: str, position: int, **kwargs):
                 for k, v in kwargs.items():
                     setattr(t, k, v)
                 break
+        # Check if all tracks are done after this update
+        _check_job_completion(job_id)
+
+
+def _check_job_completion(job_id: str):
+    """Check if all tracks are in final state and mark job as done if so. Must be called with _jobs_lock held."""
+    job = _jobs.get(job_id)
+    if not job or job.status == "done":
+        return
+    
+    final_states = {"done", "failed", "cancelled", "in_library"}
+    all_done = all(t.status in final_states for t in job.tracks)
+    
+    if all_done:
+        logging.info(f"[job {job_id}] All tracks finished, marking job as done")
+        job.status = "done"
 
 
 def _get_track(job_id: str, position: int) -> TrackDownloadStatus | None:
@@ -560,7 +578,7 @@ def _import_track(filepath: str, artist: str, title: str, position: int,
         _update_track(job_id, position, status="importing")
         skipped, mb_albumid = run_beet_import(filepath, artist, mb_context)
         if skipped:
-            _update_track(job_id, position, status="failed")
+            _update_track(job_id, position, status="done", needs_review=True)
         else:
             _update_track(job_id, position, status="done")
             if mb_albumid:
@@ -577,7 +595,7 @@ def _ytdlp_track(job_id: str, position: int, artist: str, title: str,
                   album: str, release_id: str, mb_context: dict, cover_queue: dict):
     """Download track from YouTube and move to review folder for manual validation."""
     try:
-        _update_track(job_id, position, status="downloading", source="YouTube")
+        # Status already set to "downloading" with source="YouTube" by use-ytdlp endpoint
         filepath, _ = YtDlpSource().download_track(artist, title, album, release_id)
         if not filepath:
             _update_track(job_id, position, status="failed")
@@ -604,9 +622,10 @@ def _ytdlp_track(job_id: str, position: int, artist: str, title: str,
         shutil.move(filepath, review_path)
         logging.info(f"[job {job_id}] Track {position} from YouTube moved to review: {review_path}")
         
-        # Mark as "failed" for now (will be changed to "needs_review" status later)
-        # This signals UI to show it needs attention
-        _update_track(job_id, position, status="failed")
+        # Mark as done but needs_review to signal UI it needs manual validation
+        logging.info(f"[job {job_id}] Updating track {position} status to done+needs_review")
+        _update_track(job_id, position, status="done", needs_review=True)
+        logging.info(f"[job {job_id}] Track {position} status updated successfully")
     except Exception as e:
         logging.error(f"[job {job_id}] YouTube download failed for track {position}: {e}", exc_info=True)
         _update_track(job_id, position, status="failed")
@@ -634,32 +653,60 @@ def _download_album_worker(job_id: str, release_id: str, artist: str,
     max_peer_retries = 3  # Try up to 3 different peers before giving up
 
     for retry_attempt in range(max_peer_retries):
+        # Check if any tracks still need Soulseek download (not switched to YouTube)
+        remaining_tracks = []
+        for t in to_fetch:
+            track = _get_track(job_id, t["position"])
+            if track and track.source != "YouTube" and track.status not in ("done", "failed", "cancelled"):
+                remaining_tracks.append(t)
+        
+        if not remaining_tracks:
+            logging.info(f"[job {job_id}] All tracks switched to YouTube or already done, skipping Soulseek")
+            break
+        
         try:
             # Start Soulseek album download (first time or retry with next peer)
             if retry_attempt == 0:
-                logging.info(f"[job {job_id}] Preparing Soulseek search for {to_fetch}")
+                logging.info(f"[job {job_id}] Preparing Soulseek search for {remaining_tracks}")
                 _update_job(job_id, status_message="🔍 Procurando peers no Soulseek...")
-                slskd_result = _slskd.start_album_download(artist, album_title, to_fetch)
+                slskd_result = _slskd.start_album_download(artist, album_title, remaining_tracks)
             else:
                 logging.info(f"[job {job_id}] Retry attempt #{retry_attempt + 1}: trying next peer")
                 _update_job(job_id, status_message=f"🔄 Tentando peer alternativo ({retry_attempt + 1}/{max_peer_retries})...")
-                slskd_result = _slskd.retry_with_next_peer(artist, album_title, to_fetch, tried_peers)
+                slskd_result = _slskd.retry_with_next_peer(artist, album_title, remaining_tracks, tried_peers)
 
             if slskd_result:
                 token, username, transfers = slskd_result
                 tried_peers.append(username)
                 logging.info(f"[job {job_id}] Soulseek matched {len(transfers)} tracks from peer {username}")
-                _update_job(job_id, status_message=f"⬇️ Baixando de '{username}' ({len(transfers)} tracks)")
+                
                 # Map title → (transfer_id, filename)
                 by_title = {title: (tid, fname) for tid, fname, title in transfers}
-                # Update tracks that got a transfer
-                for t in to_fetch:
+                
+                # Filter tracks that are still pending for Soulseek (not switched to YouTube)
+                active_transfers = []
+                for t in remaining_tracks:
                     title = t["title"]
                     pos = t["position"]
                     if title in by_title:
+                        # Check if this track was switched to YouTube while we were searching
+                        track = _get_track(job_id, pos)
+                        if track and track.source == "YouTube":
+                            logging.info(f"[job {job_id}] Track {pos} switched to YouTube, skipping Soulseek download")
+                            continue
+                            
                         tid, _ = by_title[title]
+                        active_transfers.append((tid, by_title[title][1], title))
                         _update_track(job_id, pos, status="downloading", source="Soulseek",
                                       transfer_id=tid, slskd_username=username)
+                
+                # Only show "downloading" message if we have active transfers
+                if active_transfers:
+                    _update_job(job_id, status_message=f"⬇️ Baixando de '{username}' ({len(active_transfers)} tracks)")
+                else:
+                    logging.info(f"[job {job_id}] All tracks switched to YouTube before Soulseek download started")
+                    _update_job(job_id, status_message="")
+                    break
 
                 # Poll until all Soulseek transfers are done or cancelled
                 pending_transfers = list(transfers)
@@ -675,6 +722,10 @@ def _download_album_worker(job_id: str, release_id: str, artist: str,
                         track = _get_track(job_id, pos)
                         if track and track.status == "cancelled":
                             logging.info(f"[job {job_id}] Track {pos} cancelled, removing from Soulseek poll")
+                            continue
+                        # Also skip if track was switched to YouTube
+                        if track and track.source == "YouTube":
+                            logging.info(f"[job {job_id}] Track {pos} switched to YouTube, removing from Soulseek poll")
                             continue
                         state, local_path, pct = poll.get(title, ("pending", "", 0.0))
                         if state == "done" and local_path:
@@ -743,7 +794,7 @@ def _download_album_worker(job_id: str, release_id: str, artist: str,
             embed_cover_art(mid, paths)
 
     logging.info(f"[job {job_id}] Worker finished")
-    _update_job(job_id, status="done")
+    # Don't mark job as done here - let _check_job_completion handle it after all tracks finish
 
 
 # ---------------------------------------------------------------------------
@@ -953,10 +1004,13 @@ async def cancel_slskd_use_ytdlp(
         try:
             token = _slskd._token()
             _slskd.cancel_transfer(token, track.slskd_username, track.transfer_id)
+            logging.info(f"[use-ytdlp] Cancelled Soulseek transfer {track.transfer_id} from {track.slskd_username}")
         except Exception as e:
-            logging.warning(f"[cancel] slskd cancel failed: {e}")
+            logging.warning(f"[use-ytdlp] slskd cancel failed: {e}")
 
-    _update_track(job_id, position, status="cancelled", transfer_id=None, slskd_username=None)
+    # Mark as downloading from YouTube immediately so button disables and Soulseek worker skips it
+    _update_track(job_id, position, status="downloading", source="YouTube", transfer_id=None, slskd_username=None)
+    _update_job(job_id, status_message=f"Baixando faixa {position} do YouTube (yt-dlp)...")
 
     # Kick off yt-dlp in the background
     track_info = next((t for t in job.tracks if t.position == position), None)
@@ -1177,9 +1231,10 @@ async def accept_review(filename: str, user: dict = Depends(require_telegram_use
                     if job.release_id == expected_mbid and job.status in ("running", "processing"):
                         for track in job.tracks:
                             if track.title == current_title and track.position == int(expected_tracknum):
-                                if track.status == "failed":
-                                    logging.info(f"[review] Updated job {job_id} track {track.position} status: failed → done")
+                                if track.needs_review or track.status == "failed":
+                                    logging.info(f"[review] Updated job {job_id} track {track.position}: needs_review={track.needs_review} status={track.status} → done")
                                     track.status = "done"
+                                    track.needs_review = False
                                 break
                         break
             

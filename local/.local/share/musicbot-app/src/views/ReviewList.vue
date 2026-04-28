@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { NSpin, NEmpty, NButton, useMessage } from 'naive-ui'
+import { NSpin, NEmpty, NButton, useMessage, useDialog } from 'naive-ui'
 import { fetchReview, acceptReview, deleteReview, type ReviewFile } from '@/api'
 
 const files = ref<ReviewFile[]>([])
@@ -8,6 +8,7 @@ const loading = ref(true)
 const processing = ref<Record<string, boolean>>({})
 const error = ref<string | null>(null)
 const message = useMessage()
+const dialog = useDialog()
 
 function formatSize(bytes: number) {
   return (bytes / 1024 / 1024).toFixed(1) + ' MB'
@@ -58,24 +59,38 @@ async function handleAccept(f: ReviewFile) {
 }
 
 async function handleAcceptAll() {
-  if (!confirm('Aceitar todos os arquivos deste review?')) return
-  for (const f of files.value) {
-    await handleAccept(f)
-  }
+  dialog.warning({
+    title: 'Aceitar tudo',
+    content: 'Aceitar todos os arquivos deste review?',
+    positiveText: 'Aceitar',
+    negativeText: 'Cancelar',
+    onPositiveClick: async () => {
+      for (const f of files.value) {
+        await handleAccept(f)
+      }
+    }
+  })
 }
 
 async function handleDelete(f: ReviewFile) {
-  if (!confirm('Deletar este arquivo permanentemente?')) return
-  processing.value[f.filename] = true
-  try {
-    await deleteReview(f.filename)
-    message.info('Arquivo removido')
-    await load()
-  } catch (e: any) {
-    message.error('Falha ao deletar: ' + e.message)
-  } finally {
-    processing.value[f.filename] = false
-  }
+  dialog.error({
+    title: 'Deletar arquivo',
+    content: 'Deletar este arquivo permanentemente?',
+    positiveText: 'Deletar',
+    negativeText: 'Cancelar',
+    onPositiveClick: async () => {
+      processing.value[f.filename] = true
+      try {
+        await deleteReview(f.filename)
+        message.info('Arquivo removido')
+        await load()
+      } catch (e: any) {
+        message.error('Falha ao deletar: ' + e.message)
+      } finally {
+        processing.value[f.filename] = false
+      }
+    }
+  })
 }
 
 onMounted(load)

@@ -111,18 +111,27 @@ export const useJobsStore = defineStore('jobs', () => {
     if (pollingIds.value.has(jobId)) return
     _setupVisibility()
 
+    console.log(`[jobs] Starting polling for ${jobId}`)
     const id = window.setInterval(async () => {
       try {
         const status = await fetchJobStatus(jobId)
-        jobs.value.set(jobId, status)
+        console.log(`[jobs] Poll update for ${jobId}:`, status.status, status.tracks.map(t => `${t.position}:${t.status}`))
+        // Force reactivity by creating new Map
+        const newJobs = new Map(jobs.value)
+        newJobs.set(jobId, status)
+        jobs.value = newJobs
         persist(jobs.value)
         if (status.status === 'done' || status.status === 'failed') {
+          console.log(`[jobs] Job ${jobId} finished, stopping polling`)
           stopPolling(jobId)
         }
       } catch (e: any) {
         // Se der 404, o job sumiu do servidor (ex: restart)
         if (e.message?.includes('404')) {
-          jobs.value.delete(jobId)
+          console.log(`[jobs] Job ${jobId} not found (404), removing`)
+          const newJobs = new Map(jobs.value)
+          newJobs.delete(jobId)
+          jobs.value = newJobs
           persist(jobs.value)
           stopPolling(jobId)
         }
