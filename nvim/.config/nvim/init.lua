@@ -163,6 +163,17 @@ require("lazy").setup({
     opts = {},
   },
 
+  -- markdown preview (needs yarn|npm)
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && yarn install",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    ft = { "markdown" },
+  },
+
   -- Hardtime for better vim habits
   -- {
   -- 	"m4xshen/hardtime.nvim",
@@ -218,7 +229,7 @@ require("lazy").setup({
 
   -- Movement plugin
   {
-    "ggandor/leap.nvim",
+    "https://codeberg.org/andyg/leap.nvim",
     config = function()
       -- Don't create default mappings to avoid conflicts
       -- require('leap').create_default_mappings()
@@ -796,7 +807,7 @@ require("lazy").setup({
         },
         config = function()
           require("luasnip.loaders.from_vscode").lazy_load()
-          require("vim-react-snippets").lazy_load()
+          -- require("vim-react-snippets").lazy_load()
           require("luasnip").config.setup({})
         end,
       },
@@ -944,95 +955,28 @@ require("lazy").setup({
   },
 
   -- Treesitter
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    main = "nvim-treesitter.configs",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      "nvim-tree/nvim-web-devicons",
-    },
-    opts = {
-      ensure_installed = {
-        "bash",
-        "c",
-        "diff",
-        "html",
-        "lua",
-        "luadoc",
-        "markdown",
-        "markdown_inline",
-        "query",
-        "vim",
-        "vimdoc",
-        "cpp",
-        "go",
-        "python",
-        "rust",
-        "tsx",
-        "javascript",
-        "typescript",
-      },
-      auto_install = true,
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = { "ruby", "scss" },
-      },
-      indent = { enable = true, disable = { "ruby" } },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "<c-space>",
-          node_incremental = "<c-space>",
-          scope_incremental = "<c-s>",
-          node_decremental = "<M-space>",
-        },
-      },
-      textobjects = {
-        select = {
-          enable = true,
-          lookahead = true,
-          keymaps = {
-            ["aa"] = "@parameter.outer",
-            ["ia"] = "@parameter.inner",
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
-          },
-        },
-        move = {
-          enable = true,
-          set_jumps = true,
-          goto_next_start = {
-            ["]m"] = "@function.outer",
-            ["]]"] = "@class.outer",
-          },
-          goto_next_end = {
-            ["]M"] = "@function.outer",
-            ["]["] = "@class.outer",
-          },
-          goto_previous_start = {
-            ["[m"] = "@function.outer",
-            ["[["] = "@class.outer",
-          },
-          goto_previous_end = {
-            ["[M"] = "@function.outer",
-            ["[]"] = "@class.outer",
-          },
-        },
-        swap = {
-          enable = true,
-          swap_next = {
-            ["<leader>a"] = "@parameter.inner",
-          },
-          swap_previous = {
-            ["<leader>A"] = "@parameter.inner",
-          },
-        },
+    {
+      "arborist-ts/arborist.nvim",
+      opts = {
+        update_cadence = "weekly",
       },
     },
-  },
+  -- {
+  --   "romus204/tree-sitter-manager.nvim",
+  --   dependencies = {}, -- tree-sitter CLI must be installed system-wide
+  --   config = function()
+  --     require("tree-sitter-manager").setup({
+  --       -- Default Options
+  --       -- ensure_installed = {}, -- list of parsers to install at the start of a neovim session
+  --       -- border = nil, -- border style for the window (e.g. "rounded", "single"), if nil, use the default border style defined by 'vim.o.winborder'. See :h 'winborder' for more info.
+  --       -- auto_install = false, -- if enabled, install missing parsers when editing a new file
+  --       -- highlight = true, -- treesitter highlighting is enabled by default
+  --       -- languages = {}, -- override or add new parser sources
+  --       -- parser_dir = vim.fn.stdpath("data") .. "/site/parser",
+  --       -- query_dir = vim.fn.stdpath("data") .. "/site/queries",
+  --     })
+  --   end
+  -- },
 
   -- File tree
   {
