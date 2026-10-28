@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Renews the LG TV Developer Mode session (otherwise it expires after 50h and
+# sideloaded apps like Nuvio stop working).
+#
+# Reads the session token from the TV over the dev-mode SSH (ares-cli device
+# "lgc1") and calls the same LG endpoint as the "Extend" button in the
+# Developer Mode app.
+#
+#   lgtv-devmode-renew           renew, show the time left and toast it on the TV
+#   lgtv-devmode-renew --status  only show the time left
+#
+# The TV must be on (or reachable on the network).
+set -euo pipefail
+
+DEVICE="${LGTV_DEVICE:-lgc1}"
+API="https://developer.lge.com/secure"
+
+token=$(ares-novacom -d "$DEVICE" --run "cat /var/luna/preferences/devmode_enabled" 2>/dev/null \
+    | grep -v '^\[Info\]' | tr -d '[:space:]')
+if [[ -z "$token" ]]; then
+    echo "could not read session token from $DEVICE (TV off or dev mode disabled?)" >&2
+    exit 1
+fi
+
+if [[ "${1:-}" != "--status" ]]; then
+    curl -fsS "$API/ResetDevModeSession.dev?sessionToken=$token" >/dev/null
+    renewed=1
+fi
+
+# {"result":"success","errorCode":"200","errorMsg":"999:59:53"} -> time left as HHH:MM:SS
+left=$(curl -fsS "$API/CheckDevModeSession.dev?sessionToken=$token" | sed -E 's/.*"errorMsg":"([^"]*)".*/\1/')
+echo "${renewed:+renewed, }time left: $left"
+
+if [[ -n "${renewed:-}" ]]; then
+    lgtv-toast "Dev mode renovado (${left%%:*}h restantes)" || true
+fi

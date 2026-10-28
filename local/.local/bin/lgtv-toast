@@ -1,0 +1,36 @@
+#!/home/eduruiz/.local/share/lgtv/venv/bin/python
+"""Shows a toast notification on the LG TV through its local remote-control API (SSAP).
+
+  lgtv-toast "message"
+
+The first run asks for permission on the TV; accept it with the remote. The
+client key it returns is kept in ~/.config/lgtv/client-key.
+
+Needs aiowebostv in ~/.local/share/lgtv/venv (python -m venv ... && pip install aiowebostv).
+"""
+import asyncio
+import os
+import sys
+
+from aiowebostv import WebOsClient
+
+HOST = os.environ.get("LGTV_HOST", "192.168.15.11")
+KEY_FILE = os.path.expanduser("~/.config/lgtv/client-key")
+
+
+async def main(message):
+    key = open(KEY_FILE).read().strip() if os.path.exists(KEY_FILE) else None
+    client = WebOsClient(HOST, key, connect_timeout=60)
+    await client.connect()
+    if client.client_key != key:
+        os.makedirs(os.path.dirname(KEY_FILE), exist_ok=True)
+        with open(KEY_FILE, "w") as f:
+            f.write(client.client_key)
+    await client.send_message(message)
+    await client.disconnect()
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        sys.exit(__doc__)
+    asyncio.run(main(sys.argv[1]))
